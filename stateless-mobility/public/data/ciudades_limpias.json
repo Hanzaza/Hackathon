@@ -1,0 +1,2640 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Granada",
+        "departamento": "Granada",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9535387,
+          11.930367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Catarina",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0741177,
+          11.9123659
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Rivas",
+        "departamento": "Rivas",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8287394,
+          11.4389392
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Moyogalpa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.6979365,
+          11.5400817
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Altagracia",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.578688,
+          11.5669637
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Juan del Sur",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8722797,
+          11.2542297
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Crucero",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3103503,
+          11.9888853
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Nagarote",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5630451,
+          12.264799
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Paz Centro",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6762856,
+          12.339421
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Tipitapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.096372,
+          12.1962432
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "León",
+        "departamento": "León",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8788302,
+          12.4348568
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ocotal",
+        "departamento": "Nueva Segovia",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4744069,
+          13.631951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Totogalpa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4927316,
+          13.5629663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Estelí",
+        "departamento": "Estelí",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3561571,
+          13.0929621
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Sébaco",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0984571,
+          12.8549457
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Matiguás",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.4616054,
+          12.836943
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Muy Muy",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.629759,
+          12.7634179
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Municipio de San José de los Remates",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.762,
+          12.597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Teustepe",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.7998732,
+          12.4202403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Esquipulas",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.7881224,
+          12.6635768
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ciudad Darío",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1233692,
+          12.7277511
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Sauce",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5389698,
+          12.8859781
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Viejo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.1673819,
+          12.661977
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Chinandega",
+        "departamento": "Chinandega",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.1347357,
+          12.6310831
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Chichigalpa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.0280247,
+          12.5703948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Almendro",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.7024366,
+          11.6776809
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Acoyapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.1719031,
+          11.9704211
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Masatepe",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1438044,
+          11.9156473
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Marcos",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.2047174,
+          11.9091914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Niquinohomo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0945522,
+          11.9041582
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jinotepe",
+        "departamento": "Carazo",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1992469,
+          11.8478476
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Telica",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8605611,
+          12.5212194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Concordia",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1667601,
+          13.1958419
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Rafael del Norte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1105472,
+          13.2136484
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Sebastián de Yalí",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1867024,
+          13.3057416
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Condega",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3974189,
+          13.3613957
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Palacagüina",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4063963,
+          13.456744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ciudad Antigua",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3081399,
+          13.6406794
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Fernando",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3137149,
+          13.675926
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mozonte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4387195,
+          13.6601446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Somotillo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.9050544,
+          13.0445947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Villanueva",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.815612,
+          12.9647378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Dolores",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.215818,
+          11.8562374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santa Teresa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1634385,
+          11.8037329
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Nandaime",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0534435,
+          11.7562345
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Telpaneca",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.2869128,
+          13.5317371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Wiwilí de Nueva Segovia",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8258438,
+          13.6271552
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Quilalí",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0266729,
+          13.5675967
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Jícaro",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1368771,
+          13.7220754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Larreynaga",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6789877,
+          12.5933587
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Miguelito",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.9004,
+          11.4028037
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Morrito",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.0808351,
+          11.6218378
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Boaco",
+        "departamento": "Boaco",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.6599534,
+          12.4726484
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Camoapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.5126428,
+          12.3844531
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Libertad",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.1658282,
+          12.2162259
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santo Domingo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.0827554,
+          12.2632524
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Ayote",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.8190616,
+          12.4973135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Tortuguero",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.200023,
+          12.8200981
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santo Tomás",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.0905735,
+          12.0698756
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Villa Sandino",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.9929383,
+          12.0500287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Coral",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.649159,
+          11.9207668
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Pedro de Lóvago",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.1147636,
+          12.1298843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Puerto Morazán",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.1322507,
+          12.766671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Puerto Cabezas",
+        "departamento": "Costa Caribe Norte",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.3822587,
+          14.0284017
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Río Blanco",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.2259192,
+          12.9325537
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Ramón",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8379491,
+          12.9230562
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Rosita",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.3996175,
+          13.9236675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Nueva Guinea",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.4563593,
+          11.6871482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Murra",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0188797,
+          13.7585611
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Waslala",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.3712992,
+          13.3363374
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Bonanza",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.6000771,
+          14.0307223
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santa María de Pantasma",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9431526,
+          13.3485854
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Dipilto",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5059797,
+          13.7203815
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Macuelizo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6129619,
+          13.6522138
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santa María",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.7082608,
+          13.746359
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Juan del Río Coco",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1648222,
+          13.5445863
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Masaya",
+        "departamento": "Masaya",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0960547,
+          11.9736474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Juan del Norte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.7356688,
+          10.946566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Castillo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.4722821,
+          11.0426326
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Francisco Libre",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.300328,
+          12.505667
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Conquista",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1929607,
+          11.7339318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Jorge",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8007221,
+          11.4560565
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Diriá",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0559548,
+          11.8863902
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Corinto",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.1713035,
+          12.481719
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Diriomo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0509984,
+          11.8746151
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Juan de Limay",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6120646,
+          13.1744418
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Juan de Oriente",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0735856,
+          11.90453
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Tuma - La Dalia",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.7340079,
+          13.1369849
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Rafael del Sur",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4388639,
+          11.846482
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Villa El Carmen",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5070418,
+          11.9797539
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mulukukú",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.9603418,
+          13.1720127
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ciudad Sandino",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3485593,
+          12.1656915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Nindirí",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1201997,
+          12.0030065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Siuna",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.7789494,
+          13.7341305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Concepción",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1901902,
+          11.9373328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Trojes",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9986947,
+          14.0814008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Prinzapolka",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.2244395,
+          13.5001429
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Dionisio",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8516761,
+          12.7622648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cuapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.3824821,
+          12.2688057
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Lorenzo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.6672097,
+          12.3778785
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Desembocadura de Río Grande",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.5767647,
+          12.931235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Paiwas",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.1232712,
+          12.7876651
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Nandasmo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1206565,
+          11.9249927
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Cruz de Río Grande",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.1870273,
+          13.1122012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jalapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1253458,
+          13.9220301
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Waspán",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.9726195,
+          14.7407239
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San José de Cusmapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6543905,
+          13.2879947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cinco Pinos",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8676939,
+          13.2296158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Pedro del Norte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8778266,
+          13.2761293
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santo Tomás del Norte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.9225263,
+          13.1858313
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Posoltega",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.9808771,
+          12.5433646
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Quezalguaque",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.9029934,
+          12.5077729
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Rosario",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1660375,
+          11.8332956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Paz de Carazo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.1278901,
+          11.8226879
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Bluefields",
+        "departamento": "Costa Caribe Sur",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.764907,
+          12.0131543
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Juigalpa",
+        "departamento": "Chontales",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.365208,
+          12.1060911
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Somoto",
+        "departamento": "Madriz",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5826225,
+          13.4837096
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Laguna de Perlas",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.6728626,
+          12.3379518
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Kukra Hill",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.7483781,
+          12.2425216
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Realejo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.1649403,
+          12.5424511
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Nicolás",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3483899,
+          12.9327488
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Terrabona",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9649988,
+          12.7309895
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Jicaral",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3807822,
+          12.7284813
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Muelle de los Bueyes",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.5428289,
+          12.0662634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Las Sabanas",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.6214862,
+          13.3429987
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Francisco del Norte",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.7706828,
+          13.1989158
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Yalagüina",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4923654,
+          13.485387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Pueblo Nuevo",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.481294,
+          13.3802097
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Isidro",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.194399,
+          12.9305747
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santa Rosa del Peñón",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.3696165,
+          12.8009167
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "La Trinidad",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.2352847,
+          12.9679583
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Mateare",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.4305105,
+          12.2363025
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Belén",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8867881,
+          11.5016249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Potosí",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8561234,
+          11.4946557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San José de Bocay",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.5401699,
+          13.5425209
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Wiwilí de Jinotega",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8181812,
+          13.6200373
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Cárdenas",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.5094819,
+          11.1971253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Tisma",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0173897,
+          12.0803187
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Rancho Grande",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.5591138,
+          13.2374884
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Ticuantepe",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.2053144,
+          12.0217671
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "San Carlos",
+        "departamento": "Río San Juan",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.7783433,
+          11.1230694
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Managua",
+        "departamento": "Managua",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.273725,
+          12.1547116
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Matagalpa",
+        "departamento": "Matagalpa",
+        "tipo": "Creativa",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9184454,
+          12.9283899
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Jinotega",
+        "departamento": "Jinotega",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.0031803,
+          13.0920172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Corn Island",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -83.0603709,
+          12.1746802
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Sin Nombre",
+        "departamento": "El Paraíso",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.8526487,
+          13.9444194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Achuapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.5899242,
+          13.0538428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Diriamba",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -86.2403037,
+          11.8561449
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Tola",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.9385999,
+          11.4390558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Buenos Aires",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.8162952,
+          11.4683125
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Cuá",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.6728262,
+          13.3681561
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Municipio de San José de los Remates",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.79,
+          12.6
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Santa Lucía",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.71,
+          12.51
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "Comalapa",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.5108866,
+          12.2842665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nombre": "El Rama",
+        "departamento": "Desconocido",
+        "tipo": "General",
+        "descripcion": "Ciudad de la Red de Ciudades Creativas",
+        "status": "Activo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -84.2197038,
+          12.1589955
+        ]
+      }
+    }
+  ]
+}

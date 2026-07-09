@@ -1,0 +1,259 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Country {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  isoCode     String       @map("iso_code")
+  status      String       @default("active")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  departments Department[]
+
+  @@map("countries")
+}
+
+model Department {
+  id               String         @id @default(uuid())
+  countryId        String?        @map("country_id")
+  name             String
+  slug             String         @unique
+  description      String?
+  isCreativeRegion Boolean        @default(false) @map("is_creative_region")
+  geom             String?
+  createdAt        DateTime       @default(now()) @map("created_at")
+  country          Country?       @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  municipalities   Municipality[]
+
+  @@map("departments")
+}
+
+model Municipality {
+  id                 String              @id @default(uuid())
+  departmentId       String?             @map("department_id")
+  name               String
+  slug               String              @unique
+  description        String?
+  isCreative         Boolean             @default(false) @map("is_creative")
+  municipalityType   String              @default("tradicional") @map("municipality_type")
+  geom               String?
+  departmentName     String?             @map("department_name")
+  status             String              @default("active")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  creativeRoutes     CreativeRoute[]
+  entrepreneurEvents EntrepreneurEvent[]
+  entrepreneurs      Entrepreneur[]
+  mapPoints          MapPoint[]
+  department         Department?         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@map("municipalities")
+}
+
+model CreativeRoute {
+  id                String         @id @default(uuid())
+  municipalityId    String?        @map("municipality_id")
+  name              String
+  slug              String         @unique
+  description       String?
+  status            String         @default("draft")
+  coverImage        String?        @map("cover_image")
+  theme             String?
+  difficulty        String?
+  estimatedDuration Int?           @map("estimated_duration")
+  pointsAward       Int            @default(0) @map("points_award")
+  badgeName         String?        @map("badge_name")
+  isVisibleInMap    Boolean        @default(true) @map("is_visible_in_map")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  municipality      Municipality?  @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
+  routePlaces       RoutePlace[]
+  userProgress      UserProgress[]
+
+  @@map("creative_routes")
+}
+
+model RoutePlace {
+  id          String         @id @default(uuid())
+  routeId     String?        @map("route_id")
+  name        String
+  slug        String         @unique
+  description String?
+  category    String?
+  geom        String?
+  isActive    Boolean        @default(true) @map("is_active")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  route       CreativeRoute? @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  @@map("route_places")
+}
+
+model MapPoint {
+  id             String        @id @default(uuid())
+  municipalityId String?       @map("municipality_id")
+  name           String
+  pointType      String        @map("point_type")
+  category       String?
+  description    String?
+  geom           String?
+  status         String        @default("pending_review")
+  isVisible      Boolean       @default(true) @map("is_visible")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  municipality   Municipality? @relation(fields: [municipalityId], references: [id])
+
+  @@map("map_points")
+}
+
+model User {
+  id                   String                @id @default(uuid())
+  name                 String
+  lastname             String
+  email                String                @unique
+  passwordHash         String                @map("password_hash")
+  avatar               String?
+  role                 String                @default("user")
+  status               String                @default("active")
+  points               Int                   @default(0)
+  level                Int                   @default(1)
+  bio                  String?
+  country              String?
+  city                 String?
+  favoriteCategories   String[]              @map("favorite_categories")
+  notificationsEnabled Boolean               @default(true) @map("notifications_enabled")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  entrepreneurRequests EntrepreneurRequest[]
+  entrepreneurs        Entrepreneur?
+  reports              Report[]
+  reviews              Review[]
+  achievements         UserAchievement[]
+  progress             UserProgress[]
+
+  @@map("users")
+}
+
+model EntrepreneurRequest {
+  id           String   @id @default(uuid())
+  userId       String?  @map("user_id")
+  requestType  String   @default("entrepreneur") @map("request_type")
+  status       String   @default("pending")
+  motivation   String?
+  businessName String?  @map("business_name")
+  businessType String   @default("fisico") @map("business_type")
+  address      String?
+  geom         String?
+  documents    String[]
+  createdAt    DateTime @default(now()) @map("created_at")
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("entrepreneur_requests")
+}
+
+model Entrepreneur {
+  id                 String              @id @default(uuid())
+  userId             String?             @unique @map("user_id")
+  municipalityId     String?             @map("municipality_id")
+  businessName       String              @map("business_name")
+  businessType       String              @default("fisico") @map("business_type")
+  description        String?
+  address            String?
+  geom               String?
+  status             String              @default("active")
+  isVisibleInMap     Boolean             @default(true) @map("is_visible_in_map")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  entrepreneurEvents EntrepreneurEvent[]
+  municipality       Municipality?       @relation(fields: [municipalityId], references: [id])
+  user               User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("entrepreneurs")
+}
+
+model EntrepreneurEvent {
+  id             String        @id @default(uuid())
+  entrepreneurId String?       @map("entrepreneur_id")
+  municipalityId String?       @map("municipality_id")
+  title          String
+  description    String?
+  startDate      DateTime      @map("start_date")
+  endDate        DateTime      @map("end_date")
+  locationName   String?       @map("location_name")
+  locationGeom   String?       @map("location_geom")
+  status         String        @default("published")
+  createdAt      DateTime      @default(now()) @map("created_at")
+  entrepreneur   Entrepreneur? @relation(fields: [entrepreneurId], references: [id], onDelete: Cascade)
+  municipality   Municipality? @relation(fields: [municipalityId], references: [id])
+
+  @@map("entrepreneur_events")
+}
+
+model Achievement {
+  id              String            @id @default(uuid())
+  name            String
+  slug            String            @unique
+  description     String?
+  achievementType String            @map("achievement_type")
+  icon            String?
+  pointsReward    Int               @default(0) @map("points_reward")
+  requiredCount   Int               @default(1) @map("required_count")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  users           UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String       @id @default(uuid())
+  userId        String?      @map("user_id")
+  achievementId String?      @map("achievement_id")
+  earnedAt      DateTime     @default(now()) @map("earned_at")
+  progress      Int          @default(100)
+  status        String       @default("unlocked")
+  achievement   Achievement? @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_achievements")
+}
+
+model UserProgress {
+  id              String         @id @default(uuid())
+  userId          String?        @map("user_id")
+  routeId         String?        @map("route_id")
+  completedPlaces String[]       @map("completed_places")
+  progressPercent Int            @default(0) @map("progress_percent")
+  status          String         @default("in_progress")
+  lastVisitedAt   DateTime?      @map("last_visited_at")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  route           CreativeRoute? @relation(fields: [routeId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_progress")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  targetType String   @map("target_type")
+  targetId   String   @map("target_id")
+  userId     String?  @map("user_id")
+  rating     Int
+  comment    String?
+  status     String   @default("approved")
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reportedBy String?  @map("reported_by")
+  targetType String   @map("target_type")
+  targetId   String   @map("target_id")
+  reason     String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now()) @map("created_at")
+  user       User?    @relation(fields: [reportedBy], references: [id], onDelete: Cascade)
+
+  @@map("reports")
+}

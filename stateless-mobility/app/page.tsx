@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+// 1. IMPORTAMOS EL MAPA (Ajusta la ruta según la estructura de tus carpetas)
+import MapaContenedor from '@/components/map/MapaContenedor'; 
 
 export default function HomePage() {
   return (
@@ -21,8 +23,9 @@ export default function HomePage() {
           </p>
           
           <div className="flex flex-wrap gap-4 pt-4">
+            {/* 2. CAMBIAMOS EL ENLACE PARA QUE HAGA SCROLL AL MAPA */}
             <Link 
-              href="/ciudades-creativas" 
+              href="#mapa-interactivo" 
               className="px-8 py-3.5 bg-purple-800 hover:bg-purple-900 text-white font-bold rounded-full transition-all shadow-lg shadow-purple-900/20"
             >
               Explorá los circuitos
@@ -55,13 +58,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. SECCIÓN: NUESTRAS CIUDADES CREATIVAS */}
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-20">
+      {/* 3. NUEVA SECCIÓN: MAPA INTERACTIVO */}
+      <section id="mapa-interactivo" className="max-w-7xl mx-auto px-6 lg:px-8 pt-20 scroll-mt-10">
+        <div className="mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">
+            Mapa Interactivo Nacional
+          </h2>
+          <p className="text-slate-600 max-w-2xl text-lg">
+            Seleccioná un departamento para adentrarte en sus circuitos y descubrir los puntos de interés cultural, artístico y turístico.
+          </p>
+        </div>
+        
+        {/* AQUI RENDERIZAMOS EL COMPONENTE PADRE QUE CREAMOS */}
+        <MapaContenedor />
+        
+      </section>
+
+      {/* 4. SECCIÓN: NUESTRAS CIUDADES CREATIVAS (Cuadrícula Estática) */}
+      <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-24">
         <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">
-          Nuestras Ciudades Creativas
+          Directorio de Ciudades Creativas
         </h2>
         <p className="text-slate-600 mb-12 max-w-2xl text-lg">
-          Conocé las 10 ciudades que forman parte de la Red Nacional de Ciudades Creativas de Nicaragua.
+          Conocé a detalle las 10 ciudades que forman parte de la Red Nacional de Ciudades Creativas de Nicaragua.
         </p>
 
         {/* Cuadrícula de tarjetas */}
@@ -84,6 +103,7 @@ export default function HomePage() {
 }
 
 // --- COMPONENTES AUXILIARES ---
+// (Mantuve todos tus componentes exactamente iguales)
 
 function StatItem({ icon, value, label }: { icon: string, value: string, label: string }) {
   return (
@@ -95,7 +115,6 @@ function StatItem({ icon, value, label }: { icon: string, value: string, label: 
   );
 }
 
-// Componente extraído correctamente afuera para evitar el error de renderizado
 function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
   return (
     <div className="h-24 w-full relative mb-6 flex items-center justify-center transition-transform group-hover:scale-[1.02]">
@@ -112,9 +131,7 @@ function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
   );
 }
 
-// Componente principal de la tarjeta
 function CityCard({ name, desc, active, slug, logoSrc }: { name: string, desc: string, active: boolean, slug?: string, logoSrc?: string }) {
-  
   if (!active || !slug) {
     return (
       <div className="flex flex-col p-8 rounded-3xl border-2 bg-slate-50 border-slate-100 opacity-60 transition-all">

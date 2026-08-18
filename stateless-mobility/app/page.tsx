@@ -1,9 +1,12 @@
+'use client';
+
 import Link from 'next/link';
-import Image from 'next/image';
+import { useState } from 'react';
 // 1. IMPORTAMOS EL MAPA (Ajusta la ruta según la estructura de tus carpetas)
-import MapaContenedor from '@/components/map/MapaContenedor'; 
+import NicaraguaSVG from '@/components/map/NicaraguaSVG';
 
 export default function HomePage() {
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   return (
     // Fondo completamente blanco, texto oscuro
     <main className="min-h-screen bg-white text-slate-800 font-sans pb-20">
@@ -40,11 +43,41 @@ export default function HomePage() {
         </div>
 
         {/* Espacio para el Collage de Imágenes (Derecha) */}
-        <div className="flex-1 w-full h-[450px] bg-slate-50 rounded-[2.5rem] relative overflow-hidden flex items-center justify-center border border-slate-200 shadow-xl">
-          <p className="text-slate-400 font-medium px-8 text-center z-10">
-            [Espacio para tu imagen tipo collage con el volcán y la bailarina] <br/>
-            Guárdala en public/hero-collage.png
-          </p>
+        <div className="flex-1 w-full min-h-[460px] rounded-[2.5rem] border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-3 shadow-[0_25px_60px_rgba(15,23,42,0.08)]">
+          <div className="grid h-full gap-3 md:grid-cols-[1.4fr_0.9fr]">
+            <div className="relative overflow-hidden rounded-[2rem] bg-white">
+              <img
+                src="/logos/leon.png"
+                alt="Ciudad creativa León"
+                className="h-full w-full object-contain p-4 sm:p-6"
+              />
+            </div>
+            <div className="grid gap-3">
+              <div className="relative overflow-hidden rounded-[2rem] bg-white">
+                <img
+                  src="/logos/granada.png"
+                  alt="Ciudad creativa Granada"
+                  className="h-full w-full object-contain p-4"
+                />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1 xl:grid-cols-2">
+                <div className="relative overflow-hidden rounded-[2rem] bg-white">
+                  <img
+                    src="/logos/esteli.png"
+                    alt="Ciudad creativa Estelí"
+                    className="h-full w-full object-contain p-4"
+                  />
+                </div>
+                <div className="relative overflow-hidden rounded-[2rem] bg-white">
+                  <img
+                    src="/logos/masaya.png"
+                    alt="Ciudad creativa Masaya"
+                    className="h-full w-full object-contain p-4"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -70,7 +103,12 @@ export default function HomePage() {
         </div>
         
         {/* AQUI RENDERIZAMOS EL COMPONENTE PADRE QUE CREAMOS */}
-        <MapaContenedor />
+        <NicaraguaSVG onSelect={setSelectedDepartment} />
+        {selectedDepartment && (
+          <p className="mt-4 text-sm text-slate-500">
+            Departamento seleccionado: <span className="font-semibold text-slate-700">{selectedDepartment}</span>
+          </p>
+        )}
         
       </section>
 
@@ -83,8 +121,43 @@ export default function HomePage() {
           Conocé a detalle las 10 ciudades que forman parte de la Red Nacional de Ciudades Creativas de Nicaragua.
         </p>
 
-        {/* Cuadrícula de tarjetas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mobile: horizontal carousel with snap; Desktop: grid */}
+        <div className="sm:hidden -mx-4 px-4">
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth py-2">
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Bluefields" desc="De la danza y la música caribeña" active={true} slug="bluefields" logoSrc="/logos/bluefields.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Masaya" desc="De las artesanías y el arte popular" active={true} slug="masaya" logoSrc="/logos/masaya.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="San Juan de Oriente" desc="Del diseño y arte popular" active={true} slug="san-juan-de-oriente" logoSrc="/logos/san-juan-de-oriente.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="León" desc="De la literatura" active={true} slug="leon" logoSrc="/logos/leon.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Granada" desc="Del diseño" active={true} slug="granada" logoSrc="/logos/granada.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Estelí" desc="De las artes, música y muralismo" active={true} slug="esteli" logoSrc="/logos/esteli.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Juigalpa" desc="De la educación y de la cultura taurina" active={true} slug="juigalpa" logoSrc="/logos/juigalpa.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Managua" desc="Multicultural" active={true} slug="managua" logoSrc="/logos/managua.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Matagalpa" desc="Del arte indígena y el café" active={true} slug="matagalpa" logoSrc="/logos/matagalpa.png" />
+            </div>
+            <div className="snap-start flex-shrink-0 w-[85%]">
+              <CityCard name="Nagarote" desc="Próximamente" active={true} slug="nagarote" logoSrc="/logos/nagarote.png" />
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <CityCard name="Bluefields" desc="De la danza y la música caribeña" active={true} slug="bluefields" logoSrc="/logos/bluefields.png" />
           <CityCard name="Masaya" desc="De las artesanías y el arte popular" active={true} slug="masaya" logoSrc="/logos/masaya.png" />
           <CityCard name="San Juan de Oriente" desc="Del diseño y arte popular" active={true} slug="san-juan-de-oriente" logoSrc="/logos/san-juan-de-oriente.png" />
@@ -120,7 +193,7 @@ function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
     <div className="h-24 w-full relative mb-6 flex items-center justify-center transition-transform group-hover:scale-[1.02]">
       {logoSrc ? (
         <div className="relative w-full h-full">
-          <Image src={logoSrc} alt={`Logo ${name}`} fill className="object-contain" />
+          <img src={logoSrc} alt={`Logo ${name}`} className="w-full h-full object-contain" />
         </div>
       ) : (
         <div className="w-full h-full bg-slate-100 rounded-xl flex items-center justify-center">

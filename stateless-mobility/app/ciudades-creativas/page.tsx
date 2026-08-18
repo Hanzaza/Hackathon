@@ -2,8 +2,6 @@
 
 import dynamic from 'next/dynamic';
 
-// 1. Ahora importamos dinámicamente el MapaContenedor (el orquestador)
-// Asegúrate de que la ruta coincida con donde guardaste MapaContenedor.tsx
 const MapaOrquestador = dynamic(() => import('@/components/map/MapaContenedor'), {
   ssr: false,
   loading: () => (
@@ -28,9 +26,7 @@ export default function CiudadesCreativasPage() {
         </p>
       </div>
 
-      {/* 2. Reemplazamos ClientMapaInmersivo por el orquestador */}
       <MapaOrquestador />
-      
     </main>
   );
 }

@@ -1,10 +1,18 @@
 
 import Link from 'next/link';
-import { features } from '../../../../public/data/ciudades_limpias.json';
 import { notFound } from 'next/navigation';
+import path from 'path';
+import { promises as fs } from 'fs';
 
 // Helper para normalizar nombres para URLs
-const slugify = (name: string) => name.toLowerCase().replace(/\s+/g, '-');
+const slugify = (name: string) =>
+  name
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
 const deslugify = (slug: string) => slug.replace(/-/g, ' ');
 
 // Tipos para los props
@@ -14,9 +22,26 @@ interface PageProps {
   };
 }
 
+// Data type for the city features
+interface CityFeature {
+  properties: {
+    nombre: string;
+    tipo: string;
+    descripcion?: string;
+  };
+}
+
+async function getCiudadesData(): Promise<CityFeature[]> {
+  const filePath = path.join(process.cwd(), 'public', 'data', 'ciudades_limpias.json');
+  const fileContents = await fs.readFile(filePath, 'utf8');
+  const data = JSON.parse(fileContents);
+  return data.features;
+}
+
 // ---- GENERACIÓN DE PÁGINAS ESTÁTICAS ----
 // Le dice a Next.js qué páginas debe pre-construir
 export async function generateStaticParams() {
+  const features = await getCiudadesData();
   const creativeCities = features.filter(city => city.properties.tipo === 'Creativa');
   
   return creativeCities.map(city => ({
@@ -25,9 +50,11 @@ export async function generateStaticParams() {
 }
 
 // ---- COMPONENTE DE LA PÁGINA ----
-export default function CreativeCityPage({ params }: PageProps) {
-  const { slug } = params;
+export default async function CreativeCityPage({ params }: PageProps) {
+  const { slug } = await params;
   const cityName = deslugify(slug);
+
+  const features = await getCiudadesData();
 
   // Buscamos la ciudad por su nombre (comparando sin distinción de mayúsculas)
   const city = features.find(c => c.properties.nombre.toLowerCase() === cityName.toLowerCase());
@@ -97,3 +124,4 @@ export default function CreativeCityPage({ params }: PageProps) {
     </main>
   );
 }
+

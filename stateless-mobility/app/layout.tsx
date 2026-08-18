@@ -39,7 +39,7 @@ export default function RootLayout({
         
         {/* flex-grow para que ocupe todo el espacio sobrante */}
         {/* pt-16 es el margen superior de 64px para compensar la altura del Navigation fijo */}
-        <main className="flex-grow pt-16">
+        <main className="flex-grow pt-24 md:pt-28">
           {children}
         </main>
         

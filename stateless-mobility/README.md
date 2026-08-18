@@ -37,7 +37,7 @@ Sigue estos pasos para configurar el proyecto localmente:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone https://github.com/tu-usuario/stateless-mobility.git
+    git clone https://github.com/Hanzaza/Hackathon.git
     cd stateless-mobility
     ```
 

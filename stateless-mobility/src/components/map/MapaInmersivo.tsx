@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
@@ -11,6 +11,18 @@ interface MapaInmersivoProps {
   zoom?: number;
   onBack: () => void;
 }
+
+const municipioCoordinates: Record<string, { lng: number; lat: number; zoom: number }> = {
+  NILE: { lng: -86.8788302, lat: 12.4348568, zoom: 13.8 },
+  NIES: { lng: -86.3561571, lat: 13.0929621, zoom: 13.8 },
+  NIAS: { lng: -83.764907, lat: 12.0131543, zoom: 12.5 },
+  NIRI: { lng: -85.8287394, lat: 11.4389392, zoom: 13.5 },
+  NIMS: { lng: -86.0960547, lat: 11.9736474, zoom: 13.5 },
+  NIGR: { lng: -85.9535387, lat: 11.930367, zoom: 13.5 },
+  NIMN: { lng: -86.273725, lat: 12.1547116, zoom: 12.5 },
+  NIMT: { lng: -85.9184454, lat: 12.9283899, zoom: 13.5 },
+  NICO: { lng: -85.365208, lat: 12.1060911, zoom: 13.5 },
+};
 
 export default function MapaInmersivo({ 
   municipioId, 
@@ -24,6 +36,16 @@ export default function MapaInmersivo({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
 
+  const initialCenter = useMemo(() => {
+    const coords = municipioId ? municipioCoordinates[municipioId] : undefined;
+    return coords ? [coords.lng, coords.lat] as [number, number] : [lng, lat] as [number, number];
+  }, [municipioId, lng, lat]);
+
+  const initialZoom = useMemo(() => {
+    const coords = municipioId ? municipioCoordinates[municipioId] : undefined;
+    return coords ? coords.zoom : zoom;
+  }, [municipioId, zoom]);
+
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
 
@@ -32,8 +54,8 @@ export default function MapaInmersivo({
       container: mapContainer.current,
       // Usamos un estilo base claro (puedes cambiarlo por tu estilo de MapTiler/Mapbox)
       style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-      center: [lng, lat],
-      zoom: zoom,
+      center: initialCenter,
+      zoom: initialZoom,
       pitch: 60, // Inclinación agresiva para efecto 3D/inmersivo
       bearing: -20, // Rotación ligera para un ángulo más dinámico
     });
@@ -46,13 +68,24 @@ export default function MapaInmersivo({
       'top-right'
     );
 
-    // *Nota: Eliminamos todos los addSource y addLayer de departamentos.
-    // Ahora el mapa solo carga el municipio al que le pasemos las coordenadas (lng, lat).
+  }, [initialCenter, initialZoom]);
 
-  }, [lng, lat, zoom]);
+  useEffect(() => {
+    if (!map.current || !municipioId) return;
+    const coords = municipioCoordinates[municipioId];
+    if (!coords) return;
+
+    map.current.flyTo({
+      center: [coords.lng, coords.lat],
+      zoom: coords.zoom,
+      essential: true,
+      speed: 1.2,
+      curve: 1.4,
+    });
+  }, [municipioId]);
 
   return (
-    <div className="relative w-full h-[600px] rounded-3xl overflow-hidden shadow-2xl border-4 border-slate-100">
+    <div className="relative w-full h-[600px] rounded-[2rem] overflow-hidden shadow-[0_25px_60px_rgba(15,23,42,0.14)] border border-white/70 bg-white/70 backdrop-blur-sm">
       
       {/* Botón para volver al SVG Departamental */}
       <button 

@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server';
-// Usamos una ruta relativa segura para llegar a tu carpeta src/lib
-import clientPromise from '../../../src/lib/mongodb';
+import getMongoClient from '../../../src/lib/mongodb';
 
 export const dynamic = 'force-dynamic';
 export async function GET() {
   try {
-    // 1. Esperamos a que la conexión a MongoDB esté lista
-    const client = await clientPromise;
-    
-    // 2. Nos conectamos a la base de datos específica y a la colección
-    const db = client.db('stateless_db'); 
+    const client = await getMongoClient();
+    const db = client.db('stateless_db');
     const infraestructura = await db.collection('infraestructura').find({}).toArray();
 
     // 3. Si la base de datos está vacía, devolvemos un GeoJSON vacío pero válido

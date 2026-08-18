@@ -18,8 +18,7 @@ export default function MapaContenedor() {
   const manejarSeleccionNacional = (idDepartamento: string) => {
     setSeleccion(idDepartamento);
     
-    // Aquí, en el futuro pasaremos a 'departamental' cuando tengas los SVGs listos.
-    // Por ahora, para conectar todo, saltaremos directo al inmersivo para probar.
+    // Al tocar un departamento creativo, vamos al mapa inmersivo en esa ubicación
     setNivelActual('inmersivo'); 
   };
 
@@ -39,7 +38,7 @@ export default function MapaContenedor() {
       {/* NIVEL 1: Mapa Nacional SVG (Es el primero que se ve) */}
       {nivelActual === 'nacional' && (
         <div className="w-full max-w-4xl h-[80vh] flex flex-col items-center justify-center p-4">
-          <NicaraguaSVG onSelect={manejarSeleccionNacional} />
+          <NicaraguaSVG onSelect={manejarSeleccionNacional} showLegend={false} showMarkers={false} />
         </div>
       )}
 

@@ -1,16 +1,16 @@
-'use client';
+'use client'; 
 
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// Enlaces exactos basados en tu diseño mockup
+// Tus enlaces exactos
 const NAV_ITEMS = [
   { name: 'Inicio', href: '/' },
   { name: 'Circuitos Creativos', href: '/circuitos' },
   { name: 'Agenda', href: '/agenda' },
   { name: 'Experiencias', href: '/experiencias' },
-  { name: 'Mapa', href: '/ciudades-creativas' }, // Aquí enlazamos tu mapa inmersivo
+  { name: 'Mapa', href: '/ciudades-creativas' },
   { name: 'Nosotros', href: '/nosotros' },
 ];
 
@@ -21,24 +21,24 @@ export default function Navigation() {
   if (pathname === '/login') return null;
 
   return (
-    // Fondo blanco puro, sin blur, con una línea inferior ultra delgada para diferenciar al hacer scroll
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-slate-100">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-        <div className="flex items-center justify-between h-[88px]">
+    <nav className="fixed top-4 left-1/2 z-[9999] w-[min(92vw,1400px)] -translate-x-1/2 pointer-events-auto">
+      <div className="rounded-full border border-slate-200/80 bg-white/85 px-4 py-3 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-xl lg:px-6">
+        <div className="flex items-center justify-between h-[72px]">
           
-          {/* LOGO INSTITUCIONAL (Izquierda) */}
+          {/* LOGO INSTITUCIONAL (Estilo Editorial Limpio) */}
           <div className="flex-shrink-0 flex items-center gap-3">
-             {/* Simulación del logo del diseño */}
-            <div className="w-10 h-10 bg-slate-100 rounded-md flex items-center justify-center text-xl">
-              🏛️
-            </div>
-            <Link href="/circuitos" className="flex flex-col leading-none">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">
-                Red Nacional de
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <span className="text-4xl font-serif italic pr-3 border-r-2 border-slate-900 leading-none text-slate-900">
+                C
               </span>
-              <span className="text-sm font-extrabold text-purple-900 uppercase">
-                Ciudades Creativas<br/>Nicaragua
-              </span>
+              <div className="flex flex-col leading-none">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">
+                  Red Nacional de
+                </span>
+                <span className="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                  Ciudades Creativas
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -50,10 +50,11 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`text-sm font-semibold transition-colors ${
+                  // Estilo de enlaces más limpio y neutral
+                  className={`text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-purple-800' // Sin fondos, solo cambio de color en el texto
-                      : 'text-slate-800 hover:text-purple-700'
+                      ? 'text-black font-bold border-b-2 border-black pb-1' 
+                      : 'text-slate-700 hover:text-black'
                   }`}
                 >
                   {item.name}
@@ -65,19 +66,19 @@ export default function Navigation() {
           {/* ACCIONES (Derecha) */}
           <div className="hidden lg:flex items-center gap-6">
             {/* Selector de idioma */}
-            <button className="text-sm font-semibold text-slate-800 hover:text-purple-800 flex items-center gap-1">
+            <button className="text-sm font-medium text-slate-700 hover:text-black flex items-center gap-1 transition-colors">
               ES 
-              <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             
-            {/* Botón Principal (Morado oscuro) */}
+            {/* Botón Principal (Estilo Neo-Brutalismo / Sombra Sólida) */}
             <Link
               href="/perfil"
-              className="px-7 py-3 bg-[#3b0764] hover:bg-purple-950 text-white text-sm font-bold rounded-full transition-all"
+              className="px-6 py-2.5 bg-[#5ce1b4] text-black text-sm font-medium rounded-full border border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all"
             >
-              Planificá tu visita
+              Planificá tu visita →
             </Link>
           </div>
 
@@ -85,7 +86,7 @@ export default function Navigation() {
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-800"
+              className="p-2 text-slate-900 bg-white rounded-md border border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isOpen ? (
@@ -101,25 +102,25 @@ export default function Navigation() {
 
       {/* MENÚ MÓVIL DESPLEGABLE */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-100 absolute w-full shadow-xl">
-          <div className="px-6 py-4 space-y-2">
+        <div className="lg:hidden absolute left-0 right-0 top-full mt-3 rounded-[24px] border border-slate-200/80 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+          <div className="space-y-2">
             {NAV_ITEMS.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="block py-3 text-base font-bold text-slate-800 hover:text-purple-800 border-b border-slate-50 last:border-0"
+                className="block py-3 text-base font-medium text-slate-900 hover:text-slate-600 border-b border-black/10 last:border-0"
               >
                 {item.name}
               </Link>
             ))}
-            <div className="pt-6 pb-2">
+            <div className="pt-6 pb-4">
               <Link
                 href="/perfil"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center px-6 py-3.5 bg-[#3b0764] text-white rounded-full font-bold"
+                className="flex items-center justify-center w-full px-6 py-3.5 bg-[#5ce1b4] text-black border border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] rounded-full font-medium active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] transition-all"
               >
-                Planificá tu visita
+                Planificá tu visita →
               </Link>
             </div>
           </div>

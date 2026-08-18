@@ -7,5 +7,5 @@ const MapaInmersivo = dynamic(() => import('@/components/map/MapaInmersivo'), {
 });
 
 export default function ClientMapaInmersivo() {
-  return <MapaInmersivo />;
+  return <MapaInmersivo onBack={() => {}} />;
 }

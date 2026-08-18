@@ -1,12 +1,19 @@
 "use client";
 
-// 1. AÑADIR LA INTERFAZ: Definimos qué propiedades va a recibir este componente
+import { useEffect, useState } from "react";
+
 interface NicaraguaSVGProps {
-  onSelect: (idDepartamento: string) => void;
+  onSelect?: (idDepartamento: string) => void;
+  showLegend?: boolean;
+  showMarkers?: boolean;
 }
 
-// 2. MODIFICAR LA DECLARACIÓN: Extraemos onSelect de las propiedades
-export default function NicaraguaSVG({ onSelect }: NicaraguaSVGProps) {
+export default function NicaraguaSVG({
+  onSelect = () => {},
+  showLegend = true,
+  showMarkers = true,
+}: NicaraguaSVGProps) {
+  const [markerPositions, setMarkerPositions] = useState<Record<string, { left: string; top: string }>>({});
   
   // 1. IDs extraídos de tu SVG que corresponden a las Ciudades Creativas
   const departamentosCreativos = [
@@ -22,6 +29,46 @@ export default function NicaraguaSVG({ onSelect }: NicaraguaSVGProps) {
     NIBO: "Boaco", NICO: "Chontales", NIES: "Estelí",
     NIGR: "Granada", NIMS: "Masaya"
   };
+
+  const ciudadesCreativas = [
+    { name: "León", departmentId: "NILE", color: "#7c3aed", left: "20%", top: "58%" },
+    { name: "Estelí", departmentId: "NIES", color: "#0f766e", left: "38%", top: "24%" },
+    { name: "Rivas", departmentId: "NIRI", color: "#2563eb", left: "70%", top: "86%" },
+    { name: "Masaya", departmentId: "NIMS", color: "#dc2626", left: "56%", top: "71%" },
+    { name: "Granada", departmentId: "NIGR", color: "#f59e0b", left: "60%", top: "72%" },
+    { name: "Managua", departmentId: "NIMN", color: "#0891b2", left: "49%", top: "63%" },
+    { name: "Matagalpa", departmentId: "NIMT", color: "#16a34a", left: "58%", top: "45%" },
+    { name: "Chontales", departmentId: "NICO", color: "#ea580c", left: "67%", top: "63%" },
+    { name: "Bluefields", departmentId: "NIAS", color: "#9333ea", left: "80%", top: "84%" },
+  ];
+
+  useEffect(() => {
+    const nextPositions: Record<string, { left: string; top: string }> = {};
+    const group = document.getElementById("nicaragua-departamentos") as SVGGElement | null;
+
+    if (!group) return;
+
+    const svg = group.ownerSVGElement as SVGSVGElement | null;
+    const viewBox = svg?.viewBox.baseVal;
+    const width = viewBox?.width || 1000;
+    const height = viewBox?.height || 893;
+
+    ciudadesCreativas.forEach((city) => {
+      const element = document.getElementById(city.departmentId) as SVGPathElement | null;
+      if (!element) return;
+
+      try {
+        const bbox = element.getBBox();
+        const left = ((bbox.x + bbox.width / 2) / width) * 100;
+        const top = ((bbox.y + bbox.height / 2) / height) * 100;
+        nextPositions[city.departmentId] = { left: `${left.toFixed(1)}%`, top: `${top.toFixed(1)}%` };
+      } catch {
+        nextPositions[city.departmentId] = { left: city.left, top: city.top };
+      }
+    });
+
+    setMarkerPositions(nextPositions);
+  }, []);
 
   // 2. Función de estilos dinámicos
   const obtenerEstilos = (id: string) => {
@@ -39,13 +86,51 @@ export default function NicaraguaSVG({ onSelect }: NicaraguaSVGProps) {
   };
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-[#111111] p-4">
-      <svg 
-        viewBox="0 0 1000 893" 
-        className="w-full max-w-3xl h-auto drop-shadow-2xl"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g id="nicaragua-departamentos">
+    <div className="w-full flex items-center justify-center p-4 rounded-[2rem] bg-transparent">
+      <div className="relative w-full max-w-3xl">
+        {showLegend && (
+          <div className="absolute left-3 top-3 z-20 rounded-2xl border border-slate-200/80 bg-white/85 px-3 py-2 shadow-lg backdrop-blur-sm md:left-4 md:top-4 md:px-4 md:py-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Leyenda</p>
+            <div className="mt-2 flex flex-col gap-1.5">
+              {ciudadesCreativas.map((city) => (
+                <div key={city.name} className="flex items-center gap-2 text-[11px] font-medium text-slate-700 md:text-sm">
+                  <span className="h-2.5 w-2.5 rounded-full border border-white shadow-sm" style={{ backgroundColor: city.color }} />
+                  <span>{city.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {showMarkers && (
+          <div className="absolute inset-0 z-10">
+            {ciudadesCreativas.map((city) => {
+              const position = markerPositions[city.departmentId] ?? { left: city.left, top: city.top };
+
+              return (
+                <button
+                  key={city.name}
+                  type="button"
+                  onClick={() => manejarClic(city.departmentId)}
+                  className="group absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-[0_0_0_2px_rgba(255,255,255,0.9)] transition-all duration-200 hover:scale-125 focus:outline-none"
+                  style={{ left: position.left, top: position.top, backgroundColor: city.color }}
+                  aria-label={city.name}
+                >
+                  <span className="pointer-events-none absolute left-1/2 top-[-2.3rem] -translate-x-1/2 scale-0 whitespace-nowrap rounded-full bg-slate-900/90 px-2 py-1 text-[10px] font-semibold text-white transition-all duration-200 group-hover:scale-100">
+                    {city.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <svg 
+          viewBox="0 0 1000 893" 
+          className="w-full max-w-3xl h-auto drop-shadow-[0_25px_45px_rgba(15,23,42,0.18)]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g id="nicaragua-departamentos">
           <path 
             id="NISJ" 
             className={obtenerEstilos("NISJ")} 
@@ -150,6 +235,7 @@ export default function NicaraguaSVG({ onSelect }: NicaraguaSVGProps) {
           />
         </g>
       </svg>
+      </div>
     </div>
   );
 }

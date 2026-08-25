@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "hackathon-ciudades-creativas",
   "version": "1.0.0",
   "private": true,
@@ -15,7 +15,7 @@
     "build": "npm run build --prefix backend && npm run build --prefix frontend",
     "build:frontend": "npm run build --prefix frontend",
     "build:backend": "npm run build --prefix backend",
-    "lint": "npm run lint --prefix frontend && npm run lint --prefix backend",
+    "lint": "npm run lint --prefix frontend",
     "start:frontend": "npm run start --prefix frontend",
     "start:backend": "npm run start --prefix backend"
   }

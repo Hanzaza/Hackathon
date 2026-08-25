@@ -5,19 +5,19 @@ import { promises as fs } from 'fs';
 
 export async function generateMetadata() {
   return {
-    title: 'Bluefields | Ciudad Creativa de Nicaragua',
-    description: 'Capital Multicultural del Caribe: Ritmos de Palo de Mayo y Sabores del Mar.',
+    title: 'San Juan de Oriente | Ciudad Creativa de Nicaragua',
+    description: 'Pueblo de Alfareros y Maestros de la Cerámica Precolombina.',
   };
 }
 
-export default async function BluefieldsPage() {
+export default async function SanJuanDeOrientePage() {
   const filePath = path.join(process.cwd(), 'public', 'data', 'city-content.json');
   const fileContents = await fs.readFile(filePath, 'utf8');
   const allCities = JSON.parse(fileContents);
-  const cityData: CityData = allCities['bluefields'];
+  const cityData: CityData = allCities['san-juan-de-oriente'];
 
-  const prevCity = {"name":"Matagalpa","slug":"matagalpa"};
-  const nextCity = {"name":"Juigalpa","slug":"juigalpa"};
+  const prevCity = {"name":"Masaya","slug":"masaya"};
+  const nextCity = {"name":"Estelí","slug":"esteli"};
 
   return (
     <CityDetailView

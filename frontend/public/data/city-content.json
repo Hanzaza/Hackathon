@@ -1,96 +1,808 @@
 {
-  "granada": {
-    "subtitle": "La Gran Sultana, joya colonial de Nicaragua.",
-    "description": "Fundada en 1524, Granada es una de las ciudades más antiguas de América. Sus calles empedradas, coloridas fachadas y majestuosos edificios coloniales la convierten en un destino ineludible. A orillas del Gran Lago de Nicaragua, la ciudad ofrece una mezcla única de historia, cultura y naturaleza.",
+  "leon": {
+    "name": "León",
+    "slug": "leon",
+    "badge": "Ciudad del Aprendizaje UNESCO",
+    "logo": "/logos/leon.png",
+    "subtitle": "Corazón intelectual, arte mural y cuna de Rubén Darío.",
+    "description": "León es un centro de cultura, arte, memoria histórica y vanguardia universitaria. Hogar de la universidad más antigua del país y de la imponente Insigne y Real Basílica Catedral (Patrimonio de la Humanidad por la UNESCO). Sus calles coloniales vibran con la poesía de Rubén Darío, los murales históricos y las tradiciones artesanales de Sutiaba.",
+    "coverImage": "/banners/circuitos/leon/principal.png",
+    "theme": {
+      "color": "amber",
+      "gradient": "from-amber-600 to-orange-700",
+      "accent": "bg-amber-600",
+      "lightBg": "bg-amber-50",
+      "border": "border-amber-200",
+      "text": "text-amber-800"
+    },
+    "specialties": [
+      "Poesía & Literatura",
+      "Muralismo & Artes Plásticas",
+      "Gastronomía Tradicional",
+      "Artesanía Colonial"
+    ],
     "attractions": [
-      { "name": "Catedral de Granada", "desc": "Imponente estructura neoclásica en el corazón de la ciudad." },
-      { "name": "Isletas de Granada", "desc": "Un archipiélago de más de 300 islas de origen volcánico." },
-      { "name": "Calle La Calzada", "desc": "El centro de la vida nocturna y gastronómica, llena de bares y restaurantes." }
+      {
+        "name": "Insigne y Real Basílica Catedral de León",
+        "desc": "Patrimonio de la Humanidad por la UNESCO. La catedral más grande de Centroamérica, construida entre 1747 y 1840, custodia los restos del poeta universal Rubén Darío.",
+        "category": "Patrimonio Histórico",
+        "image": "/banners/circuitos/leon/catedral.png"
+      },
+      {
+        "name": "Museo y Archivo Rubén Darío",
+        "desc": "Casa solariega donde creció el Príncipe de las Letras Castellanas. Conserva manuscritos originales, muebles de época y su biblioteca personal.",
+        "category": "Museo & Literatura",
+        "image": "/banners/circuitos/leon/principal.png"
+      },
+      {
+        "name": "Barrio Indígena de Sutiaba",
+        "desc": "Comunidad ancestral con profunda tradición artesanal, la histórica Iglesia de San Juan Bautista y las alfombras pasionarias de aserrín teñido en Semana Santa.",
+        "category": "Cultura Ancestral"
+      },
+      {
+        "name": "Centro de Arte Fundación Ortiz-Gurdián",
+        "desc": "Uno de los centros de arte contemporáneo y colonial más prestigiosos de América Latina, albergado en hermosas casas señoriales leonesas.",
+        "category": "Artes Visuales"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito Dariano",
+        "desc": "Recorrido por la vida y obra de Rubén Darío: Casa Museo, Parque de los Poetas, Catedral de León y Teatro Municipal.",
+        "duration": "3 horas",
+        "distance": "2.5 km"
+      },
+      {
+        "name": "Circuito Sutiabeño",
+        "desc": "Exploración de la herencia indígena de Sutiaba: talleres de carpintería, alfarería, medicina tradicional e Iglesia de San Juan Bautista.",
+        "duration": "4 horas",
+        "distance": "4.0 km"
+      },
+      {
+        "name": "Ruta de los Murales y Memoria Histórica",
+        "desc": "Caminata urbana descubriendo la crónica gráfica de la Revolución Popular Sandinista plasmada en más de 20 murales.",
+        "duration": "2.5 horas",
+        "distance": "3.0 km"
+      }
     ],
     "agenda": [
-      { "event": "Festival Internacional de Poesía", "date": "Febrero" },
-      { "event": "Celebraciones de la Purísima", "date": "Diciembre" }
+      {
+        "event": "Simposio Internacional Rubén Darío",
+        "date": "Enero",
+        "desc": "Encuentro continental de poetas y académicos."
+      },
+      {
+        "event": "Semana Santa y Alfombras Pasionarias",
+        "date": "Marzo / Abril",
+        "desc": "Elaboración de monumentales alfombras de aserrín en Sutiaba."
+      },
+      {
+        "event": "Fiesta de la Gritería Chiquita",
+        "date": "14 de Agosto",
+        "desc": "Celebración popular de devoción mariana y cantos tradicionales."
+      },
+      {
+        "event": "La Gran Gritería Mariana",
+        "date": "7 de Diciembre",
+        "desc": "La fiesta popular y religiosa más grande de León."
+      }
     ],
-    "gastronomy": "No te puedes ir sin probar el Vigorón, un plato tradicional servido en hojas de plátano."
+    "gastronomy": "Imprescindible degustar el Gallo Pinto con Carne Asada, el vigorizante Tiste en jícaro con hielo, los tradicionales Buñuelos de yuca y el Chanfaina leonés servido en hojas de plátano."
+  },
+  "granada": {
+    "name": "Granada",
+    "slug": "granada",
+    "badge": "La Gran Sultana del Gran Lago",
+    "logo": "/logos/granada.png",
+    "subtitle": "La Gran Sultana, joya arquitectónica colonial a orillas del Cocibolca.",
+    "description": "Fundada en 1524 por Francisco Hernández de Córdoba, Granada es una de las ciudades coloniales más antiguas del continente americano. Sus calles empedradas, iglesias barrocas y neoclásicas, coloridas casonas señoriales con patios andaluces y el majestuoso Lago de Nicaragua crean un entorno visual incomparable.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "rose",
+      "gradient": "from-rose-700 to-red-800",
+      "accent": "bg-rose-700",
+      "lightBg": "bg-rose-50",
+      "border": "border-rose-200",
+      "text": "text-rose-800"
+    },
+    "specialties": [
+      "Arquitectura Colonial",
+      "Poesía Internacional",
+      "Vigorón Tradicional",
+      "Pintura Primitivista"
+    ],
+    "attractions": [
+      {
+        "name": "Catedral de Granada y Plaza de la Independencia",
+        "desc": "Emblemática basílica de fachada amarilla neoclásica construida en el siglo XIX, corazón de la vida cívica y cultural granadina.",
+        "category": "Patrimonio Religioso"
+      },
+      {
+        "name": "Convento y Museo San Francisco",
+        "desc": "Fundado en 1529, alberga la colección de estatuaria precolombina de la Isla Zapatera y salas de arte primitivista de Solentiname.",
+        "category": "Museo & Historia"
+      },
+      {
+        "name": "Las Isletas del Lago Cocibolca",
+        "desc": "Archipiélago de más de 365 islas de origen volcánico con rica avifauna, fortalezas coloniales como el Fuerte San Pablo y comunidades locales de pescadores.",
+        "category": "Naturaleza & Aventura"
+      },
+      {
+        "name": "Calle La Calzada",
+        "desc": "Paseo peatonal adoquinado donde convergen restaurantes, música en vivo, tertulias culturales y arquitectura vernácula.",
+        "category": "Gastronomía & Ocio"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito La Gran Sultana",
+        "desc": "Paseo por el Parque Central, Iglesia La Merced (con subida al campanario panorámico), Calle Real Xalteva y Fortaleza La Pólvora.",
+        "duration": "3 horas",
+        "distance": "3.2 km"
+      },
+      {
+        "name": "Circuito Isletas y Fortaleza San Pablo",
+        "desc": "Ruta lacustre en lancha ecológica descubriendo la historia de los piratas y la biodiversidad del Lago Cocibolca.",
+        "duration": "2.5 horas",
+        "distance": "8.0 km (lacustre)"
+      },
+      {
+        "name": "Ruta del Vigorón y Dulces Tradicionales",
+        "desc": "Experiencia culinaria probando el vigorón con chicharrón crujiente y la cajeta granadina en los quioscos del Parque Colón.",
+        "duration": "2 horas",
+        "distance": "1.5 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Festival Internacional de Poesía de Granada",
+        "date": "Febrero",
+        "desc": "Magno evento literario con poetas de más de 60 países."
+      },
+      {
+        "event": "Semana Santa en Granada",
+        "date": "Marzo / Abril",
+        "desc": "Vía Crucis acuático en las Isletas y procesiones solemnes."
+      },
+      {
+        "event": "Fiestas de la Virgen de la Asunción",
+        "date": "Agosto",
+        "desc": "Hípicas de gala y desfile de carrozas tradicionales."
+      },
+      {
+        "event": "Festival de Mitos y Leyendas",
+        "date": "Noviembre",
+        "desc": "Desfile de la Carretanagua, el Padre sin Cabeza y la Cegua."
+      }
+    ],
+    "gastronomy": "El Vigorón granadino es el plato insignia nacional (yuca cocida suave, chicharrón con carne y ensalada de repollo con miltomate servido en hoja de chaguite), acompañado de refresco de grama con flor de coco."
   },
   "masaya": {
-    "subtitle": "La cuna del folclore nicaragüense.",
-    "description": "Conocida como la 'Ciudad de las Flores', Masaya es el corazón de la artesanía nicaragüense. Su mercado de artesanías es famoso en toda la región y su volcán activo ofrece un espectáculo natural impresionante.",
+    "name": "Masaya",
+    "slug": "masaya",
+    "badge": "Cuna del Folklore Nacional",
+    "logo": "/logos/masaya.png",
+    "subtitle": "Cuna del Folklore Nacional y Corazón de la Artesanía Popular.",
+    "description": "Masaya es la capital de la identidad nicaragüense. Su gente conserva con orgullo las danzas del Güegüense, el son de marimba de arco, el tejido de hamacas de clase mundial y la elaboración de máscaras de madera para las festividades populares más extensas y coloridas de Centroamérica.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "purple",
+      "gradient": "from-purple-700 to-pink-700",
+      "accent": "bg-purple-700",
+      "lightBg": "bg-purple-50",
+      "border": "border-purple-200",
+      "text": "text-purple-800"
+    },
+    "specialties": [
+      "Marimbas & Música Folklórica",
+      "Hamacas Tejidas a Mano",
+      "Danza Tradicional de Negras",
+      "Calzado & Marroquinería"
+    ],
     "attractions": [
-      { "name": "Mercado de Artesanías", "desc": "El lugar ideal para encontrar hamacas, cerámica y arte local." },
-      { "name": "Volcán Masaya", "desc": "Observa la lava incandescente en uno de los cráteres más accesibles del mundo." },
-      { "name": "Mirador de Catarina", "desc": "Vistas espectaculares de la Laguna de Apoyo." }
+      {
+        "name": "Mercado Nacional de Artesanías (Mercado Viejo)",
+        "desc": "Estructura neogótica tipo fortaleza donde más de 100 talleres exponen hamacas, cuero, madera tallada, textiles y dulces típicos.",
+        "category": "Artesanías & Cultura"
+      },
+      {
+        "name": "Barrio Indígena de Monimbó",
+        "desc": "Comunidad histórica con talleres familiares abiertos al público donde se fabrican marimbas de chiquirín, máscaras y juguetes tradicionales.",
+        "category": "Patrimonio Vivo"
+      },
+      {
+        "name": "Parque Nacional Volcán Masaya",
+        "desc": "Uno de los volcanes activos más fascinantes del mundo, con su cráter Santiago emanando gases y lava incandescente visible de noche.",
+        "category": "Naturaleza & Volcanes"
+      },
+      {
+        "name": "Mirador de Catarina y Laguna de Apoyo",
+        "desc": "Espectacular panorámica de la laguna volcánica de Apoyo, rodeada de viveros de flores ornamentales y restaurantes típicos.",
+        "category": "Miradores & Paisaje"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito Manos Creativas de Monimbó",
+        "desc": "Visita interactiva a los talleres de lauderos, hilanderas de hamacas y artesanos del cuero en Monimbó.",
+        "duration": "3.5 horas",
+        "distance": "3.0 km"
+      },
+      {
+        "name": "Ruta de los Agüizotes y Máscaras Tradicionales",
+        "desc": "Taller vivencial de confección de máscaras de papel maché y madera de talalate con los artesanos tradicionales.",
+        "duration": "2.5 horas",
+        "distance": "2.0 km"
+      },
+      {
+        "name": "Circuito de los Pueblos Blancos y Miradores",
+        "desc": "Ruta que conecta Masaya, Catarina y San Juan de Oriente entre flores, artesanías y gastronomía.",
+        "duration": "5 horas",
+        "distance": "12.0 km"
+      }
     ],
     "agenda": [
-      { "event": "Los Agüizotes", "date": "Octubre" },
-      { "event": "El baile de Negras", "date": "Noviembre" }
+      {
+        "event": "Fiestas Patronales de San Jerónimo",
+        "date": "Septiembre a Diciembre",
+        "desc": "La fiesta tradicional más larga del país, con marimbas ininterrumpidas."
+      },
+      {
+        "event": "Fiesta de los Agüizotes",
+        "date": "Último viernes de Octubre",
+        "desc": "Carnaval nocturno de mitos y leyendas al son de filarmónicos."
+      },
+      {
+        "event": "Baile de Negras de Masaya",
+        "date": "Noviembre",
+        "desc": "Danza tradicional de parejas masculinas con máscaras finamente labradas."
+      },
+      {
+        "event": "El Torovenado del Pueblo",
+        "date": "Octubre",
+        "desc": "Procesión carnavalesca de sátira popular y teatro callejero."
+      }
     ],
-    "gastronomy": "La 'sopa de mondongo' es un plato robusto y delicioso que no te puedes perder."
+    "gastronomy": "La Sopa de Mondongo de Masaya, Nacatamales tradicionales de cerdo, Yoltamal con cuajada fresca y la refrescante Chicha bruja o Tiste masayés."
+  },
+  "san-juan-de-oriente": {
+    "name": "San Juan de Oriente",
+    "slug": "san-juan-de-oriente",
+    "badge": "Cuna de la Cerámica Precolombina",
+    "logo": "/logos/san-juan-de-oriente.png",
+    "subtitle": "Pueblo de Alfareros y Maestros de la Cerámica Precolombina.",
+    "description": "San Juan de Oriente es un museo vivo donde más del 80% de las familias se dedican a transformar el barro en piezas de arte reconocidas mundialmente. Sus maestros alfareros combinan técnicas precolombinas de bruñido con piedra de río y pigmentos minerales con estética contemporánea.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "orange",
+      "gradient": "from-orange-700 to-amber-800",
+      "accent": "bg-orange-700",
+      "lightBg": "bg-orange-50",
+      "border": "border-orange-200",
+      "text": "text-orange-800"
+    },
+    "specialties": [
+      "Cerámica Precolombina",
+      "Alfarería al Torno",
+      "Escultura en Barro",
+      "Bruñido con Piedra de Río"
+    ],
+    "attractions": [
+      {
+        "name": "Calle de los Artesanos y Talleres Familiares",
+        "desc": "Corredor peatonal con decenas de talleres donde los visitantes pueden sentarse al torno y moldear su propia vasija de barro.",
+        "category": "Artesanía en Vivo"
+      },
+      {
+        "name": "Museo de la Cerámica y Arqueología",
+        "desc": "Espacio que resguarda vasijas trípodes, sellos ceremoniales y herramientas originales utilizadas por los ancestros chorotegas.",
+        "category": "Historia & Arqueología"
+      },
+      {
+        "name": "Mirador de San Juan a la Laguna de Apoyo",
+        "desc": "Punto escénico privilegiado con vistas directas al espejo de agua de la Laguna de Apoyo y al Volcán Mombacho.",
+        "category": "Naturaleza & Miradores"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito de los Maestros del Torno",
+        "desc": "Experiencia inmersiva en 3 talleres destacados: modelado en torno de pie, grabado con cincel y pintura con tierras de colores.",
+        "duration": "3 horas",
+        "distance": "1.8 km"
+      },
+      {
+        "name": "Ruta del Barro Ancestral y Bruñido",
+        "desc": "Demostración de horneado tradicional a leña y técnica de pulido brillante con piedras lisas de río.",
+        "duration": "2 horas",
+        "distance": "1.2 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Fiestas Patronales de San Juan Bautista",
+        "date": "24 de Junio",
+        "desc": "Danza de los Chinegros con espadas de madera y música autóctona."
+      },
+      {
+        "event": "Feria Nacional de la Cerámica",
+        "date": "Noviembre",
+        "desc": "Exposición y premiación a las mejores obras alfareras del país."
+      }
+    ],
+    "gastronomy": "Masa de Cazuela tradicional, Tamales pisques con queso seco, Rosquillas artesanales y Café colado de olla con canela."
+  },
+  "esteli": {
+    "name": "Estelí",
+    "slug": "esteli",
+    "badge": "El Diamante de las Segovias",
+    "logo": "/logos/esteli.png",
+    "subtitle": "El Diamante de las Segovias: Tabaco Premium, Murales y Música Norteña.",
+    "description": "Estelí combina el dinamismo de una metrópoli norteña con la belleza de las montañas segovianas. Conocida globalmente como una de las capitales mundiales del tabaco de alta gama, sus calles son un museo al aire libre con cientos de murales artísticos y el sonido inconfundible de las guitarras norteñas.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "emerald",
+      "gradient": "from-emerald-700 to-teal-800",
+      "accent": "bg-emerald-700",
+      "lightBg": "bg-emerald-50",
+      "border": "border-emerald-200",
+      "text": "text-emerald-800"
+    },
+    "specialties": [
+      "Cultura Tabacalera",
+      "Muralismo Urbano",
+      "Música de Polkas y Mazurcas",
+      "Ecoturismo de Reserva"
+    ],
+    "attractions": [
+      {
+        "name": "Fábricas y Cavas de Tabaco Premium",
+        "desc": "Recorridos guiados por las fábricas donde maestros torcedores elaboran a mano los puros más premiados internacionalmente.",
+        "category": "Industria Creativa"
+      },
+      {
+        "name": "Ruta de los Murales Urbanos de Estelí",
+        "desc": "Galería pública con más de 300 murales que relatan la historia, la niñez, la ecología y la identidad cultural del norte.",
+        "category": "Artes Visuales"
+      },
+      {
+        "name": "Reserva Natural Tisey - La Estanzuela",
+        "desc": "Área protegida con la cascada Salto de La Estanzuela y la galería en roca viva esculpida por Don Alberto Gutiérrez.",
+        "category": "Ecoturismo & Naturaleza"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito del Tabaco y el Humo Sagrado",
+        "desc": "Visita a plantaciones de tabaco en el valle de Estelí, curado de hojas y cata sensorial guiada.",
+        "duration": "3.5 horas",
+        "distance": "5.0 km"
+      },
+      {
+        "name": "Ruta de los Murales y el Café Segoviano",
+        "desc": "Caminata urbana por los murales del centro histórico acompañada de catas en cafeterías de especialidad.",
+        "duration": "2.5 horas",
+        "distance": "3.0 km"
+      },
+      {
+        "name": "Circuito Escultórico del Tisey",
+        "desc": "Senderismo en la montaña visitando las esculturas en piedra y miradores hacia el Océano Pacífico.",
+        "duration": "4 horas",
+        "distance": "8.0 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Festival Internacional del Tabaco Puro Sabor",
+        "date": "Enero",
+        "desc": "Encuentro global de aficionados y compradores del puro esteliano."
+      },
+      {
+        "event": "Festival de las Polkas, Mazurcas y Jamaquellos",
+        "date": "Octubre",
+        "desc": "Música de violín y acordeón en honor al maestro Don Felipe Urrutia."
+      },
+      {
+        "event": "Hípicas de Estelí",
+        "date": "Diciembre",
+        "desc": "Uno de los desfiles ecuestres más concurridos de Centroamérica."
+      }
+    ],
+    "gastronomy": "Güirilas calientes con cuajada fresca y crema de montaña, Montucas estelianas, Carne asada norteña y Café recién tostado de la cordillera Dipilto-Jalapa."
+  },
+  "matagalpa": {
+    "name": "Matagalpa",
+    "slug": "matagalpa",
+    "badge": "La Perla del Septentrión",
+    "logo": "/logos/matagalpa.png",
+    "subtitle": "Tierra del Café Gourmet, Montañas Nubosas y Mazurcas Campesinas.",
+    "description": "Rodeada de imponentes macizos montañosos y bosques de niebla, Matagalpa es el epicentro de la caficultura nicaragüense y la cuna de la música norteña de violines de talalate. Su clima fresco, su historia indígena de los flecheros y sus fincas agroturísticas enamoran a cada visitante.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "lime",
+      "gradient": "from-lime-800 to-emerald-900",
+      "accent": "bg-lime-800",
+      "lightBg": "bg-lime-50",
+      "border": "border-lime-200",
+      "text": "text-lime-900"
+    },
+    "specialties": [
+      "Café Gourmet de Especialidad",
+      "Música Campesina de Mazurcas",
+      "Chocolatería Artesanal",
+      "Agroturismo en Fincas"
+    ],
+    "attractions": [
+      {
+        "name": "Museo Nacional del Café",
+        "desc": "Exhibición completa de la historia, variedades, procesos de beneficiado y cultura del grano de oro en Nicaragua.",
+        "category": "Cultura & Café"
+      },
+      {
+        "name": "Reserva Ecológica Selva Negra",
+        "desc": "Hacienda cafetalera centenaria inmersa en bosque de niebla, con senderos ecológicos, avistamiento de quetzales y producción orgánica.",
+        "category": "Naturaleza & Ecoturismo"
+      },
+      {
+        "name": "Catedral San Pedro de Matagalpa",
+        "desc": "Monumento arquitectónico de estilo barroco y ecléctico consagrado en el siglo XIX en el centro de la ciudad.",
+        "category": "Patrimonio Religioso"
+      },
+      {
+        "name": "Mirador Cerro El Calvario",
+        "desc": "Parque mirador que ofrece una vista de 360 grados sobre el valle y las montañas de Matagalpa.",
+        "category": "Miradores Urbanos"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito de la Ruta del Café de Especialidad",
+        "desc": "Tour por beneficios húmedos y secos, catación con baristas certificados y degustación de chocolates con café.",
+        "duration": "4 horas",
+        "distance": "10.0 km"
+      },
+      {
+        "name": "Ruta de los Flecheros y la Montaña",
+        "desc": "Caminata histórica recordando la heroica batalla de San Jacinto librada por los flecheros matagalpinos.",
+        "duration": "3 horas",
+        "distance": "4.5 km"
+      },
+      {
+        "name": "Sendero de las Cascadas de San Ramón",
+        "desc": "Aventura ecológica entre cafetales de sombra y saltos de agua cristalina.",
+        "duration": "4.5 horas",
+        "distance": "6.0 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Feria Nacional del Café",
+        "date": "Noviembre",
+        "desc": "Exposición de cosechas, competencia de barismo y elección de la reina del café."
+      },
+      {
+        "event": "Fiestas de la Virgen de la Merced",
+        "date": "Septiembre",
+        "desc": "Celebraciones patronales con bailes tradicionales y procesión de la patrona."
+      },
+      {
+        "event": "Festival de Música Campesina de las Segovias",
+        "date": "Mayo",
+        "desc": "Conciertos de mazurcas, polkas y valses norteños."
+      }
+    ],
+    "gastronomy": "Gallo Pinto con Cuajada ahumada, Indio Viejo norteño con masa de maíz dulce, Guiso de papas de montaña y Chocolate caliente artesanal 100% cacao."
   },
   "bluefields": {
-      "subtitle": "Ritmo y sabor del Caribe.",
-      "description": "Capital de la Región Autónoma de la Costa Caribe Sur, Bluefields es un crisol de culturas. La música, la danza y la gastronomía afrocaribeña definen la identidad de esta vibrante ciudad portuaria.",
-      "attractions": [
-        { "name": "Bahía de Bluefields", "desc": "Explora los cayos e islas cercanas en un tour en panga." },
-        { "name": "Palo de Mayo", "desc": "Una celebración de la vida y la fertilidad con música y danza." },
-        { "name": "Mercado Municipal", "desc": "Descubre productos locales y la pesca del día." }
-      ],
-      "agenda": [
-        { "event": "Fiesta del Palo de Mayo", "date": "Mayo" },
-        { "event": "Aniversario de la ciudad", "date": "Octubre" }
-      ],
-      "gastronomy": "El 'Rondón', un guiso de pescado con coco, es el plato emblemático de la región."
+    "name": "Bluefields",
+    "slug": "bluefields",
+    "badge": "Capital Multiétnica del Caribe Sur",
+    "logo": "/logos/bluefields.png",
+    "subtitle": "Capital Multicultural del Caribe: Ritmos de Palo de Mayo y Sabores del Mar.",
+    "description": "Ubicada en la Bahía de Bluefields, esta ciudad portuaria es el mosaico cultural más diverso de Nicaragua, donde conviven armoniosamente pueblos creoles, miskitos, ramas, garífunas, mayangnas y mestizos. Su energía caribeña se expresa en el Maypole, su música reggae y su gastronomía a base de coco y mariscos frescos.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "cyan",
+      "gradient": "from-cyan-700 to-blue-800",
+      "accent": "bg-cyan-700",
+      "lightBg": "bg-cyan-50",
+      "border": "border-cyan-200",
+      "text": "text-cyan-900"
     },
-    "esteli": {
-      "subtitle": "Murales, tabaco y hospitalidad norteña.",
-      "description": "Estelí, el 'Diamante de las Segovias', es famosa por su industria del tabaco, sus murales que cuentan la historia del país y su ambiente fresco de montaña. Un centro de comercio y cultura en el norte de Nicaragua.",
-      "attractions": [
-        { "name": "Fábricas de puros", "desc": "Conoce el proceso de elaboración de algunos de los mejores puros del mundo." },
-        { "name": "Salto de la Estanzuela", "desc": "Una hermosa cascada rodeada de naturaleza." },
-        { "name": "Murales de la ciudad", "desc": "Recorre las calles para descubrir el arte urbano que adorna la ciudad." }
-      ],
-      "agenda": [
-        { "event": "Festival de Poesía", "date": "Febrero" },
-        { "event": "Hípicas de Estelí", "date": "Diciembre" }
-      ],
-      "gastronomy": "La 'güirila', una tortilla de maíz dulce, es una delicia local."
+    "specialties": [
+      "Palo de Mayo (Maypole)",
+      "Gastronomía Caribeña (Rondón)",
+      "Artesanías en Palo Rosa",
+      "Música Soca & Calypso"
+    ],
+    "attractions": [
+      {
+        "name": "Malecón de Bluefields y Bahía Caribeña",
+        "desc": "Paseo costero con vistas a la laguna y embarcaciones que navegan hacia los cayos e islas caribeñas.",
+        "category": "Costanera & Paisaje"
+      },
+      {
+        "name": "Barrios Históricos Cotton Tree y Beholden",
+        "desc": "Calles con arquitectura tradicional caribeña en madera, casas sobre pilotes pintadas de colores vivos y árboles de coco.",
+        "category": "Patrimonio Arquitectónico"
+      },
+      {
+        "name": "Centro de Investigación y Museo Cultural CIDCA",
+        "desc": "Espacio que custodia la memoria lingüística, historia oral y objetos tradicionales de las etnias del Caribe nicaragüense.",
+        "category": "Museo & Etnografía"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito de la Bahía y Casas Creole",
+        "desc": "Paseo guiado aprendiendo sobre la historia de los piratas, las misiones moravas y la autonomía de la Costa Caribe.",
+        "duration": "3 horas",
+        "distance": "3.5 km"
+      },
+      {
+        "name": "Ruta de la Danza y el Palo de Mayo",
+        "desc": "Taller vivencial con agrupaciones de danza tradicional aprendiendo los ritmos del Maypole y la percusión caribeña.",
+        "duration": "2 horas",
+        "distance": "1.5 km"
+      },
+      {
+        "name": "Circuito Gastronómico Sabores de Coco",
+        "desc": "Recorrido culinario degustando rondón de pescado, pan de coco recién horneado, patties picantes y ginger beer.",
+        "duration": "3 horas",
+        "distance": "2.0 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Gran Fiesta del Palo de Mayo (Maypole Festival)",
+        "date": "Mes de Mayo",
+        "desc": "La fiesta más alegre del Caribe nicaragüense con comparsas y el Baile de las Cintas."
+      },
+      {
+        "event": "Día Internacional de los Pueblos Indígenas",
+        "date": "Agosto",
+        "desc": "Muestra de danzas, lenguas y gastronomía multiétnica."
+      },
+      {
+        "event": "Celebración del Aniversario de la Ciudad",
+        "date": "Octubre",
+        "desc": "Carnaval caribeño, desfile de bandas y conciertos al aire libre."
+      }
+    ],
+    "gastronomy": "El Rondón tradicional (pescado o res cocinado en leche de coco con yuca, plátano, malanga y fruta de pan), Pan de coco, Pati de carne picante, Plantain tart y Chicha de jengibre (Ginger Beer)."
+  },
+  "juigalpa": {
+    "name": "Juigalpa",
+    "slug": "juigalpa",
+    "badge": "Tierra de Caracoles y Sabanas Chontaleñas",
+    "logo": "/logos/juigalpa.png",
+    "subtitle": "Tierra de Gigantes Amerindios, Cultura Taurina y Sabanas Chontaleñas.",
+    "description": "Capital departamental de Chontales, Juigalpa se erige sobre un valle custodiado por la mística Cordillera de Amerrisque. Destaca por poseer una de las colecciones de estatuaria lítica precolombina más importantes de América Central, su apasionada cultura ganadera e hípica, y su exquisita tradición quesera.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "yellow",
+      "gradient": "from-yellow-700 to-amber-800",
+      "accent": "bg-yellow-700",
+      "lightBg": "bg-yellow-50",
+      "border": "border-yellow-200",
+      "text": "text-yellow-900"
     },
-    "juigalpa": {
-      "subtitle": "La puerta de entrada a Chontales.",
-      "description": "Conocida como 'la capital ganadera de Nicaragua', Juigalpa es una ciudad de gente trabajadora y tradiciones arraigadas. Rodeada de colinas y paisajes rurales, es un punto de partida para explorar la arqueología y naturaleza de la región.",
-      "attractions": [
-        { "name": "Museo Arqueológico Gregorio Aguilar Barea", "desc": "Una impresionante colección de estatuaria precolombina." },
-        { "name": "Catedral de Juigalpa", "desc": "Un moderno y singular templo católico." },
-        { "name": "Fincas ganaderas", "desc": "Experimenta la vida del campo chontaleño." }
-      ],
-      "agenda": [
-        { "event": "Fiestas patronales en honor a la Virgen de la Asunción", "date": "Agosto" }
-      ],
-      "gastronomy": "Prueba el 'queso de crema' y otros productos lácteos frescos de la región."
+    "specialties": [
+      "Arqueología Lítica Amerindia",
+      "Tradición Taurina & Hípica",
+      "Industria Láctea y Quesera",
+      "Paisajismo Cordillera Amerrisque"
+    ],
+    "attractions": [
+      {
+        "name": "Museo Arqueológico Gregorio Aguilar Barea",
+        "desc": "Custodia la mayor colección de monolitos antropomorfos y zoomorfos de la cultura Amerrisque, con piezas de hasta 4 metros de altura.",
+        "category": "Arqueología Amerindia"
+      },
+      {
+        "name": "Parque Mirador Palo Solo",
+        "desc": "Balcón natural sobre la ciudad con vistas ininterrumpidas a la serranía de Amerrisque y al Lago de Nicaragua.",
+        "category": "Mirador Panorámico"
+      },
+      {
+        "name": "Zoológico Nacional Thomas Belt",
+        "desc": "Uno de los centros de conservación y rescate de fauna silvestre más reconocidos de Nicaragua, hogar del famoso puma albino.",
+        "category": "Fauna & Biodiversidad"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito Arqueológico Amerrisque",
+        "desc": "Visita al Museo Arqueológico y recorrido por petroglifos precolombinos en las faldas de la cordillera.",
+        "duration": "3.5 horas",
+        "distance": "4.0 km"
+      },
+      {
+        "name": "Ruta del Queso y las Fincas Ganaderas",
+        "desc": "Experiencia en plantas queseras artesanales aprendiendo la elaboración del queso moralique, quesillo y cuajada chontaleña.",
+        "duration": "3 horas",
+        "distance": "6.0 km"
+      },
+      {
+        "name": "Sendero Panorámico Palo Solo y la Cruz",
+        "desc": "Caminata urbana hacia los puntos más altos de la ciudad con tertulia poética y gastronómica.",
+        "duration": "2 horas",
+        "distance": "2.5 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Fiestas Patronales de la Virgen de la Asunción",
+        "date": "10 al 18 de Agosto",
+        "desc": "La fiesta brava más famosa de Nicaragua con corridas de toros y desfile hípico nacional."
+      },
+      {
+        "event": "Feria Nacional Agropecuaria de Chontales",
+        "date": "Marzo",
+        "desc": "Exposición de ganado de alta genética, subastas y juzgamiento lechero."
+      }
+    ],
+    "gastronomy": "Queso de crema chontaleño, Cuajada fresca de terrón, Sopa de frijoles con chicharrón y huevo criollo, Rosquillas chontaleñas y Pozol con leche."
+  },
+  "nagarote": {
+    "name": "Nagarote",
+    "slug": "nagarote",
+    "badge": "Municipio Azul y Limpio",
+    "logo": "/logos/nagarote.png",
+    "subtitle": "Municipio Azul: Cuna del Quesillo Tradicional y Playas del Pacífico.",
+    "description": "Reconocido nacionalmente por su limpieza impecable y su urbanismo verde, Nagarote es el hogar legendario del quesillo nicaragüense con crema fresca y cebollitas encurtidas. Su territorio ofrece una transición perfecta entre plazas coloniales arboladas y las mejores olas de surf de Miramar y Puerto Sandino.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "sky",
+      "gradient": "from-sky-700 to-indigo-800",
+      "accent": "bg-sky-700",
+      "lightBg": "bg-sky-50",
+      "border": "border-sky-200",
+      "text": "text-sky-900"
     },
-    "managua": {
-      "subtitle": "La capital vibrante y en constante evolución.",
-      "description": "Managua, a orillas del lago Xolotlán, es una ciudad de contrastes. Con una rica historia marcada por terremotos y revoluciones, hoy es un centro dinámico de comercio, gobierno y vida nocturna.",
-      "attractions": [
-        { "name": "Puerto Salvador Allende", "desc": "Un moderno malecón con restaurantes, bares y actividades recreativas." },
-        { "name": "Loma de Tiscapa", "desc": "Ofrece vistas panorámicas de la ciudad y un recorrido por la historia política del país." },
-        { "name": "Teatro Nacional Rubén Darío", "desc": "El principal centro para las artes escénicas en Nicaragua." }
-      ],
-      "agenda": [
-        { "event": "Fiestas de Santo Domingo de Guzmán", "date": "Agosto" }
-      ],
-      "gastronomy": "Desde la comida callejera hasta los restaurantes gourmet, Managua ofrece la más amplia variedad gastronómica del país."
+    "specialties": [
+      "Quesillo en Trenza con Tiste",
+      "Playas de Surf de Clase Mundial",
+      "Paseos Peatonales y Parques",
+      "Artesanía en Conchas Marinas"
+    ],
+    "attractions": [
+      {
+        "name": "Paseo de la Paz y Casco Urbano Limpio",
+        "desc": "Parque central arbolado con fuentes iluminadas, quioscos tradicionales y el emblemático árbol centenario de Genízaro.",
+        "category": "Urbanismo & Patrimonio"
+      },
+      {
+        "name": "Quesilleras Tradicionales de la Pista",
+        "desc": "Famosos puestos gastronómicos tradicionales donde se elabora en vivo el quesillo en bolsa o en plato.",
+        "category": "Ruta Gastronómica"
+      },
+      {
+        "name": "Playas de Miramar y Puerto Sandino",
+        "desc": "Costas del Pacífico con reconocidas rompientes de olas que atraen a surfistas profesionales de todo el mundo.",
+        "category": "Sol, Playa & Surf"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito Gastronómico del Quesillo Tradicional",
+        "desc": "Demostración de cuajado de leche, estiramiento del quesillo en agua caliente y maridaje con tiste helado.",
+        "duration": "2 horas",
+        "distance": "1.5 km"
+      },
+      {
+        "name": "Ruta de las Olas y el Surf del Pacífico",
+        "desc": "Tour a las playas de Miramar con clases de surf, paseos en lancha y degustación de mariscos frescos.",
+        "duration": "4 horas",
+        "distance": "15.0 km"
+      },
+      {
+        "name": "Paseo Histórico del Genízaro y la Estación",
+        "desc": "Caminata por la antigua estación del ferrocarril y el árbol bicentenario de Genízaro.",
+        "duration": "2 horas",
+        "distance": "2.0 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Festival Nacional del Quesillo",
+        "date": "Noviembre",
+        "desc": "Elaboración del quesillo más largo del mundo con música y danzas folklóricas."
+      },
+      {
+        "event": "Fiestas Patronales de Santiago Apóstol",
+        "date": "Julio",
+        "desc": "Desfile hípico, procesión del santo patrono y bailes populares."
+      },
+      {
+        "event": "Torneo Abierto de Surf Miramar",
+        "date": "Semana Santa",
+        "desc": "Competencias acuáticas en las olas del Pacífico."
+      }
+    ],
+    "gastronomy": "Quesillo en bolsa o al plato con abundante crema agria pasteurizada, cebollita en vinagre y sal picante, acompañado de un gran vaso de Tiste con leche o Chicha helada."
+  },
+  "managua": {
+    "name": "Managua",
+    "slug": "managua",
+    "badge": "Capital Creativa e Innovación",
+    "logo": "/logos/managua.png",
+    "subtitle": "Capital Creativa: Paisajismo Lacustre, Museos y Vanguardia Cultural.",
+    "description": "Managua, a orillas del Lago Xolotlán, es el gran epicentro político, universitario y artístico del país. Combina la memoria histórica de su centro antiguo, la majestuosidad del Teatro Nacional Rubén Darío y la modernidad de sus paseos costeros con una efervescente cartelera de conciertos y gastronomía cosmopolita.",
+    "coverImage": "/banners/circuitos/circuitos-banner.jpg",
+    "theme": {
+      "color": "indigo",
+      "gradient": "from-indigo-700 to-purple-900",
+      "accent": "bg-indigo-700",
+      "lightBg": "bg-indigo-50",
+      "border": "border-indigo-200",
+      "text": "text-indigo-900"
     },
-    "san-juan-de-oriente": {
-      "subtitle": "El pueblo de las manos mágicas.",
-      "description": "Este pequeño pueblo es famoso por su cerámica de alta calidad, reconocida a nivel internacional. Cada taller es una galería de arte donde las familias de artesanos transforman el barro en obras maestras.",
-      "attractions": [
-        { "name": "Talleres de cerámica", "desc": "Observa a los artesanos en acción y compra piezas únicas." },
-        { "name": "Mirador de San Juan", "desc": "Disfruta de una vista impresionante de la Laguna de Apoyo." }
-      ],
-      "agenda": [
-        { "event": "Fiestas patronales de San Juan Bautista", "date": "Junio" }
-      ],
-      "gastronomy": "La 'masa de cazuela' es un platillo tradicional que se disfruta en las celebraciones locales."
-    }
+    "specialties": [
+      "Teatro Nacional & Artes Escénicas",
+      "Paseos Lacustres del Xolotlán",
+      "Museos y Galerías de Arte",
+      "Festivales y Gastronomía Urbana"
+    ],
+    "attractions": [
+      {
+        "name": "Plaza de la Revolución y Antigua Catedral de Managua",
+        "desc": "Conjunto monumental que incluye la fachada neoclásica de la Catedral de Santiago, el Palacio Nacional de la Cultura y el Mausoleo de los Héroes.",
+        "category": "Patrimonio Histórico"
+      },
+      {
+        "name": "Teatro Nacional Rubén Darío",
+        "desc": "Considerado por expertos acústicos como una de las mejores salas de conciertos del continente, sede de orquestas sinfónicas y ballets nacionales.",
+        "category": "Artes Escénicas"
+      },
+      {
+        "name": "Paseo Xolotlán y Puerto Salvador Allende",
+        "desc": "Extenso parque costero frente al lago con réplicas a escala de la vieja Managua, casas museo de Darío y Sandino, y restaurantes.",
+        "category": "Ocio & Historia"
+      },
+      {
+        "name": "Reserva Natural Laguna de Tiscapa",
+        "desc": "Laguna de origen volcánico en el centro de la ciudad coronada por la silueta monumental del General Sandino y miradores urbanos.",
+        "category": "Naturaleza & Mirador"
+      }
+    ],
+    "circuits": [
+      {
+        "name": "Circuito Patrimonial Plaza de la Revolución",
+        "desc": "Recorrido por el Palacio de la Cultura, Museo de la Música, Sala Rodrigo Peñalba y Jardines de la Paz.",
+        "duration": "3 horas",
+        "distance": "2.0 km"
+      },
+      {
+        "name": "Ruta del Paseo Xolotlán y el Lago",
+        "desc": "Paseo peatonal admirando la arquitectura histórica de la Managua previa al terremoto de 1972.",
+        "duration": "2.5 horas",
+        "distance": "3.5 km"
+      },
+      {
+        "name": "Circuito Histórico Loma de Tiscapa",
+        "desc": "Subida al mirador histórico, canopy sobre el cráter volcánico y exposición de fotografía de memoria nacional.",
+        "duration": "2 horas",
+        "distance": "2.0 km"
+      }
+    ],
+    "agenda": [
+      {
+        "event": "Fiestas Tradicionales de Santo Domingo de Guzmán",
+        "date": "1 y 10 de Agosto",
+        "desc": "La fiesta patronal más multitudinaria de Nicaragua con los tradicionales Diablitos, Caciques y Vacas Culonas."
+      },
+      {
+        "event": "Temporada Lírica del Teatro Nacional",
+        "date": "Septiembre a Diciembre",
+        "desc": "Galas de ópera, conciertos sinfónicos y festivales de danza folklórica y ballet."
+      },
+      {
+        "event": "Noche de Gala Dariana",
+        "date": "Febrero",
+        "desc": "Recitales poéticos y premiaciones culturales en el Palacio de la Cultura."
+      }
+    ],
+    "gastronomy": "El emblemático Caballo Bayo servido en cazuelas de barro con frijoles molidos, chicharrón, carne desmenuzada y tortillas tostadas, Fritangas tradicionales de fin de semana y Güirilas con queso de hoja."
+  }
 }

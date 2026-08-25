@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   IoHome, 
@@ -52,13 +53,15 @@ export default function Navigation() {
         <div className="lg:hidden fixed top-3 right-3.5 z-[9990] pointer-events-auto animate-fadeIn">
           <Link
             href="/"
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] border-2 border-slate-100 flex items-center justify-center p-1.5 hover:scale-105 active:scale-95 transition-all overflow-hidden"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] border-2 border-slate-100 flex items-center justify-center p-1.5 hover:scale-105 active:scale-95 transition-all overflow-hidden relative"
             aria-label="Ir a Inicio"
           >
-            <img
+            <Image
               src="/logos/Logo.png"
               alt="Logo"
-              className="w-full h-full object-contain scale-110"
+              fill
+              sizes="64px"
+              className="object-contain p-1 scale-110"
             />
           </Link>
         </div>
@@ -72,11 +75,15 @@ export default function Navigation() {
             {/* LOGO E ISOTIPO INSTITUCIONAL */}
             <div className="flex-shrink-0 flex items-center gap-3">
               <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-                <img
-                  src="/logos/Logo.png"
-                  alt="The Stateless Logo"
-                  className="h-10 w-auto object-contain shrink-0 drop-shadow-sm"
-                />
+                <div className="relative h-10 w-10 shrink-0">
+                  <Image
+                    src="/logos/Logo.png"
+                    alt="The Stateless Logo"
+                    fill
+                    sizes="40px"
+                    className="object-contain drop-shadow-sm"
+                  />
+                </div>
                 <div className="flex flex-col leading-none border-l border-slate-200 pl-3">
                   <span className="text-[9px] font-extrabold text-slate-500 uppercase tracking-widest mb-0.5">
                     Red Nacional de

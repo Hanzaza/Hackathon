@@ -4,24 +4,16 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowLeft,
   ExternalLink,
-  Sparkles,
   Compass,
-  MapPin,
   Layers,
   Navigation,
-  Info,
   ChevronUp,
   ChevronDown,
-  CheckCircle2,
-  Construction,
   Route,
-  Church,
-  BookOpen,
-  Landmark,
-  Share2,
 } from 'lucide-react';
 
 interface PointOfInterest {
@@ -284,44 +276,27 @@ export default function MapaInmersivo({
 
   const initialCenter = useMemo(() => {
     if (selectedPoint) return [selectedPoint.lng, selectedPoint.lat] as [number, number];
+    if (lng && lat) return [lng, lat] as [number, number];
     return [cityData.lng, cityData.lat] as [number, number];
-  }, [selectedPoint, cityData]);
+  }, [selectedPoint, cityData, lng, lat]);
 
-  // Inicializar MapLibre
-  useEffect(() => {
-    if (map.current || !mapContainer.current) return;
+  // Enfocar en un punto específico con cámara suave
+  const focusOnPoint = (index: number) => {
+    const point = rawPoints[index];
+    if (!point || !map.current) return;
 
-    map.current = new maplibregl.Map({
-      container: mapContainer.current,
-      style: MAP_STYLES[currentStyleIdx].url,
-      center: initialCenter,
-      zoom: zoom,
+    setSelectedPointIndex(index);
+
+    map.current.flyTo({
+      center: [point.lng, point.lat],
+      zoom: 17.2,
       pitch: is3D ? 60 : 0,
-      bearing: -18,
-      attributionControl: false,
+      bearing: -20 + index * 10,
+      speed: 1.1,
+      curve: 1.3,
+      essential: true,
     });
-
-    // Control de brújula compacto
-    map.current.addControl(
-      new maplibregl.NavigationControl({
-        showCompass: true,
-        showZoom: false,
-        visualizePitch: true,
-      }),
-      'top-right'
-    );
-
-    map.current.on('load', () => {
-      renderMarkers();
-    });
-
-    return () => {
-      markersRef.current.forEach(m => m.remove());
-      markersRef.current = [];
-      map.current?.remove();
-      map.current = null;
-    };
-  }, []);
+  };
 
   // Función para renderizar los marcadores Apple Maps
   const renderMarkers = () => {
@@ -371,30 +346,50 @@ export default function MapaInmersivo({
     });
   };
 
+  // Inicializar MapLibre
+  useEffect(() => {
+    if (map.current || !mapContainer.current) return;
+
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: MAP_STYLES[currentStyleIdx].url,
+      center: initialCenter,
+      zoom: zoom,
+      pitch: is3D ? 60 : 0,
+      bearing: -18,
+      attributionControl: false,
+    });
+
+    // Control de brújula compacto
+    map.current.addControl(
+      new maplibregl.NavigationControl({
+        showCompass: true,
+        showZoom: false,
+        visualizePitch: true,
+      }),
+      'top-right'
+    );
+
+    map.current.on('load', () => {
+      renderMarkers();
+    });
+
+    return () => {
+      markersRef.current.forEach(m => m.remove());
+      markersRef.current = [];
+      map.current?.remove();
+      map.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Re-render markers cuando cambia el punto seleccionado o la lista
   useEffect(() => {
     if (map.current?.isStyleLoaded()) {
       renderMarkers();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPoint, rawPoints]);
-
-  // Enfocar en un punto específico con cámara suave
-  const focusOnPoint = (index: number) => {
-    const point = rawPoints[index];
-    if (!point || !map.current) return;
-
-    setSelectedPointIndex(index);
-
-    map.current.flyTo({
-      center: [point.lng, point.lat],
-      zoom: 17.2,
-      pitch: is3D ? 60 : 0,
-      bearing: -20 + index * 10,
-      speed: 1.1,
-      curve: 1.3,
-      essential: true,
-    });
-  };
 
   // Alternar vista 3D / 2D
   const toggle3D = () => {
@@ -599,12 +594,14 @@ export default function MapaInmersivo({
               {/* Thumbnail del sitio */}
               {selectedPoint.image && (
                 <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-slate-800 shrink-0 shadow-md border border-white/10">
-                  <img
+                  <Image
                     src={selectedPoint.image}
                     alt={selectedPoint.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="(max-width: 640px) 56px, 80px"
+                    className="object-cover"
                   />
-                  <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-black/70 text-[9px] font-black text-white">
+                  <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-black/70 text-[9px] font-black text-white z-10">
                     {selectedPointIndex + 1}/{rawPoints.length}
                   </span>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export interface CityItem {
   name: string;
@@ -53,10 +54,12 @@ export default function CityMobileStacking() {
                 className="group block relative mx-auto w-full max-w-sm aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-white border border-slate-200/80 shadow-[0_-8px_24px_rgba(0,0,0,0.12),0_16px_32px_rgba(0,0,0,0.18)] active:scale-[0.98] transition-transform duration-200"
               >
                 {/* Imagen completa de la ciudad */}
-                <img
+                <Image
                   src={city.imageSrc}
                   alt={`Ciudad creativa ${city.name}`}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 640px) 100vw, 384px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
                 {/* Sutil indicador con nombre de la ciudad en la parte inferior */}

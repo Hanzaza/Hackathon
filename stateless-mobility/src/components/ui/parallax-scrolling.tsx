@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -100,10 +101,13 @@ export function ParallaxComponent({
           className="absolute inset-[-10%] w-[120%] h-[120%] pointer-events-none will-change-transform z-0"
         >
           {layer1 ? (
-            <img
+            <Image
               src={layer1}
               alt="Cielo Fondo"
-              className="w-full h-full object-cover object-top"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-top"
             />
           ) : (
             <div className="w-full h-full bg-gradient-to-b from-sky-600 via-sky-400 to-indigo-900" />
@@ -128,10 +132,13 @@ export function ParallaxComponent({
             ref={volcanoRef}
             className="absolute inset-x-0 bottom-0 w-full h-[105vh] sm:h-[110vh] md:h-[115vh] flex items-end justify-center pointer-events-none will-change-transform z-20"
           >
-            <img
+            <Image
               src={layer2}
               alt="Volcán Capa Media"
-              className="w-full h-full object-cover object-[center_bottom] max-w-none md:max-w-full"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-[center_bottom]"
             />
           </div>
         )}

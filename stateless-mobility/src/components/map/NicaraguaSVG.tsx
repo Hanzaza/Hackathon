@@ -295,7 +295,7 @@ export default function NicaraguaSVG({
                   />
 
                   {/* Pin y Etiqueta en SVG */}
-                  {dept.isCreative && (
+                  {dept.isCreative && showMarkers && (
                     <g className="pointer-events-none">
                       {/* Círculo indicador */}
                       <circle

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import Image from 'next/image';
 // 1. IMPORTAMOS EL MAPA (Ajusta la ruta según la estructura de tus carpetas)
 import MapaContenedor from '@/components/map/MapaContenedor';
 import CityMobileStacking from '@/components/ui/city-mobile-stacking';
@@ -89,7 +89,7 @@ function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
     <div className="h-24 w-full relative mb-6 flex items-center justify-center transition-transform group-hover:scale-[1.02]">
       {logoSrc ? (
         <div className="relative w-full h-full">
-          <img src={logoSrc} alt={`Logo ${name}`} className="w-full h-full object-contain" />
+          <Image src={logoSrc} alt={`Logo ${name}`} fill sizes="(max-width: 768px) 100vw, 200px" className="object-contain" />
         </div>
       ) : (
         <div className="w-full h-full bg-slate-100 rounded-xl flex items-center justify-center">

@@ -1,0 +1,111 @@
+﻿Iniciando auditor├¡a del proyecto...
+
+
+========================================
+≡ƒÜÇ Ejecutando: M├⌐tricas de C├│digo y Estructura
+========================================
+
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé Lenguaje/Ext Γöé  Archivos  Γöé L├¡neas Tot.  Γöé    C├│digo    Γöé En Blanco    Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé .json        Γöé         11 Γöé        31102 Γöé        31095 Γöé            7 Γöé
+Γöé .pdf         Γöé          1 Γöé        23792 Γöé        23732 Γöé           60 Γöé
+Γöé .tsx         Γöé         39 Γöé         4097 Γöé         3698 Γöé          399 Γöé
+Γöé .md          Γöé         44 Γöé         2874 Γöé         2106 Γöé          768 Γöé
+Γöé .sql         Γöé          2 Γöé          506 Γöé          435 Γöé           71 Γöé
+Γöé .ts          Γöé         12 Γöé          320 Γöé          264 Γöé           56 Γöé
+Γöé .css         Γöé          1 Γöé          156 Γöé          135 Γöé           21 Γöé
+Γöé .js          Γöé          1 Γöé          122 Γöé          101 Γöé           21 Γöé
+Γöé .gitignore   Γöé          1 Γöé           42 Γöé           32 Γöé           10 Γöé
+Γöé .mjs         Γöé          2 Γöé           28 Γöé           23 Γöé            5 Γöé
+Γöé .local       Γöé          1 Γöé           11 Γöé           10 Γöé            1 Γöé
+Γöé .env         Γöé          1 Γöé           10 Γöé            9 Γöé            1 Γöé
+Γöé .txt         Γöé          1 Γöé            8 Γöé            4 Γöé            4 Γöé
+Γöé .toml        Γöé          1 Γöé            4 Γöé            3 Γöé            1 Γöé
+Γöé .ini         Γöé          1 Γöé            3 Γöé            2 Γöé            1 Γöé
+Γöé .example     Γöé          1 Γöé            3 Γöé            2 Γöé            1 Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé TOTAL        Γöé        120 Γöé        63078 Γöé        61651 Γöé         1427 Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+
+========================================
+≡ƒÜÇ Ejecutando: An├ílisis de Clean Code (ESLint)
+========================================
+
+
+
+========================================
+≡ƒÜÇ Ejecutando: Detecci├│n de Clones / C├│digo Duplicado
+========================================
+
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [8:43 - 23:6] (16 lines, 67 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [8:46 - 23:6]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [64:28 - 74:8] (11 lines, 68 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [51:31 - 61:8]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [80:42 - 104:17] (25 lines, 108 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [63:11 - 87:17]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [130:13 - 156:33] (27 lines, 139 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [107:13 - 133:33]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [160:80 - 192:60] (33 lines, 132 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [137:42 - 169:60]
+[1mClone found (tsx)[22m
+ - [1m[32mcomponents\map\LeonDepartamentoSVG.tsx[39m[22m [211:95 - 225:21] (15 lines, 71 tokens)
+   components\map\ManaguaDepartamentoSVG.tsx [176:98 - 190:21]
+[90mΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ[39m
+[90mΓöé[39m[31m Format     [39m[90mΓöé[39m[31m Files analyzed [39m[90mΓöé[39m[31m Total lines [39m[90mΓöé[39m[31m Total tokens [39m[90mΓöé[39m[31m Clones found [39m[90mΓöé[39m[31m Duplicated lines [39m[90mΓöé[39m[31m Duplicated tokens [39m[90mΓöé[39m
+[90mΓö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ[39m
+[90mΓöé[39m tsx        [90mΓöé[39m 14             [90mΓöé[39m 2558        [90mΓöé[39m 12166        [90mΓöé[39m 6            [90mΓöé[39m 121 (4.73%)      [90mΓöé[39m 585 (4.81%)       [90mΓöé[39m
+[90mΓö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ[39m
+[90mΓöé[39m typescript [90mΓöé[39m 4              [90mΓöé[39m 107         [90mΓöé[39m 520          [90mΓöé[39m 0            [90mΓöé[39m 0 (0.00%)        [90mΓöé[39m 0 (0.00%)         [90mΓöé[39m
+[90mΓö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ[39m
+[90mΓöé[39m [1mTotal:[22m     [90mΓöé[39m 18             [90mΓöé[39m 2665        [90mΓöé[39m 12686        [90mΓöé[39m 6            [90mΓöé[39m 121 (4.54%)      [90mΓöé[39m 585 (4.61%)       [90mΓöé[39m
+[90mΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ[39m
+[90mFound 6 clones.[39m
+[90mtime: 20.530ms[39m
+
+[90m≡ƒÆí Auto-refactor with AI: [1m[39mnpx skills add https://github.com/kucherenko/jscpd --skill dry-refactoring[90m[22m
+[90m≡ƒÄ⌐ New: Gangsta Agents ΓÇö discipline your AI coding ΓåÆ gangsta.page[39m
+[90m≡ƒÆû Support jscpd project ΓåÆ https://opencollective.com/jscpd[39m
+
+
+========================================
+≡ƒÜÇ Ejecutando: Seguridad de Dependencias
+========================================
+
+ΓÜá∩╕Å Se encontraron detalles en Seguridad de Dependencias:
+# npm audit report
+
+serialize-javascript  <=7.0.4
+Severity: high
+Serialize JavaScript is Vulnerable to RCE via RegExp.flags and Date.prototype.toISOString() - https://github.com/advisories/GHSA-5c6j-r48x-rmvq
+Serialize JavaScript has CPU Exhaustion Denial of Service via crafted array-like objects - https://github.com/advisories/GHSA-qj8w-gfj5-8c6v
+fix available via `npm audit fix`
+node_modules/serialize-javascript
+  @rollup/plugin-terser  0.2.0 - 0.4.4
+  Depends on vulnerable versions of serialize-javascript
+  node_modules/@rollup/plugin-terser
+    workbox-build  7.1.0 - 7.4.0
+    Depends on vulnerable versions of @rollup/plugin-terser
+    node_modules/workbox-build
+    node_modules/workbox-webpack-plugin/node_modules/workbox-build
+      @ducanh2912/next-pwa  >=10.2.7
+      Depends on vulnerable versions of workbox-build
+      Depends on vulnerable versions of workbox-webpack-plugin
+      node_modules/@ducanh2912/next-pwa
+      workbox-webpack-plugin  7.1.0 - 7.4.0
+      Depends on vulnerable versions of workbox-build
+      node_modules/workbox-webpack-plugin
+
+5 vulnerabilities (4 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+
+Γ£à Evaluaci├│n completada. Revisa los puntos cr├¡ticos antes del hackathon.

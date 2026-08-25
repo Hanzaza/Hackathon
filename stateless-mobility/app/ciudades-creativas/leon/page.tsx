@@ -68,11 +68,15 @@ export default function LeonCreativeCityPage() {
 
       {/* Footer Banner para León */}
       <section className="mt-16 max-w-full overflow-hidden">
-        <img
-          src="/banners/circuitos/leon/footer_banner.png"
-          alt="Circuito de León Banner"
-          className="w-full h-28 object-cover md:h-auto"
-        />
+        <div className="relative w-full h-28 md:h-48">
+          <Image
+            src="/banners/circuitos/leon/footer_banner.png"
+            alt="Circuito de León Banner"
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </div>
       </section>
     </main>
   );

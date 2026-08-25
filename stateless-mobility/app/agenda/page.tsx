@@ -1,10 +1,8 @@
 "use client";
 
 import { useMemo, useState } from 'react';
-import Image from 'next/image';
-import { Filter, Sparkles, CalendarDays, Search, ArrowRight } from 'lucide-react';
+import { Sparkles, CalendarDays, Search } from 'lucide-react';
 import { EventCard, Evento } from './components/EventCard';
-import { FilterChip } from './components/ui/FilterChip';
 
 const EVENTOS_AGENDA: Evento[] = [
   {

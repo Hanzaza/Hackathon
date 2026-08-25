@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import Navigation from "../src/components/ui/Navigation";
+import SplashScreen from "../src/components/ui/SplashScreen";
+import AuthModal from "../src/components/auth/AuthModal";
+import { AuthProvider } from "../src/context/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +19,7 @@ const geistMono = Geist_Mono({
 
 // Metadatos actualizados para The Stateless
 export const metadata: Metadata = {
-  title: "The Stateless | Ciudades Creativas",
+  title: "Roots | Ciudades Creativas de Nicaragua",
   description: "Plataforma inmersiva de movilidad, cultura e innovación territorial en Nicaragua.",
   icons: {
     icon: [
@@ -40,24 +43,28 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      // Eliminada la clase "dark" para forzar el esquema de colores claro
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
         <link rel="icon" href="/logos/Logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/logos/Logo.png" />
       </head>
-      {/* Actualizado a fondo blanco (bg-white) y texto oscuro (text-slate-800) */}
       <body className="min-h-full flex flex-col bg-white text-slate-800">
-        
-        {/* Tu nueva barra de navegación global */}
-        <Navigation />
-        
-        {/* flex-grow para que ocupe todo el espacio sobrante sin margen superior artificial */}
-        <main className="flex-grow pb-16 lg:pb-0">
-          {children}
-        </main>
-        
+        <AuthProvider>
+          {/* Pantalla de carga inicial estilo Splash con Logo grande centrado */}
+          <SplashScreen />
+
+          {/* Barra de navegación global */}
+          <Navigation />
+
+          {/* Modal / Card interactivo de Login y Registro */}
+          <AuthModal />
+          
+          {/* Contenido principal */}
+          <main className="flex-grow pb-16 lg:pb-0">
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -14,8 +14,10 @@ import {
   IoMap, 
   IoMapOutline, 
   IoStorefront, 
-  IoStorefrontOutline 
+  IoStorefrontOutline,
 } from 'react-icons/io5';
+import { useAuth } from '../../context/AuthContext';
+import { User as UserIcon } from 'lucide-react';
 
 // Enlaces de la barra de navegación para escritorio
 const DESKTOP_NAV_ITEMS = [
@@ -38,6 +40,7 @@ const MOBILE_NAV_ITEMS = [
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { user, isAuthenticated, openAuthModal } = useAuth();
 
   if (pathname === '/login') return null;
 
@@ -48,22 +51,36 @@ export default function Navigation() {
 
   return (
     <>
-      {/* ================= 0. LOGO CIRCULAR MÓVIL (Superior Derecho - Grande y Destacado) ================= */}
+      {/* ================= 0. LOGO CIRCULAR MÓVIL (Superior Derecho - Al tocar despliega Login Card / Registro) ================= */}
       {showMobileTopLogo && (
         <div className="lg:hidden fixed top-3 right-3.5 z-[9990] pointer-events-auto animate-fadeIn">
-          <Link
-            href="/"
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] border-2 border-slate-100 flex items-center justify-center p-1.5 hover:scale-105 active:scale-95 transition-all overflow-hidden relative"
-            aria-label="Ir a Inicio"
+          <button
+            type="button"
+            onClick={openAuthModal}
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] border-2 border-slate-100 flex items-center justify-center p-1 hover:scale-105 active:scale-95 transition-all overflow-hidden relative cursor-pointer group"
+            aria-label="Abrir Perfil o Iniciar Sesión"
           >
-            <Image
-              src="/logos/Logo.png"
-              alt="Logo"
-              fill
-              sizes="64px"
-              className="object-contain p-1 scale-110"
-            />
-          </Link>
+            <div className="relative w-full h-full rounded-full overflow-hidden">
+              <Image
+                src={isAuthenticated && user?.avatar ? user.avatar : '/logos/Logo.png'}
+                alt={user?.name || 'Logo'}
+                fill
+                sizes="64px"
+                className={`object-contain p-0.5 transition-transform group-hover:scale-110 ${
+                  isAuthenticated && user?.avatar ? 'object-cover' : 'scale-110'
+                }`}
+              />
+            </div>
+
+            {/* Badge indicador de estado activo / autenticado */}
+            {isAuthenticated ? (
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm ring-1 ring-emerald-600/30" />
+            ) : (
+              <span className="absolute bottom-0 inset-x-0 bg-black/75 text-[8px] font-black text-white py-0.5 text-center leading-none tracking-tighter">
+                LOGIN
+              </span>
+            )}
+          </button>
         </div>
       )}
 
@@ -116,15 +133,40 @@ export default function Navigation() {
             </div>
 
             {/* ACCIONES (Derecha) */}
-            <div className="flex items-center gap-4">
-              {/* Selector de idioma */}
-              <button className="text-xs font-bold text-slate-700 hover:text-black flex items-center gap-1 transition-colors cursor-pointer">
-                ES 
-                <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+            <div className="flex items-center gap-3.5">
               
+              {/* Botón de Perfil / Login */}
+              {isAuthenticated && user ? (
+                <button
+                  type="button"
+                  onClick={openAuthModal}
+                  className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 font-bold text-xs transition-all cursor-pointer shadow-sm"
+                >
+                  <div className="relative w-6 h-6 rounded-full overflow-hidden bg-purple-200 border border-purple-300">
+                    <Image
+                      src={user.avatar || '/logos/Logo.png'}
+                      alt={user.name}
+                      fill
+                      sizes="24px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="truncate max-w-[100px]">{user.name}</span>
+                  <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
+                    {user.points} pts
+                  </span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={openAuthModal}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Ingresar</span>
+                </button>
+              )}
+
               {/* Botón Principal */}
               <Link
                 href="/ciudades-creativas"

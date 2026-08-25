@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 
 export const ENV = {
@@ -15,4 +15,8 @@ export const ENV = {
     DB_NAME: process.env.MONGODB_DB_NAME || 'stateless_db',
   },
   DATABASE_URL: process.env.DATABASE_URL || '',
+  JWT: {
+    SECRET: process.env.JWT_SECRET || 'roots-super-secret-jwt-key-hackathon-2026',
+    EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
+  },
 };

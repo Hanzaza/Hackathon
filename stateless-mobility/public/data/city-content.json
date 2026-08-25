@@ -1,0 +1,96 @@
+{
+  "granada": {
+    "subtitle": "La Gran Sultana, joya colonial de Nicaragua.",
+    "description": "Fundada en 1524, Granada es una de las ciudades más antiguas de América. Sus calles empedradas, coloridas fachadas y majestuosos edificios coloniales la convierten en un destino ineludible. A orillas del Gran Lago de Nicaragua, la ciudad ofrece una mezcla única de historia, cultura y naturaleza.",
+    "attractions": [
+      { "name": "Catedral de Granada", "desc": "Imponente estructura neoclásica en el corazón de la ciudad." },
+      { "name": "Isletas de Granada", "desc": "Un archipiélago de más de 300 islas de origen volcánico." },
+      { "name": "Calle La Calzada", "desc": "El centro de la vida nocturna y gastronómica, llena de bares y restaurantes." }
+    ],
+    "agenda": [
+      { "event": "Festival Internacional de Poesía", "date": "Febrero" },
+      { "event": "Celebraciones de la Purísima", "date": "Diciembre" }
+    ],
+    "gastronomy": "No te puedes ir sin probar el Vigorón, un plato tradicional servido en hojas de plátano."
+  },
+  "masaya": {
+    "subtitle": "La cuna del folclore nicaragüense.",
+    "description": "Conocida como la 'Ciudad de las Flores', Masaya es el corazón de la artesanía nicaragüense. Su mercado de artesanías es famoso en toda la región y su volcán activo ofrece un espectáculo natural impresionante.",
+    "attractions": [
+      { "name": "Mercado de Artesanías", "desc": "El lugar ideal para encontrar hamacas, cerámica y arte local." },
+      { "name": "Volcán Masaya", "desc": "Observa la lava incandescente en uno de los cráteres más accesibles del mundo." },
+      { "name": "Mirador de Catarina", "desc": "Vistas espectaculares de la Laguna de Apoyo." }
+    ],
+    "agenda": [
+      { "event": "Los Agüizotes", "date": "Octubre" },
+      { "event": "El baile de Negras", "date": "Noviembre" }
+    ],
+    "gastronomy": "La 'sopa de mondongo' es un plato robusto y delicioso que no te puedes perder."
+  },
+  "bluefields": {
+      "subtitle": "Ritmo y sabor del Caribe.",
+      "description": "Capital de la Región Autónoma de la Costa Caribe Sur, Bluefields es un crisol de culturas. La música, la danza y la gastronomía afrocaribeña definen la identidad de esta vibrante ciudad portuaria.",
+      "attractions": [
+        { "name": "Bahía de Bluefields", "desc": "Explora los cayos e islas cercanas en un tour en panga." },
+        { "name": "Palo de Mayo", "desc": "Una celebración de la vida y la fertilidad con música y danza." },
+        { "name": "Mercado Municipal", "desc": "Descubre productos locales y la pesca del día." }
+      ],
+      "agenda": [
+        { "event": "Fiesta del Palo de Mayo", "date": "Mayo" },
+        { "event": "Aniversario de la ciudad", "date": "Octubre" }
+      ],
+      "gastronomy": "El 'Rondón', un guiso de pescado con coco, es el plato emblemático de la región."
+    },
+    "esteli": {
+      "subtitle": "Murales, tabaco y hospitalidad norteña.",
+      "description": "Estelí, el 'Diamante de las Segovias', es famosa por su industria del tabaco, sus murales que cuentan la historia del país y su ambiente fresco de montaña. Un centro de comercio y cultura en el norte de Nicaragua.",
+      "attractions": [
+        { "name": "Fábricas de puros", "desc": "Conoce el proceso de elaboración de algunos de los mejores puros del mundo." },
+        { "name": "Salto de la Estanzuela", "desc": "Una hermosa cascada rodeada de naturaleza." },
+        { "name": "Murales de la ciudad", "desc": "Recorre las calles para descubrir el arte urbano que adorna la ciudad." }
+      ],
+      "agenda": [
+        { "event": "Festival de Poesía", "date": "Febrero" },
+        { "event": "Hípicas de Estelí", "date": "Diciembre" }
+      ],
+      "gastronomy": "La 'güirila', una tortilla de maíz dulce, es una delicia local."
+    },
+    "juigalpa": {
+      "subtitle": "La puerta de entrada a Chontales.",
+      "description": "Conocida como 'la capital ganadera de Nicaragua', Juigalpa es una ciudad de gente trabajadora y tradiciones arraigadas. Rodeada de colinas y paisajes rurales, es un punto de partida para explorar la arqueología y naturaleza de la región.",
+      "attractions": [
+        { "name": "Museo Arqueológico Gregorio Aguilar Barea", "desc": "Una impresionante colección de estatuaria precolombina." },
+        { "name": "Catedral de Juigalpa", "desc": "Un moderno y singular templo católico." },
+        { "name": "Fincas ganaderas", "desc": "Experimenta la vida del campo chontaleño." }
+      ],
+      "agenda": [
+        { "event": "Fiestas patronales en honor a la Virgen de la Asunción", "date": "Agosto" }
+      ],
+      "gastronomy": "Prueba el 'queso de crema' y otros productos lácteos frescos de la región."
+    },
+    "managua": {
+      "subtitle": "La capital vibrante y en constante evolución.",
+      "description": "Managua, a orillas del lago Xolotlán, es una ciudad de contrastes. Con una rica historia marcada por terremotos y revoluciones, hoy es un centro dinámico de comercio, gobierno y vida nocturna.",
+      "attractions": [
+        { "name": "Puerto Salvador Allende", "desc": "Un moderno malecón con restaurantes, bares y actividades recreativas." },
+        { "name": "Loma de Tiscapa", "desc": "Ofrece vistas panorámicas de la ciudad y un recorrido por la historia política del país." },
+        { "name": "Teatro Nacional Rubén Darío", "desc": "El principal centro para las artes escénicas en Nicaragua." }
+      ],
+      "agenda": [
+        { "event": "Fiestas de Santo Domingo de Guzmán", "date": "Agosto" }
+      ],
+      "gastronomy": "Desde la comida callejera hasta los restaurantes gourmet, Managua ofrece la más amplia variedad gastronómica del país."
+    },
+    "san-juan-de-oriente": {
+      "subtitle": "El pueblo de las manos mágicas.",
+      "description": "Este pequeño pueblo es famoso por su cerámica de alta calidad, reconocida a nivel internacional. Cada taller es una galería de arte donde las familias de artesanos transforman el barro en obras maestras.",
+      "attractions": [
+        { "name": "Talleres de cerámica", "desc": "Observa a los artesanos en acción y compra piezas únicas." },
+        { "name": "Mirador de San Juan", "desc": "Disfruta de una vista impresionante de la Laguna de Apoyo." }
+      ],
+      "agenda": [
+        { "event": "Fiestas patronales de San Juan Bautista", "date": "Junio" }
+      ],
+      "gastronomy": "La 'masa de cazuela' es un platillo tradicional que se disfruta en las celebraciones locales."
+    }
+}

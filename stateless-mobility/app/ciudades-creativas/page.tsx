@@ -16,17 +16,10 @@ const MapaOrquestador = dynamic(() => import('@/components/map/MapaContenedor'),
 
 export default function CiudadesCreativasPage() {
   return (
-    <main className="relative w-full h-[calc(100vh-64px)] overflow-hidden bg-slate-950">
-      
-      {/* Título contextual para esta sección */}
-      <div className="absolute top-6 left-6 z-10 p-6 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-slate-700 shadow-2xl pointer-events-none">
-        <h1 className="text-2xl font-bold text-white">Ciudades Creativas</h1>
-        <p className="text-sm text-cyan-400 mt-1 uppercase tracking-wider font-semibold">
-          Nicaragua en Movimiento
-        </p>
+    <div className="relative w-full h-[calc(100dvh-5.5rem)] lg:h-[100dvh] pt-0 lg:pt-20 overflow-hidden bg-slate-950 flex items-center justify-center">
+      <div className="w-full h-full p-1 sm:p-3 lg:p-4 flex items-center justify-center">
+        <MapaOrquestador />
       </div>
-
-      <MapaOrquestador />
-    </main>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
@@ -134,7 +134,7 @@ export default function AgendaPage() {
   }, [busqueda, filtroCiudad, filtroTiempo]);
 
   return (
-    <main className="min-h-screen bg-white text-slate-800 font-sans">
+    <main className="min-h-screen bg-white text-slate-800 font-sans pt-4 lg:pt-24 pb-32">
       <section className="relative overflow-hidden bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
           <div className="grid gap-8 xl:grid-cols-[1.4fr_0.9fr] items-start">

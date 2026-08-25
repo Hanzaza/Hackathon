@@ -26,6 +26,14 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
+/* Soporte de Safe Area para PWA en iOS y Android */
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 18px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
 /* Custom Scrollbar for Webkit browsers */
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;
@@ -43,4 +51,106 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #888;
+}
+
+/* For hiding scrollbars but keeping functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* ================= Parallax Scrolling Styles ================= */
+.parallax {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #0b0f19;
+}
+
+.parallax__header {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+}
+
+.parallax__visuals {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.parallax__layers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.parallax__layer-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.parallax__layer-title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform;
+  padding: 0 1rem;
+}
+
+.parallax__title {
+  font-size: clamp(2.75rem, 9vw, 7rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.05;
+  text-shadow: 0 4px 35px rgba(0, 0, 0, 0.75);
+}
+
+.parallax__fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(to bottom, transparent, #ffffff);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.parallax__content {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  color: #ffffff;
+}
+
+.osmo-icon-svg {
+  width: 48px;
+  height: 48px;
+  opacity: 0.8;
 }

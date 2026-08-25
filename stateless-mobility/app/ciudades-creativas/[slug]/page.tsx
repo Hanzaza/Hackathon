@@ -13,8 +13,6 @@ const slugify = (name: string) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
 
-const deslugify = (slug: string) => slug.replace(/-/g, ' ');
-
 // Tipos para los props
 interface PageProps {
   params: {
@@ -31,6 +29,17 @@ interface CityFeature {
   };
 }
 
+// Tipos para el contenido enriquecido
+interface Attraction {
+  name: string;
+  desc: string;
+}
+
+interface AgendaItem {
+  event: string;
+  date: string;
+}
+
 async function getCiudadesData(): Promise<CityFeature[]> {
   const filePath = path.join(process.cwd(), 'public', 'data', 'ciudades_limpias.json');
   const fileContents = await fs.readFile(filePath, 'utf8');
@@ -39,35 +48,54 @@ async function getCiudadesData(): Promise<CityFeature[]> {
 }
 
 // ---- GENERACIÓN DE PÁGINAS ESTÁTICAS ----
-// Le dice a Next.js qué páginas debe pre-construir
 export async function generateStaticParams() {
   const features = await getCiudadesData();
-  const creativeCities = features.filter(city => city.properties.tipo === 'Creativa');
+  const creativeCities = features.filter(
+    city => city.properties.tipo === 'Creativa' && city.properties.nombre.toLowerCase() !== 'león'
+  );
   
   return creativeCities.map(city => ({
     slug: slugify(city.properties.nombre),
   }));
 }
 
+// ---- GENERACIÓN DE CONTENIDO ENRIQUECIDO ----
+async function getCityContent(cityName: string) {
+  const filePath = path.join(process.cwd(), 'public', 'data', 'city-content.json');
+  const fileContents = await fs.readFile(filePath, 'utf8');
+  const content = JSON.parse(fileContents);
+  
+  const cityKey = cityName.toLowerCase().replace(/ /g, '-');
+
+  return content[cityKey] || {
+    subtitle: "Una ciudad llena de encanto y creatividad.",
+    description: `Descubre la magia y el encanto de ${cityName}, un epicentro de la cultura nicaragüense. Explora sus calles, conoce a su gente y déjate sorprender por su riqueza artística y natural.`,
+    attractions: [],
+    agenda: [],
+    gastronomy: "La gastronomía local es rica y variada, un reflejo de su historia y su gente."
+  };
+}
+
 // ---- COMPONENTE DE LA PÁGINA ----
 export default async function CreativeCityPage({ params }: PageProps) {
-  const { slug } = await params;
-  const cityName = deslugify(slug);
+  const { slug } = params;
 
-  const features = await getCiudadesData();
-
-  // Buscamos la ciudad por su nombre (comparando sin distinción de mayúsculas)
-  const city = features.find(c => c.properties.nombre.toLowerCase() === cityName.toLowerCase());
-
-  // Si no se encuentra la ciudad, mostramos la página 404
-  if (!city) {
+  if (!slug) {
     notFound();
   }
 
-  const { nombre, descripcion } = city.properties;
+  const features = await getCiudadesData();
+  const city = features.find(c => slugify(c.properties.nombre) === slug);
+
+  if (!city || city.properties.nombre.toLowerCase() === 'león') {
+    notFound();
+  }
+
+  const { nombre } = city.properties;
+  const cityContent = await getCityContent(nombre);
 
   return (
-    <main className="min-h-screen bg-white text-slate-800 font-sans pb-24">
+    <main className="min-h-screen bg-white text-slate-800 font-sans pt-4 lg:pt-24 pb-32">
       
       {/* Miga de Pan (Breadcrumb) */}
       <div className="max-w-[1200px] mx-auto px-6 lg:px-8 pt-8 pb-4">
@@ -81,7 +109,7 @@ export default async function CreativeCityPage({ params }: PageProps) {
       </div>
 
       {/* Hero Section */}
-      <section className="max-w-[1200px] mx-auto px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center gap-12">
+      <section className="max-w-[1200px] mx-auto px-6 lg:px-8 py-8 md:py-12 flex flex-col md:flex-row items-start gap-12">
         <div className="flex-1 space-y-6">
           <div>
             <span className="inline-block px-3 py-1 bg-purple-900 text-white text-xs font-black uppercase tracking-widest rounded-sm mb-4 transform -skew-x-12">
@@ -91,37 +119,68 @@ export default async function CreativeCityPage({ params }: PageProps) {
               {nombre}
             </h1>
             <h2 className="text-xl font-bold text-slate-700 mt-2">
-              {/* Podrías añadir un subtítulo específico si lo tuvieras en tu JSON */}
-              Cuna de Arte y Tradición
+              {cityContent.subtitle}
             </h2>
           </div>
           <p className="text-slate-600 leading-relaxed max-w-lg text-lg">
-            {descripcion || `Descubre la magia y el encanto de ${nombre}, un epicentro de la cultura nicaragüense.`}
+            {cityContent.description}
           </p>
         </div>
         <div className="flex-1 w-full flex justify-end">
-          <div className="w-full max-w-md h-64 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center relative overflow-hidden shadow-sm">
-            <span className="text-slate-400 font-medium text-sm text-center px-4">
-              [Imagen o ilustración destacada de {nombre}]
-            </span>
+          <div className="w-full max-w-md h-80 relative overflow-hidden rounded-3xl shadow-sm">
+            <div className="w-full h-full bg-slate-100 border border-slate-200 flex items-center justify-center">
+              <span className="text-slate-400 font-medium text-sm text-center px-4">
+                [Imagen o ilustración destacada de {nombre}]
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contenido Adicional (simulado) */}
+      {/* Contenido Adicional Detallado */}
       <section className="max-w-[1200px] mx-auto px-6 lg:px-8 py-16">
-        <div className="border-t border-slate-200 pt-12">
-          <h3 className="text-3xl font-bold text-center text-slate-900 mb-10">
+        <div className="border-t border-slate-200 pt-16">
+          <h3 className="text-4xl font-bold text-center text-slate-900 mb-12">
             Explorá {nombre}
           </h3>
-          <div className="text-center text-slate-500">
-            <p>Contenido detallado sobre la ciudad, sus circuitos, agenda y más, iría en esta sección.</p>
-            <p>Por ahora, esta es una página modelo generada dinámicamente.</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            
+            {/* Principales Atractivos */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100">
+              <h4 className="text-2xl font-bold text-slate-800 mb-4">Principales Atractivos</h4>
+              <ul className="space-y-4">
+                {cityContent.attractions.map((item: Attraction) => (
+                  <li key={item.name}>
+                    <p className="font-semibold text-purple-800">{item.name}</p>
+                    <p className="text-slate-600 text-sm">{item.desc}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Agenda Cultural */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100">
+              <h4 className="text-2xl font-bold text-slate-800 mb-4">Agenda Cultural</h4>
+              <ul className="space-y-4">
+                {cityContent.agenda.map((item: AgendaItem) => (
+                  <li key={item.event} className="flex items-center gap-4">
+                    <span className="bg-purple-100 text-purple-800 text-xs font-bold px-3 py-1 rounded-full">{item.date}</span>
+                    <p className="text-slate-700">{item.event}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Gastronomía */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-100">
+              <h4 className="text-2xl font-bold text-slate-800 mb-4">Gastronomía</h4>
+              <p className="text-slate-600">{cityContent.gastronomy}</p>
+            </div>
+
           </div>
         </div>
       </section>
-
     </main>
   );
 }
-

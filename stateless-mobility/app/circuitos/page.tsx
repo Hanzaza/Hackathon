@@ -28,7 +28,7 @@ export default function CircuitosPage() {
   };
 
   return (
-    <main className="w-full min-h-screen bg-white text-slate-800 font-sans">
+    <main className="w-full min-h-screen bg-white text-slate-800 font-sans pt-4 lg:pt-28 pb-32 flex flex-col items-center justify-center">
       <NicaraguaSVG onSelect={handleSelectDepartamento} />
     </main>
   );

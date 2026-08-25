@@ -2,66 +2,112 @@
 
 import React, { useState } from 'react';
 import NicaraguaSVG from './NicaraguaSVG';
-import MapaInmersivo from '../map/MapaInmersivo'; // Ajusta la ruta si es diferente
+import LeonDepartamentoSVG from './LeonDepartamentoSVG';
+import ManaguaDepartamentoSVG from './ManaguaDepartamentoSVG';
+import MapaInmersivo from './MapaInmersivo';
 
-// Definimos los 3 niveles de tu arquitectura
-type NivelMapa = 'nacional' | 'departamental' | 'inmersivo';
+export type NivelMapa = 'nacional' | 'departamental' | 'inmersivo';
 
-export default function MapaContenedor() {
-  // Estado 1: Controla qué capa estamos viendo (¡Inicia en 'nacional' por defecto!)
-  const [nivelActual, setNivelActual] = useState<NivelMapa>('nacional');
+interface MapaContenedorProps {
+  initialNivel?: NivelMapa;
+  showLegend?: boolean;
+}
+
+export default function MapaContenedor({
+  initialNivel = 'nacional',
+  showLegend = true,
+}: MapaContenedorProps) {
+  // Nivel actual de la navegación en el mapa
+  const [nivelActual, setNivelActual] = useState<NivelMapa>(initialNivel);
   
-  // Estado 2: Guarda qué departamento o municipio se seleccionó
-  const [seleccion, setSeleccion] = useState<string | null>(null);
+  // Departamento seleccionado ('NILE', 'NIMN', etc.)
+  const [departamentoActivo, setDepartamentoActivo] = useState<string>('NILE');
 
-  // Función que recibe el clic desde NicaraguaSVG
+  // Identificador de ciudad activa ('leon', 'nagarote', 'managua', etc.)
+  const [seleccion, setSeleccion] = useState<string>('leon');
+
+  // Circuito creativo específico seleccionado (ej. 'dariano', 'managua-patrimonial')
+  const [circuitoSeleccionado, setCircuitoSeleccionado] = useState<string | undefined>(undefined);
+
+  // Clic en el Mapa Nacional
   const manejarSeleccionNacional = (idDepartamento: string) => {
-    setSeleccion(idDepartamento);
-    
-    // Al tocar un departamento creativo, vamos al mapa inmersivo en esa ubicación
-    setNivelActual('inmersivo'); 
+    setDepartamentoActivo(idDepartamento);
+    setCircuitoSeleccionado(undefined);
+
+    if (idDepartamento === 'NILE') {
+      // Si es León, abrimos el SVG departamental detallado de León
+      setSeleccion('leon');
+      setNivelActual('departamental');
+    } else if (idDepartamento === 'NIMN') {
+      // Si es Managua, abrimos el SVG departamental detallado de Managua
+      setSeleccion('managua');
+      setNivelActual('departamental');
+    } else {
+      // Para otros departamentos creativos, pasamos al mapa inmersivo 3D directamente
+      setSeleccion(idDepartamento);
+      setNivelActual('inmersivo');
+    }
   };
 
-  // Función para el botón "Volver"
+  // Clic en una ciudad creativa o circuito desde el SVG Departamental
+  const manejarSeleccionCiudad = (citySlug: string, circuitId?: string) => {
+    setSeleccion(citySlug);
+    setCircuitoSeleccionado(circuitId);
+    setNivelActual('inmersivo');
+  };
+
+  // Navegación hacia atrás
   const manejarRegreso = () => {
     if (nivelActual === 'inmersivo') {
-      // En el futuro volverá al departamental, por ahora al nacional
-      setNivelActual('nacional'); 
+      if (departamentoActivo === 'NILE' || departamentoActivo === 'NIMN') {
+        setNivelActual('departamental');
+      } else {
+        setNivelActual('nacional');
+      }
     } else if (nivelActual === 'departamental') {
       setNivelActual('nacional');
     }
   };
 
   return (
-    <div className="w-full min-h-[600px] flex items-center justify-center relative">
+    <div className="w-full h-full flex items-center justify-center relative transition-all duration-300">
       
-      {/* NIVEL 1: Mapa Nacional SVG (Es el primero que se ve) */}
+      {/* ================= NIVEL 1: Mapa Nacional SVG ================= */}
       {nivelActual === 'nacional' && (
-        <div className="w-full max-w-4xl h-[80vh] flex flex-col items-center justify-center p-4">
-          <NicaraguaSVG onSelect={manejarSeleccionNacional} showLegend={false} showMarkers={false} />
+        <div className="w-full h-full flex flex-col items-center justify-center animate-fadeIn">
+          <NicaraguaSVG 
+            onSelect={manejarSeleccionNacional} 
+            showLegend={showLegend} 
+            showMarkers={true} 
+          />
         </div>
       )}
 
-      {/* NIVEL 2: Vista Departamental SVG (Preparado para cuando lo construyamos) */}
-      {nivelActual === 'departamental' && (
-        <div className="w-full h-full flex flex-col items-center justify-center">
-          <h2 className="text-2xl font-bold mb-4">Vista del Departamento: {seleccion}</h2>
-          <button onClick={manejarRegreso} className="bg-slate-800 text-white px-4 py-2 rounded">
-            Volver
-          </button>
-          {/* Aquí irá tu SVG del departamento */}
+      {/* ================= NIVEL 2: SVG Departamentales ================= */}
+      {nivelActual === 'departamental' && departamentoActivo === 'NILE' && (
+        <div className="w-full h-full flex flex-col items-center justify-center animate-fadeIn">
+          <LeonDepartamentoSVG 
+            onSelectCity={manejarSeleccionCiudad} 
+            onBack={() => setNivelActual('nacional')} 
+          />
         </div>
       )}
 
-      {/* NIVEL 3: Detalle Municipal Inmersivo (MapLibre) */}
+      {nivelActual === 'departamental' && departamentoActivo === 'NIMN' && (
+        <div className="w-full h-full flex flex-col items-center justify-center animate-fadeIn">
+          <ManaguaDepartamentoSVG 
+            onSelectCity={manejarSeleccionCiudad} 
+            onBack={() => setNivelActual('nacional')} 
+          />
+        </div>
+      )}
+
+      {/* ================= NIVEL 3: Detalle Municipal Inmersivo (MapLibre 3D) ================= */}
       {nivelActual === 'inmersivo' && (
-        <div className="w-full h-full w-max-5xl p-4">
-           {/* 
-             Al instanciar MapaInmersivo, le pasamos la función manejarRegreso 
-             para que su botón "Volver" sepa qué hacer 
-           */}
+        <div className="w-full h-full flex flex-col items-center justify-center animate-fadeIn">
           <MapaInmersivo 
-            municipioId={seleccion || undefined} 
+            municipioId={seleccion} 
+            circuitoId={circuitoSeleccionado}
             onBack={manejarRegreso} 
           />
         </div>

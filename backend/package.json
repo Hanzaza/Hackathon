@@ -1,0 +1,31 @@
+﻿{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API REST Backend para Ciudades Creativas / Stateless Mobility",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongodb": "^6.13.0",
+    "pg": "^8.13.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^22.13.4",
+    "@types/pg": "^8.11.11",
+    "eslint": "^9.20.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

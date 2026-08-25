@@ -1,5 +1,22 @@
-{
-  "dependencies": {
-    "lucide-react": "^1.23.0"
+﻿{
+  "name": "hackathon-ciudades-creativas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Monorepo desacoplado para Ciudades Creativas (Frontend Next.js + Backend Express API)",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run dev:frontend",
+    "dev:all": "npx concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "lint": "npm run lint --prefix frontend && npm run lint --prefix backend",
+    "start:frontend": "npm run start --prefix frontend",
+    "start:backend": "npm run start --prefix backend"
   }
 }

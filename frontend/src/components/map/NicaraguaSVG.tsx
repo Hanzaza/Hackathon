@@ -194,14 +194,14 @@ export default function NicaraguaSVG({
   };
 
   return (
-    <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-slate-950 border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.4)] select-none flex flex-col items-center justify-center p-2 sm:p-4">
+    <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-50/90 via-white to-purple-50/40 border border-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)] select-none flex flex-col items-center justify-center p-2 sm:p-4">
       
       {/* ================= CONTROLES SUPERIORES FLOTANTES ================= */}
       <div className="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-20 flex items-center justify-between pointer-events-none gap-2">
         
         {/* Píldora de estado principal */}
-        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 text-white shadow-lg pointer-events-auto">
-          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 shrink-0 animate-bounce" />
+        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/90 backdrop-blur-xl border border-slate-200/90 text-slate-800 shadow-md pointer-events-auto">
+          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 shrink-0 animate-bounce" />
           <span className="text-[11px] sm:text-xs font-black tracking-wide hidden xs:inline">
             Mapa Nacional • Ciudades Creativas
           </span>
@@ -211,8 +211,8 @@ export default function NicaraguaSVG({
         </div>
 
         {/* Badge de circuitos listos */}
-        <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-purple-950/90 backdrop-blur-xl border border-purple-700/60 text-purple-300 text-[10px] sm:text-xs font-bold shadow-lg pointer-events-auto shrink-0">
-          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300 shrink-0" />
+        <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-purple-50/90 backdrop-blur-xl border border-purple-200 text-purple-900 text-[10px] sm:text-xs font-bold shadow-md pointer-events-auto shrink-0">
+          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600 shrink-0" />
           <span className="hidden xs:inline">León y Managua Activos</span>
           <span className="xs:hidden">2 Activos</span>
         </div>
@@ -222,28 +222,28 @@ export default function NicaraguaSVG({
       {/* ================= TOOLTIP / TARJETA FLOTANTE INFORMATIVA ================= */}
       {hoveredDept && (
         <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-fadeIn w-[90%] max-w-sm sm:w-auto">
-          <div className={`px-3.5 py-2 rounded-2xl backdrop-blur-2xl border shadow-2xl flex items-center gap-2.5 ${
+          <div className={`px-3.5 py-2 rounded-2xl backdrop-blur-2xl border shadow-xl flex items-center gap-2.5 ${
             hoveredDept.hasCircuit
-              ? 'bg-purple-950/95 border-purple-500/80 text-white'
+              ? 'bg-white/95 border-purple-300 text-purple-950'
               : hoveredDept.isCreative
-              ? 'bg-cyan-950/95 border-cyan-500/80 text-white'
-              : 'bg-slate-900/95 border-slate-700 text-slate-200'
+              ? 'bg-white/95 border-indigo-200 text-slate-900'
+              : 'bg-white/95 border-slate-200 text-slate-700'
           }`}>
             <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              hoveredDept.hasCircuit ? 'bg-purple-400 animate-ping' : hoveredDept.isCreative ? 'bg-cyan-400' : 'bg-slate-500'
+              hoveredDept.hasCircuit ? 'bg-purple-600 animate-ping' : hoveredDept.isCreative ? 'bg-indigo-500' : 'bg-slate-400'
             }`} />
             <div className="flex flex-col text-left min-w-0 flex-1">
               <span className="text-xs font-black leading-tight truncate">
                 {hoveredDept.name} {hoveredDept.hasCircuit ? '• Circuitos Habilitados' : hoveredDept.isCreative ? '• Ciudad Creativa' : ''}
               </span>
               {hoveredDept.subtitle && (
-                <span className="text-[10px] text-slate-300 leading-none mt-0.5 truncate">
+                <span className="text-[10px] text-slate-500 leading-none mt-0.5 truncate">
                   {hoveredDept.subtitle}
                 </span>
               )}
             </div>
             {hoveredDept.isCreative && (
-              <ArrowRight className="w-3.5 h-3.5 text-purple-300 shrink-0 ml-1" />
+              <ArrowRight className="w-3.5 h-3.5 text-purple-600 shrink-0 ml-1" />
             )}
           </div>
         </div>
@@ -253,30 +253,30 @@ export default function NicaraguaSVG({
       <div className="relative w-full h-full max-w-4xl max-h-[60vh] sm:max-h-[72vh] flex items-center justify-center pt-8 pb-12 sm:py-4">
         <svg
           viewBox="0 0 1000 893"
-          className="w-full h-full max-h-full drop-shadow-[0_25px_55px_rgba(0,0,0,0.85)] select-none touch-manipulation"
+          className="w-full h-full max-h-full drop-shadow-[0_15px_35px_rgba(0,0,0,0.08)] select-none touch-manipulation"
           xmlns="http://www.w3.org/2000/svg"
         >
           <g id="features">
             {DEPARTAMENTOS.map((dept) => {
               const isHovered = hoveredDept?.id === dept.id;
               
-              let fillClass = "fill-slate-800/80 stroke-slate-600/60 stroke-[1px]";
+              let fillClass = "fill-slate-200/80 stroke-white stroke-[1.8px]";
               
               if (dept.hasCircuit) {
                 // Departamentos con Circuitos Habilitados (León y Managua)
                 fillClass = isHovered
-                  ? "fill-purple-600 stroke-white stroke-[2.5px] drop-shadow-[0_0_35px_rgba(168,85,247,0.95)] cursor-pointer opacity-100"
-                  : "fill-purple-700 stroke-purple-300/80 stroke-[1.8px] drop-shadow-[0_0_18px_rgba(147,51,234,0.6)] cursor-pointer opacity-95";
+                  ? "fill-purple-600 stroke-white stroke-[3px] drop-shadow-[0_8px_20px_rgba(147,51,234,0.45)] cursor-pointer opacity-100"
+                  : "fill-purple-500 stroke-white stroke-[2.2px] drop-shadow-[0_4px_12px_rgba(147,51,234,0.3)] cursor-pointer opacity-95";
               } else if (dept.isCreative) {
                 // Ciudades Creativas de la Red Nacional
                 fillClass = isHovered
-                  ? "fill-cyan-500 stroke-white stroke-[2px] drop-shadow-[0_0_25px_rgba(6,182,212,0.9)] cursor-pointer opacity-100"
-                  : "fill-cyan-700/85 stroke-cyan-300/60 stroke-[1.2px] cursor-pointer opacity-90";
+                  ? "fill-indigo-500 stroke-white stroke-[2.5px] drop-shadow-[0_6px_16px_rgba(99,102,241,0.4)] cursor-pointer opacity-100"
+                  : "fill-indigo-400/90 stroke-white stroke-[1.8px] cursor-pointer opacity-90";
               } else {
                 // Otros Departamentos
                 fillClass = isHovered
-                  ? "fill-slate-700/90 stroke-slate-400 stroke-[1px] opacity-100"
-                  : "fill-slate-900/90 stroke-slate-700/60 stroke-[1px] opacity-60";
+                  ? "fill-slate-300 stroke-white stroke-[1.5px] opacity-100"
+                  : "fill-slate-100 stroke-white stroke-[1.5px] opacity-80";
               }
 
               return (
@@ -304,8 +304,8 @@ export default function NicaraguaSVG({
                         r={dept.hasCircuit ? (isHovered ? 14 : 10) : (isHovered ? 10 : 7)}
                         className={
                           dept.hasCircuit
-                            ? "fill-purple-300 stroke-white stroke-[2px]"
-                            : "fill-cyan-300 stroke-white stroke-[1.5px]"
+                            ? "fill-white stroke-purple-600 stroke-[3px] shadow-sm"
+                            : "fill-white stroke-indigo-500 stroke-[2.5px] shadow-sm"
                         }
                       />
                       
@@ -314,10 +314,10 @@ export default function NicaraguaSVG({
                         x={dept.center[0]}
                         y={dept.center[1] - (dept.hasCircuit ? 16 : 12)}
                         textAnchor="middle"
-                        className={`font-black tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] ${
+                        className={`font-black tracking-wider drop-shadow-[0_2px_4px_rgba(255,255,255,0.9)] ${
                           dept.hasCircuit
-                            ? "fill-white text-[24px]"
-                            : "fill-slate-100 text-[18px]"
+                            ? "fill-purple-950 text-[24px]"
+                            : "fill-slate-900 text-[18px]"
                         }`}
                       >
                         {dept.name.toUpperCase()}
@@ -331,7 +331,7 @@ export default function NicaraguaSVG({
                       x={dept.center[0]}
                       y={dept.center[1]}
                       textAnchor="middle"
-                      className="pointer-events-none fill-slate-400 font-semibold text-[13px] opacity-35 select-none"
+                      className="pointer-events-none fill-slate-400 font-bold text-[13px] opacity-60 select-none"
                     >
                       {dept.name}
                     </text>
@@ -346,27 +346,27 @@ export default function NicaraguaSVG({
       {/* ================= BARRA FLOTANTE DE LEYENDA Y ACCIONES ================= */}
       {showLegend && (
         <div className="absolute bottom-2.5 sm:bottom-4 inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-xl">
-          <div className="rounded-2xl border border-white/15 bg-slate-900/90 backdrop-blur-2xl px-3 py-2 sm:px-4 sm:py-2.5 shadow-[0_-10px_35px_rgba(0,0,0,0.4)] flex items-center justify-between sm:justify-around gap-2 text-xs overflow-x-auto no-scrollbar whitespace-nowrap">
+          <div className="rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-2xl px-3 py-2 sm:px-4 sm:py-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.06)] flex items-center justify-between sm:justify-around gap-2 text-xs overflow-x-auto no-scrollbar whitespace-nowrap">
             
             {/* 1. Circuitos Habilitados (León y Managua) */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-500 border border-white shadow-xs animate-pulse shrink-0" />
-              <span className="font-extrabold text-white text-[10px] sm:text-xs">
-                Circuitos <span className="text-purple-300 font-semibold">(León y Managua)</span>
+              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-600 border border-white shadow-xs animate-pulse shrink-0" />
+              <span className="font-extrabold text-slate-900 text-[10px] sm:text-xs">
+                Circuitos <span className="text-purple-700 font-semibold">(León y Managua)</span>
               </span>
             </div>
 
             {/* 2. Red de Ciudades Creativas */}
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-cyan-400 border border-white shadow-xs shrink-0" />
-              <span className="font-bold text-slate-200 text-[10px] sm:text-xs">
+              <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-indigo-500 border border-white shadow-xs shrink-0" />
+              <span className="font-bold text-slate-700 text-[10px] sm:text-xs">
                 Ciudades Creativas
               </span>
             </div>
 
             {/* 3. Indicación interactiva */}
-            <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-400 shrink-0">
-              <Compass className="w-3 h-3 text-amber-300" />
+            <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 shrink-0">
+              <Compass className="w-3 h-3 text-purple-600" />
               <span>Toca un departamento</span>
             </div>
 

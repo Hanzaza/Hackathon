@@ -63,7 +63,7 @@ export default function ManaguaDepartamentoSVG({
     : null;
 
   return (
-    <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-slate-950 border border-white/10 shadow-[0_30px_90px_rgba(0,0,0,0.4)] select-none flex flex-col items-center justify-center">
+    <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-50/90 via-white to-purple-50/30 border border-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)] select-none flex flex-col items-center justify-center">
       
       {/* ================= CONTROLES FLOTANTES SUPERIORES ================= */}
       
@@ -72,9 +72,9 @@ export default function ManaguaDepartamentoSVG({
         <button
           type="button"
           onClick={onBack}
-          className="h-9 sm:h-10 px-3 sm:px-4 rounded-full bg-slate-900/90 hover:bg-slate-800 text-slate-100 font-bold text-xs shadow-lg backdrop-blur-xl border border-slate-700/80 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
+          className="h-9 sm:h-10 px-3 sm:px-4 rounded-full bg-white/90 hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-md backdrop-blur-xl border border-slate-200/90 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer"
         >
-          <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-400 shrink-0" />
+          <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 shrink-0" />
           <span className="hidden xs:inline">Volver al Mapa</span>
           <span className="xs:hidden">Volver</span>
         </button>
@@ -82,9 +82,9 @@ export default function ManaguaDepartamentoSVG({
 
       {/* 2. Badge del Departamento (Top Right) */}
       <div className="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-20">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-purple-950/90 backdrop-blur-xl border border-purple-800/60 text-purple-300 text-[11px] sm:text-xs font-bold shadow-lg">
-          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-300 shrink-0" />
-          <span>Managua</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-purple-50/90 backdrop-blur-xl border border-purple-200 text-purple-900 text-[11px] sm:text-xs font-bold shadow-md">
+          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600 shrink-0" />
+          <span>Departamento de Managua</span>
         </div>
       </div>
 
@@ -92,18 +92,18 @@ export default function ManaguaDepartamentoSVG({
       <div className="relative w-full h-full max-w-2xl max-h-[62vh] sm:max-h-[70vh] flex items-center justify-center px-4 pt-12 pb-16 sm:py-6">
         <svg
           viewBox="653 -9 2353 2501"
-          className="w-full h-full max-h-full drop-shadow-[0_20px_50px_rgba(0,0,0,0.85)] select-none touch-manipulation"
+          className="w-full h-full max-h-full drop-shadow-[0_15px_35px_rgba(0,0,0,0.08)] select-none touch-manipulation"
           xmlns="http://www.w3.org/2000/svg"
         >
           {MUNICIPIOS.map((m) => {
             const isHovered = hoveredMunicipio === m.id;
             const isCreative = m.isCreative;
 
-            let fillClass = "fill-[#1e293b] stroke-slate-600 stroke-[3px] opacity-60";
+            let fillClass = "fill-slate-200/80 stroke-white stroke-[3px] opacity-80";
             if (isCreative) {
               fillClass = isHovered
-                ? "fill-purple-600 stroke-white stroke-[8px] opacity-100 cursor-pointer drop-shadow-[0_0_30px_rgba(168,85,247,0.9)]"
-                : "fill-purple-700 stroke-purple-300 stroke-[6px] opacity-95 cursor-pointer drop-shadow-[0_0_18px_rgba(147,51,234,0.6)]";
+                ? "fill-purple-600 stroke-white stroke-[8px] opacity-100 cursor-pointer drop-shadow-[0_8px_20px_rgba(147,51,234,0.45)]"
+                : "fill-purple-500 stroke-white stroke-[6px] opacity-95 cursor-pointer drop-shadow-[0_4px_12px_rgba(147,51,234,0.3)]";
             }
 
             return (
@@ -130,13 +130,13 @@ export default function ManaguaDepartamentoSVG({
                       cx={m.center[0]}
                       cy={m.center[1]}
                       r={isHovered ? 56 : 42}
-                      className="fill-purple-400 stroke-white stroke-[8px]"
+                      className="fill-white stroke-purple-600 stroke-[8px]"
                     />
                     <text
                       x={m.center[0]}
                       y={m.center[1] - 70}
                       textAnchor="middle"
-                      className="fill-white font-black text-[80px] drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)] tracking-wider"
+                      className="fill-slate-900 font-black text-[80px] drop-shadow-[0_4px_8px_rgba(255,255,255,0.95)] tracking-wider"
                     >
                       {m.name.toUpperCase()}
                     </text>
@@ -149,7 +149,7 @@ export default function ManaguaDepartamentoSVG({
                     x={m.center[0]}
                     y={m.center[1]}
                     textAnchor="middle"
-                    className="pointer-events-none fill-slate-400 font-semibold text-[38px] opacity-40 select-none"
+                    className="pointer-events-none fill-slate-400 font-semibold text-[38px] opacity-60 select-none"
                   >
                     {m.name}
                   </text>
@@ -162,18 +162,18 @@ export default function ManaguaDepartamentoSVG({
 
       {/* ================= BARRA FLOTANTE INFERIOR DE ACCESO A CIRCUITOS ================= */}
       <div className="absolute bottom-3 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-md">
-        <div className="rounded-2xl border border-white/15 bg-slate-900/90 backdrop-blur-2xl p-2 sm:p-2.5 shadow-[0_-10px_35px_rgba(0,0,0,0.4)] flex items-center justify-between gap-2">
+        <div className="rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-2xl p-2 sm:p-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.06)] flex items-center justify-between gap-2">
           
           <button
             type="button"
             onClick={() => setSelectedMunicipioForCircuits('managua')}
-            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-purple-950/60 hover:bg-purple-900/70 border border-purple-600/50 hover:border-purple-400 transition-all cursor-pointer active:scale-95"
+            className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-950 transition-all cursor-pointer active:scale-95 shadow-xs"
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-400 shrink-0 animate-pulse" />
-              <span className="text-xs font-bold text-white truncate">Managua (Capital Creativa)</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0 animate-pulse" />
+              <span className="text-xs font-bold text-slate-900 truncate">Managua (Capital Creativa)</span>
             </div>
-            <span className="text-[11px] font-semibold text-purple-300 shrink-0 ml-1">2 Rutas →</span>
+            <span className="text-[11px] font-bold text-purple-800 shrink-0 ml-1">2 Rutas →</span>
           </button>
 
         </div>

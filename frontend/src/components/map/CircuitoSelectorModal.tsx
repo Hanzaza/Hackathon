@@ -48,14 +48,14 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
   if (!currentSelection) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-[2.5rem] bg-slate-900/95 border border-slate-700/80 shadow-[0_25px_70px_rgba(0,0,0,0.6)] p-4 sm:p-6 flex flex-col items-center overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/40 backdrop-blur-md animate-fadeIn">
+      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-[2.5rem] bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_25px_70px_rgba(0,0,0,0.15)] p-4 sm:p-6 flex flex-col items-center overflow-hidden">
         
         {/* Botón cerrar modal */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2.5 rounded-full bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer z-20 border border-slate-600/50 shadow-lg"
+          className="absolute top-4 right-4 p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition-all cursor-pointer z-20 border border-slate-200 shadow-xs"
           aria-label="Cerrar modal"
         >
           <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -63,14 +63,14 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
 
         {/* Cabecera del Modal */}
         <div className="w-full text-left mb-3 pr-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-950 border border-purple-700/60 text-purple-300 text-[10px] sm:text-xs font-black uppercase tracking-wider mb-1.5">
-            <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 border border-purple-200 text-purple-900 text-[10px] sm:text-xs font-black uppercase tracking-wider mb-1.5">
+            <Compass className="w-3.5 h-3.5 text-purple-700 shrink-0" />
             <span>Circuitos Creativos • {currentSelection.name}</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-black text-white leading-tight">
+          <h3 className="text-xl sm:text-2xl font-black text-slate-950 leading-tight">
             Elige tu Recorrido Cultural
           </h3>
-          <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
             Desliza hacia los lados para explorar las rutas disponibles
           </p>
         </div>
@@ -83,10 +83,10 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
           {currentSelection.circuits.map((circuito, idx) => (
             <div
               key={circuito.id}
-              className={`relative snap-center shrink-0 w-[84vw] max-w-[280px] xs:max-w-[310px] sm:max-w-[340px] h-[430px] xs:h-[470px] sm:h-[510px] rounded-[2rem] overflow-hidden border transition-all duration-300 flex flex-col justify-between shadow-2xl ${
+              className={`relative snap-center shrink-0 w-[84vw] max-w-[280px] xs:max-w-[310px] sm:max-w-[340px] h-[430px] xs:h-[470px] sm:h-[510px] rounded-[2rem] overflow-hidden border transition-all duration-300 flex flex-col justify-between shadow-xl ${
                 circuito.isAvailable
-                  ? 'border-purple-500/80 shadow-purple-950/40 ring-1 ring-purple-500/40'
-                  : 'border-slate-800 shadow-black/60 opacity-95'
+                  ? 'border-purple-300 shadow-purple-900/10 ring-2 ring-purple-500/30'
+                  : 'border-slate-200 shadow-black/5 opacity-95'
               }`}
             >
               {/* Imagen Vertical de Fondo Completo (Full-Bleed) */}
@@ -150,7 +150,7 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
                         onClose();
                         onSelectCircuit(circuito.citySlug, circuito.id);
                       }}
-                      className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-[0_8px_25px_rgba(168,85,247,0.6)] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-white/20"
+                      className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-[0_8px_25px_rgba(168,85,247,0.4)] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer border border-white/20"
                     >
                       <MapPin className="w-4 h-4 shrink-0 text-amber-300" />
                       <span>Explorar en el Mapa →</span>
@@ -168,11 +168,11 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
         </div>
 
         {/* Controles de Navegación y Puntos del Carrusel */}
-        <div className="w-full flex items-center justify-between pt-3 mt-1 border-t border-slate-800 text-xs">
+        <div className="w-full flex items-center justify-between pt-3 mt-1 border-t border-slate-200 text-xs">
           <button
             type="button"
             onClick={onClose}
-            className="text-xs text-slate-400 hover:text-slate-200 transition-colors cursor-pointer py-1 font-semibold"
+            className="text-xs text-slate-500 hover:text-slate-900 transition-colors cursor-pointer py-1 font-bold"
           >
             ← Volver al mapa
           </button>
@@ -182,16 +182,16 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
             <button
               type="button"
               onClick={() => scrollCarousel('left')}
-              className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
-              aria-label="Circuito anterior"
+              className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer border border-slate-200"
+              aria-label="Deslizar a la izquierda"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               type="button"
               onClick={() => scrollCarousel('right')}
-              className="p-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all cursor-pointer"
-              aria-label="Siguiente circuito"
+              className="p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer border border-slate-200"
+              aria-label="Deslizar a la derecha"
             >
               <ChevronRight className="w-4 h-4" />
             </button>

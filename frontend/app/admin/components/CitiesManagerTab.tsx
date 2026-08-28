@@ -25,6 +25,7 @@ import {
   Check,
 } from 'lucide-react';
 import { MunicipalityItem, adminService } from '@/services/adminService';
+import { NICARAGUA_GEO_DATA } from '@/data/nicaraguaGeo';
 
 interface CitiesManagerTabProps {
   cities: MunicipalityItem[];
@@ -544,8 +545,8 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
                         onChange={(e) => setFormDepartment(e.target.value)}
                         className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
                       >
-                        {['León', 'Masaya', 'Granada', 'Estelí', 'Costa Caribe Sur', 'Matagalpa', 'Chontales', 'Managua', 'Rivas', 'Carazo', 'Chinandega', 'Madriz', 'Nueva Segovia', 'Jinotega', 'Boaco', 'Río San Juan', 'Costa Caribe Norte'].map((d) => (
-                          <option key={d} value={d}>{d}</option>
+                        {NICARAGUA_GEO_DATA.map((d) => (
+                          <option key={d.id} value={d.name}>{d.name}</option>
                         ))}
                       </select>
                     </div>

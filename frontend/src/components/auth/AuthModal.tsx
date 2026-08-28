@@ -22,6 +22,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { NICARAGUA_GEO_DATA, getMunicipalitiesByDepartment } from '@/data/nicaraguaGeo';
 
 export default function AuthModal() {
   const {
@@ -48,6 +49,7 @@ export default function AuthModal() {
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regRole, setRegRole] = useState<'user' | 'entrepreneur'>('user');
+  const [regDepartment, setRegDepartment] = useState('León');
   const [regCity, setRegCity] = useState('León');
 
   // Estados OTP (Código de 6 dígitos)
@@ -510,23 +512,44 @@ export default function AuthModal() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                    Tipo de Perfil
+                  </label>
+                  <select
+                    value={regRole}
+                    onChange={(e) => setRegRole(e.target.value as 'user' | 'entrepreneur')}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                  >
+                    <option value="user">👤 Explorador Cultural / Turista</option>
+                    <option value="entrepreneur">🛍️ Emprendedor Creativo / MiPyme</option>
+                  </select>
+                </div>
+
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Tipo de Perfil
+                      Departamento
                     </label>
                     <select
-                      value={regRole}
-                      onChange={(e) => setRegRole(e.target.value as 'user' | 'entrepreneur')}
-                      className="w-full px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
+                      value={regDepartment}
+                      onChange={(e) => {
+                        const newDept = e.target.value;
+                        setRegDepartment(newDept);
+                        const firstMun = getMunicipalitiesByDepartment(newDept)[0] || 'León';
+                        setRegCity(firstMun);
+                      }}
+                      className="w-full px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     >
-                      <option value="user">👤 Explorador Cultural</option>
-                      <option value="entrepreneur">🛍️ Emprendedor Local</option>
+                      {NICARAGUA_GEO_DATA.map((d) => (
+                        <option key={d.id} value={d.name}>{d.name}</option>
+                      ))}
                     </select>
                   </div>
+
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Ciudad
+                      Municipio / Ciudad
                     </label>
                     <div className="relative flex items-center">
                       <MapPin className="absolute left-2.5 w-3 h-3 text-slate-400" />
@@ -535,8 +558,8 @@ export default function AuthModal() {
                         onChange={(e) => setRegCity(e.target.value)}
                         className="w-full pl-7 pr-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
                       >
-                        {['León', 'Masaya', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'San Juan de Oriente', 'Nagarote', 'Managua'].map((c) => (
-                          <option key={c} value={c}>{c}</option>
+                        {getMunicipalitiesByDepartment(regDepartment).map((m) => (
+                          <option key={m} value={m}>{m}</option>
                         ))}
                       </select>
                     </div>

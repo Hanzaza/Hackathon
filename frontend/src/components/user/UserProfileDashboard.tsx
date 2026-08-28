@@ -32,11 +32,16 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
+import {
+  NICARAGUA_GEO_DATA,
+  getMunicipalitiesByDepartment,
+  getDepartmentByMunicipality,
+} from '@/data/nicaraguaGeo';
 
 // Categorías culturales para preferencias
 const CULTURAL_CATEGORIES = [
   'Literatura & Poesía',
-  'Cerámica & Barro Ancestral',
+  'Artesanías & Cerámica',
   'Folclore & Marimba',
   'Muralismo & Arte Urbano',
   'Gastronomía Tradicional',
@@ -53,6 +58,7 @@ export default function UserProfileDashboard() {
   // Estados del Formulario de Configuración
   const [formName, setFormName] = useState('');
   const [formLastname, setFormLastname] = useState('');
+  const [formDepartment, setFormDepartment] = useState('León');
   const [formCity, setFormCity] = useState('León');
   const [formBio, setFormBio] = useState('');
   const [formAvatar, setFormAvatar] = useState('');
@@ -64,6 +70,7 @@ export default function UserProfileDashboard() {
   // Estados de Solicitud de Emprendedor
   const [businessName, setBusinessName] = useState('');
   const [businessType, setBusinessType] = useState('artesania');
+  const [businessDepartment, setBusinessDepartment] = useState('León');
   const [businessCity, setBusinessCity] = useState('León');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessDescription, setBusinessDescription] = useState('');
@@ -75,9 +82,13 @@ export default function UserProfileDashboard() {
   // Cargar datos del usuario en los formularios
   useEffect(() => {
     if (user) {
+      const userDept = getDepartmentByMunicipality(user.city || 'León');
       setFormName(user.name || '');
       setFormLastname(user.lastname || '');
+      setFormDepartment(userDept);
       setFormCity(user.city || 'León');
+      setBusinessDepartment(userDept);
+      setBusinessCity(user.city || 'León');
       setFormBio(user.bio || '');
       setFormAvatar(user.avatar || '');
       setFormFavCategories(user.favorite_categories || ['Literatura & Poesía', 'Folclore & Marimba']);
@@ -650,35 +661,55 @@ export default function UserProfileDashboard() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                      Categoría del Emprendimiento
+                      Categoría
                     </label>
                     <select
                       value={businessType}
                       onChange={(e) => setBusinessType(e.target.value)}
                       className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     >
-                      <option value="artesania">🏺 Taller Artesanal / Barro / Textil</option>
-                      <option value="gastronomia">🍲 Gastronomía Tradicional / Café</option>
-                      <option value="hospedaje">🏡 Hospedaje / Posada Cultural</option>
-                      <option value="galeria">🎨 Galería de Arte / Souvenirs</option>
-                      <option value="tours">🧭 Guía Turístico / Recorridos</option>
+                      <option value="artesania">🏺 Artesanal / Cerámica</option>
+                      <option value="gastronomia">🍲 Gastronomía / Café</option>
+                      <option value="hospedaje">🏡 Posada Cultural</option>
+                      <option value="galeria">🎨 Galería / Souvenirs</option>
+                      <option value="tours">🧭 Guía / Recorridos</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                      Municipio / Ciudad Creativa
+                      Departamento
+                    </label>
+                    <select
+                      value={businessDepartment}
+                      onChange={(e) => {
+                        const newDept = e.target.value;
+                        setBusinessDepartment(newDept);
+                        const firstMun = getMunicipalitiesByDepartment(newDept)[0] || 'León';
+                        setBusinessCity(firstMun);
+                      }}
+                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                    >
+                      {NICARAGUA_GEO_DATA.map((d) => (
+                        <option key={d.id} value={d.name}>{d.name}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                      Municipio / Ciudad
                     </label>
                     <select
                       value={businessCity}
                       onChange={(e) => setBusinessCity(e.target.value)}
                       className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
                     >
-                      {['León', 'Masaya', 'San Juan de Oriente', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'Nagarote'].map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                      {getMunicipalitiesByDepartment(businessDepartment).map((m) => (
+                        <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
                   </div>
@@ -786,30 +817,50 @@ export default function UserProfileDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Ciudad / Municipio de Residencia
+                    Departamento de Residencia
                   </label>
                   <select
-                    value={formCity}
-                    onChange={(e) => setFormCity(e.target.value)}
+                    value={formDepartment}
+                    onChange={(e) => {
+                      const newDept = e.target.value;
+                      setFormDepartment(newDept);
+                      const firstMun = getMunicipalitiesByDepartment(newDept)[0] || 'León';
+                      setFormCity(firstMun);
+                    }}
                     className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
                   >
-                    {['León', 'Masaya', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'Managua', 'San Juan de Oriente', 'Nagarote'].map((c) => (
-                      <option key={c} value={c}>{c}</option>
+                    {NICARAGUA_GEO_DATA.map((d) => (
+                      <option key={d.id} value={d.name}>{d.name}</option>
                     ))}
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Correo Electrónico (Solo Lectura)
+                    Municipio / Ciudad de Residencia
                   </label>
-                  <input
-                    type="email"
-                    disabled
-                    value={user.email}
-                    className="w-full bg-slate-950/50 border border-white/5 rounded-xl px-3 py-2.5 text-slate-500 cursor-not-allowed"
-                  />
+                  <select
+                    value={formCity}
+                    onChange={(e) => setFormCity(e.target.value)}
+                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
+                  >
+                    {getMunicipalitiesByDepartment(formDepartment).map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                  Correo Electrónico (Solo Lectura)
+                </label>
+                <input
+                  type="email"
+                  disabled
+                  value={user.email}
+                  className="w-full bg-slate-950/50 border border-white/5 rounded-xl px-3 py-2.5 text-slate-500 cursor-not-allowed"
+                />
               </div>
 
               <div>

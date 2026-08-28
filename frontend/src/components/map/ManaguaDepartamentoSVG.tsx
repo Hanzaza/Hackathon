@@ -99,7 +99,10 @@ export default function ManaguaDepartamentoSVG({
             const isHovered = hoveredMunicipio === m.id;
             const isCreative = m.isCreative;
 
-            let fillClass = "fill-slate-200/80 stroke-white stroke-[3px] opacity-80";
+            let fillClass = isHovered 
+              ? "fill-slate-300 stroke-slate-400 stroke-[5px] opacity-100" 
+              : "fill-[#e2e8f0] stroke-[#cbd5e1] stroke-[4px] opacity-100";
+
             if (isCreative) {
               fillClass = isHovered
                 ? "fill-purple-600 stroke-white stroke-[8px] opacity-100 cursor-pointer drop-shadow-[0_8px_20px_rgba(147,51,234,0.45)]"
@@ -143,13 +146,13 @@ export default function ManaguaDepartamentoSVG({
                   </g>
                 )}
 
-                {/* Etiqueta sutil para municipios no creativos */}
+                {/* Etiqueta visible para municipios no creativos */}
                 {!isCreative && (
                   <text
                     x={m.center[0]}
                     y={m.center[1]}
                     textAnchor="middle"
-                    className="pointer-events-none fill-slate-400 font-semibold text-[38px] opacity-60 select-none"
+                    className="pointer-events-none fill-slate-600 font-bold text-[44px] opacity-85 select-none drop-shadow-[0_2px_4px_rgba(255,255,255,0.9)]"
                   >
                     {m.name}
                   </text>

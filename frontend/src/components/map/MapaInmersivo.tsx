@@ -520,7 +520,7 @@ export default function MapaInmersivo({
       </div>
 
       {/* ================= FILTRO DE CATEGORÍAS FLOTANTE ================= */}
-      <div className="absolute top-13 sm:top-16 left-2.5 sm:left-3.5 right-14 sm:right-3.5 z-10 overflow-x-auto no-scrollbar flex items-center gap-1.5 py-1">
+      <div className="absolute top-13 sm:top-16 left-2.5 sm:left-3.5 right-14 sm:right-3.5 z-10 flex items-center gap-1.5 py-1 overflow-hidden pointer-events-auto">
         <button
           type="button"
           onClick={() => setActiveCategory('todos')}

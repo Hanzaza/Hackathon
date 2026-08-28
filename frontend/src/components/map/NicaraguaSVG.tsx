@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, Compass, MapPin, ArrowRight } from "lucide-react";
+import { Sparkles, MapPin, ArrowRight } from "lucide-react";
 
 interface NicaraguaSVGProps {
   onSelect?: (idDepartamento: string) => void;
@@ -260,7 +260,7 @@ export default function NicaraguaSVG({
             {DEPARTAMENTOS.map((dept) => {
               const isHovered = hoveredDept?.id === dept.id;
               
-              let fillClass = "fill-slate-200/80 stroke-white stroke-[1.8px]";
+              let fillClass = "fill-slate-200 stroke-slate-300 stroke-[1.8px]";
               
               if (dept.hasCircuit) {
                 // Departamentos con Circuitos Habilitados (León y Managua)
@@ -271,12 +271,12 @@ export default function NicaraguaSVG({
                 // Ciudades Creativas de la Red Nacional
                 fillClass = isHovered
                   ? "fill-indigo-500 stroke-white stroke-[2.5px] drop-shadow-[0_6px_16px_rgba(99,102,241,0.4)] cursor-pointer opacity-100"
-                  : "fill-indigo-400/90 stroke-white stroke-[1.8px] cursor-pointer opacity-90";
+                  : "fill-indigo-400 stroke-white stroke-[2px] cursor-pointer opacity-95";
               } else {
-                // Otros Departamentos
+                // Otros Departamentos (Contraste visible sobre fondo blanco)
                 fillClass = isHovered
-                  ? "fill-slate-300 stroke-white stroke-[1.5px] opacity-100"
-                  : "fill-slate-100 stroke-white stroke-[1.5px] opacity-80";
+                  ? "fill-slate-300 stroke-slate-400 stroke-[2px] cursor-default opacity-100"
+                  : "fill-[#e2e8f0] stroke-[#cbd5e1] stroke-[1.8px] cursor-default opacity-100";
               }
 
               return (
@@ -305,7 +305,7 @@ export default function NicaraguaSVG({
                         className={
                           dept.hasCircuit
                             ? "fill-white stroke-purple-600 stroke-[3px] shadow-sm"
-                            : "fill-white stroke-indigo-500 stroke-[2.5px] shadow-sm"
+                            : "fill-white stroke-indigo-600 stroke-[2.5px] shadow-sm"
                         }
                       />
                       
@@ -314,7 +314,7 @@ export default function NicaraguaSVG({
                         x={dept.center[0]}
                         y={dept.center[1] - (dept.hasCircuit ? 16 : 12)}
                         textAnchor="middle"
-                        className={`font-black tracking-wider drop-shadow-[0_2px_4px_rgba(255,255,255,0.9)] ${
+                        className={`font-black tracking-wider drop-shadow-[0_2px_4px_rgba(255,255,255,0.95)] ${
                           dept.hasCircuit
                             ? "fill-purple-950 text-[24px]"
                             : "fill-slate-900 text-[18px]"
@@ -325,13 +325,13 @@ export default function NicaraguaSVG({
                     </g>
                   )}
 
-                  {/* Etiqueta sutil para departamentos no creativos */}
+                  {/* Etiqueta visible y legible para departamentos no creativos */}
                   {!dept.isCreative && (
                     <text
                       x={dept.center[0]}
                       y={dept.center[1]}
                       textAnchor="middle"
-                      className="pointer-events-none fill-slate-400 font-bold text-[13px] opacity-60 select-none"
+                      className="pointer-events-none fill-slate-600 font-bold text-[14px] opacity-85 select-none drop-shadow-[0_1px_3px_rgba(255,255,255,0.9)]"
                     >
                       {dept.name}
                     </text>
@@ -345,29 +345,35 @@ export default function NicaraguaSVG({
 
       {/* ================= BARRA FLOTANTE DE LEYENDA Y ACCIONES ================= */}
       {showLegend && (
-        <div className="absolute bottom-2.5 sm:bottom-4 inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-xl">
-          <div className="rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-2xl px-3 py-2 sm:px-4 sm:py-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.06)] flex items-center justify-between sm:justify-around gap-2 text-xs overflow-x-auto no-scrollbar whitespace-nowrap">
+        <div className="absolute bottom-2.5 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 flex justify-center pointer-events-none">
+          <div className="rounded-full border border-slate-200/90 bg-white/95 backdrop-blur-2xl px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-md flex items-center justify-center gap-2.5 sm:gap-3.5 text-xs pointer-events-auto overflow-hidden">
             
-            {/* 1. Circuitos Habilitados (León y Managua) */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-purple-600 border border-white shadow-xs animate-pulse shrink-0" />
-              <span className="font-extrabold text-slate-900 text-[10px] sm:text-xs">
-                Circuitos <span className="text-purple-700 font-semibold">(León y Managua)</span>
+            {/* 1. Circuitos Habilitados */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-white shadow-xs animate-pulse shrink-0" />
+              <span className="font-black text-slate-900 text-[10.5px] sm:text-xs">
+                Circuitos Activos
               </span>
             </div>
 
+            <span className="text-slate-300 select-none">•</span>
+
             {/* 2. Red de Ciudades Creativas */}
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-indigo-500 border border-white shadow-xs shrink-0" />
-              <span className="font-bold text-slate-700 text-[10px] sm:text-xs">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white shadow-xs shrink-0" />
+              <span className="font-bold text-slate-700 text-[10.5px] sm:text-xs">
                 Ciudades Creativas
               </span>
             </div>
 
-            {/* 3. Indicación interactiva */}
-            <div className="hidden lg:flex items-center gap-1 text-[11px] text-slate-500 shrink-0">
-              <Compass className="w-3 h-3 text-purple-600" />
-              <span>Toca un departamento</span>
+            <span className="text-slate-300 hidden xs:inline select-none">•</span>
+
+            {/* 3. Otros Departamentos */}
+            <div className="hidden xs:flex items-center gap-1.5 shrink-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 border border-slate-400 shadow-xs shrink-0" />
+              <span className="font-semibold text-slate-500 text-[10.5px] sm:text-xs">
+                Otros
+              </span>
             </div>
 
           </div>

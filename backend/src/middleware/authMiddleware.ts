@@ -1,17 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { ENV } from '../config/env.js';
-import { JWTPayload, UserRole } from '../types/index.js';
+import { getSupabaseClient } from '../services/supabaseService.js';
+import { UserRole } from '../types/index.js';
 
-export interface AuthenticatedRequest extends Request {
-  user?: JWTPayload;
+export interface AuthenticatedUser {
+  userId: string;
+  email: string;
+  role: UserRole;
 }
 
-export function authenticateToken(
+export interface AuthenticatedRequest extends Request {
+  user?: AuthenticatedUser;
+}
+
+export async function authenticateToken(
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-): void {
+): Promise<void> {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.startsWith('Bearer ')
     ? authHeader.substring(7)
@@ -20,19 +25,43 @@ export function authenticateToken(
   if (!token) {
     res.status(401).json({
       error: 'Unauthorized',
-      message: 'Token de autenticación requerido (Bearer token).',
+      message: 'Token de autenticación de Supabase requerido (Bearer token).',
     });
     return;
   }
 
   try {
-    const decoded = jwt.verify(token, ENV.JWT.SECRET) as JWTPayload;
-    req.user = decoded;
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.auth.getUser(token);
+
+    if (error || !data?.user) {
+      res.status(401).json({
+        error: 'Unauthorized',
+        message: 'Sesión inválida o expirada en Supabase Auth.',
+      });
+      return;
+    }
+
+    // Consultar el rol en la tabla users
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', data.user.id)
+      .maybeSingle();
+
+    const role = (profile?.role || data.user.user_metadata?.role || 'user') as UserRole;
+
+    req.user = {
+      userId: data.user.id,
+      email: data.user.email || '',
+      role,
+    };
+
     next();
-  } catch {
+  } catch (err: any) {
     res.status(403).json({
       error: 'Forbidden',
-      message: 'Token inválido o expirado. Por favor inicia sesión nuevamente.',
+      message: 'Error al verificar autenticación con Supabase.',
     });
   }
 }
@@ -47,7 +76,7 @@ export function requireRole(allowedRoles: UserRole[]) {
     if (!allowedRoles.includes(req.user.role)) {
       res.status(403).json({
         error: 'Forbidden',
-        message: 'No tienes los permisos requeridos para acceder a este recurso.',
+        message: 'No tienes los permisos requeridos para acceder a este recurso administrativo.',
       });
       return;
     }

@@ -42,7 +42,7 @@ export default function Navigation() {
   const pathname = usePathname();
   const { user, isAuthenticated, openAuthModal } = useAuth();
 
-  if (pathname === '/login') return null;
+  if (pathname === '/login' || pathname.startsWith('/admin')) return null;
 
   // El logo móvil sólo se muestra en las secciones principales (Home, Agenda, Emprendedores, Experiencias, etc.)
   // y desaparece en vistas interactivas del mapa o detalle para no superponerse con controles o modales.
@@ -137,25 +137,36 @@ export default function Navigation() {
               
               {/* Botón de Perfil / Login */}
               {isAuthenticated && user ? (
-                <button
-                  type="button"
-                  onClick={openAuthModal}
-                  className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 font-bold text-xs transition-all cursor-pointer shadow-sm"
-                >
-                  <div className="relative w-6 h-6 rounded-full overflow-hidden bg-purple-200 border border-purple-300">
-                    <Image
-                      src={user.avatar || '/logos/Logo.png'}
-                      alt={user.name}
-                      fill
-                      sizes="24px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <span className="truncate max-w-[100px]">{user.name}</span>
-                  <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
-                    {user.points} pts
-                  </span>
-                </button>
+                <div className="flex items-center gap-2">
+                  {user.role === 'admin' && (
+                    <Link
+                      href="/admin"
+                      className="px-3 py-1.5 rounded-full bg-slate-950 text-purple-300 hover:text-white font-bold text-xs hover:bg-slate-900 transition-all border border-purple-500/40 flex items-center gap-1.5 shadow-sm"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+                      <span>Admin</span>
+                    </Link>
+                  )}
+                  <Link
+                    href="/perfil"
+                    className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 font-bold text-xs transition-all shadow-sm cursor-pointer"
+                    title="Ver Mi Pasaporte Cultural y Panel de Usuario"
+                  >
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-purple-200 border border-purple-300">
+                      <Image
+                        src={user.avatar || '/logos/Logo.png'}
+                        alt={user.name}
+                        fill
+                        sizes="24px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <span className="truncate max-w-[100px]">{user.name}</span>
+                    <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
+                      {user.points} pts
+                    </span>
+                  </Link>
+                </div>
               ) : (
                 <button
                   type="button"

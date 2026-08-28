@@ -1,20 +1,48 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { X, Mail, Lock, User, MapPin, Sparkles, LogOut, CheckCircle2, ShieldCheck, Store, Compass } from 'lucide-react';
+import Link from 'next/link';
+import {
+  X,
+  Mail,
+  Lock,
+  User,
+  MapPin,
+  Sparkles,
+  LogOut,
+  CheckCircle2,
+  ShieldCheck,
+  Store,
+  Compass,
+  KeyRound,
+  ArrowLeft,
+  RotateCcw,
+  AlertCircle,
+  Clock,
+} from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function AuthModal() {
-  const { user, isAuthenticated, isAuthModalOpen, closeAuthModal, login, register, logout } = useAuth();
+  const {
+    user,
+    isAuthenticated,
+    isAuthModalOpen,
+    closeAuthModal,
+    login,
+    register,
+    verifyOtp,
+    resendOtp,
+    logout,
+  } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
+  const [viewState, setViewState] = useState<'login' | 'register' | 'otp'>('login');
   
   // Estados formulario Login
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Estados formulario Registro
+  // Estados formulario Registro (100% alineados con public.users y auth.users)
   const [regName, setRegName] = useState('');
   const [regLastname, setRegLastname] = useState('');
   const [regEmail, setRegEmail] = useState('');
@@ -22,13 +50,28 @@ export default function AuthModal() {
   const [regRole, setRegRole] = useState<'user' | 'entrepreneur'>('user');
   const [regCity, setRegCity] = useState('León');
 
+  // Estados OTP (Código de 6 dígitos)
+  const [otpCode, setOtpCode] = useState('');
+  const [otpEmail, setOtpEmail] = useState('');
+  const [resendCooldown, setResendCooldown] = useState(0);
+
   // Estados de UI
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // Temporizador para reenvío de OTP
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendCooldown]);
+
   if (!isAuthModalOpen) return null;
 
+  // 1. Manejo de Inicio de Sesión
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -40,7 +83,7 @@ export default function AuthModal() {
         email: loginEmail,
         password: loginPassword,
       });
-      setSuccessMessage('¡Bienvenido de vuelta!');
+      setSuccessMessage('¡Bienvenido de vuelta a Roots!');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error al iniciar sesión';
       setErrorMessage(message);
@@ -49,6 +92,7 @@ export default function AuthModal() {
     }
   };
 
+  // 2. Manejo de Registro con Coherencia de BD y Envío de OTP
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -56,17 +100,63 @@ export default function AuthModal() {
     setSubmitting(true);
 
     try {
-      await register({
-        name: regName,
-        lastname: regLastname,
-        email: regEmail,
+      const result = await register({
+        name: regName.trim(),
+        lastname: regLastname.trim(),
+        email: regEmail.trim().toLowerCase(),
         password: regPassword,
         role: regRole,
         city: regCity,
       });
-      setSuccessMessage('¡Cuenta creada exitosamente!');
+
+      if (result.needsVerification) {
+        setOtpEmail(regEmail.trim().toLowerCase());
+        setViewState('otp');
+        setResendCooldown(60); // 60 segundos de cooldown
+        setSuccessMessage(`Hemos enviado un código OTP de 6 dígitos a ${regEmail.trim().toLowerCase()}`);
+      } else {
+        setSuccessMessage('¡Cuenta creada e iniciada exitosamente!');
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error al registrarse';
+      setErrorMessage(message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // 3. Manejo de Verificación de OTP
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpCode.trim()) return;
+
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setSubmitting(true);
+
+    try {
+      await verifyOtp(otpEmail, otpCode.trim(), 'signup');
+      setSuccessMessage('¡Correo verificado con éxito! Bienvenido a la Red de Ciudades Creativas.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Código OTP incorrecto o expirado.';
+      setErrorMessage(message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // 4. Reenviar Código OTP
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0 || !otpEmail) return;
+
+    setErrorMessage(null);
+    setSubmitting(true);
+    try {
+      await resendOtp(otpEmail, 'signup');
+      setResendCooldown(60);
+      setSuccessMessage('¡Se ha enviado un nuevo código OTP a tu correo!');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error reenviando código OTP';
       setErrorMessage(message);
     } finally {
       setSubmitting(false);
@@ -92,7 +182,7 @@ export default function AuthModal() {
           <div className="flex flex-col items-center text-center py-2">
             <div className="relative w-20 h-20 rounded-full overflow-hidden border-4 border-purple-500 shadow-xl mb-4 bg-purple-50">
               <Image
-                src={user.avatar || '/logos/Logo.png'}
+                src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop'}
                 alt={user.name}
                 fill
                 sizes="80px"
@@ -137,6 +227,26 @@ export default function AuthModal() {
               </div>
             </div>
 
+            <Link
+              href="/perfil"
+              onClick={closeAuthModal}
+              className="w-full py-3 px-4 mb-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-purple-600/25"
+            >
+              <Compass className="w-4 h-4" />
+              <span>Abrir Mi Pasaporte & Panel de Usuario →</span>
+            </Link>
+
+            {user.role === 'admin' && (
+              <Link
+                href="/admin"
+                onClick={closeAuthModal}
+                className="w-full py-2.5 px-4 mb-2.5 rounded-2xl bg-slate-950 text-purple-300 hover:text-white border border-purple-500/40 font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>Panel de Administración</span>
+              </Link>
+            )}
+
             <button
               type="button"
               onClick={logout}
@@ -145,6 +255,89 @@ export default function AuthModal() {
               <LogOut className="w-4 h-4" />
               <span>Cerrar Sesión</span>
             </button>
+          </div>
+        ) : viewState === 'otp' ? (
+          /* ================= VISTA: VERIFICACIÓN OTP DE 6 DÍGITOS ================= */
+          <div className="flex flex-col text-left animate-fadeIn">
+            
+            <button
+              type="button"
+              onClick={() => { setViewState('register'); setErrorMessage(null); }}
+              className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 mb-4 cursor-pointer self-start"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Volver o corregir datos</span>
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-100 border border-purple-200 text-purple-700 flex items-center justify-center shrink-0 shadow-sm">
+                <KeyRound className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 leading-tight">
+                  Código de Verificación
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Hemos enviado un código OTP de 6 dígitos a:
+                </p>
+                <p className="text-xs font-bold text-purple-700">{otpEmail}</p>
+              </div>
+            </div>
+
+            {errorMessage && (
+              <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold leading-relaxed flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="p-3 mb-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{successMessage}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                  Ingresa el Código OTP de 6 Dígitos
+                </label>
+                <input
+                  type="text"
+                  required
+                  maxLength={6}
+                  autoFocus
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="••••••"
+                  className="w-full py-3.5 px-4 rounded-2xl bg-slate-50 border-2 border-purple-300 text-center text-2xl font-black tracking-[0.4em] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-purple-600 focus:bg-white transition-all shadow-inner"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting || otpCode.length < 6}
+                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700 text-white font-black text-xs shadow-lg shadow-purple-900/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.98]"
+              >
+                <Sparkles className="w-4 h-4 text-amber-300" />
+                <span>{submitting ? 'Verificando código...' : 'Verificar y Entrar a Roots'}</span>
+              </button>
+            </form>
+
+            <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>¿No recibiste el código?</span>
+              <button
+                type="button"
+                disabled={resendCooldown > 0 || submitting}
+                onClick={handleResendOtp}
+                className="font-bold text-purple-700 hover:underline flex items-center gap-1 disabled:text-slate-400 disabled:no-underline cursor-pointer"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>{resendCooldown > 0 ? `Reenviar en ${resendCooldown}s` : 'Reenviar OTP'}</span>
+              </button>
+            </div>
+
           </div>
         ) : (
           /* ================= VISTA: FORMULARIOS DE LOGIN / REGISTRO ================= */
@@ -166,9 +359,9 @@ export default function AuthModal() {
             <div className="flex rounded-2xl bg-slate-100 p-1 mb-5 border border-slate-200/60">
               <button
                 type="button"
-                onClick={() => { setActiveTab('login'); setErrorMessage(null); }}
+                onClick={() => { setViewState('login'); setErrorMessage(null); }}
                 className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  activeTab === 'login'
+                  viewState === 'login'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
@@ -177,9 +370,9 @@ export default function AuthModal() {
               </button>
               <button
                 type="button"
-                onClick={() => { setActiveTab('register'); setErrorMessage(null); }}
+                onClick={() => { setViewState('register'); setErrorMessage(null); }}
                 className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  activeTab === 'register'
+                  viewState === 'register'
                     ? 'bg-white text-slate-900 shadow-sm'
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
@@ -189,8 +382,9 @@ export default function AuthModal() {
             </div>
 
             {errorMessage && (
-              <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold leading-relaxed">
-                ⚠️ {errorMessage}
+              <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold leading-relaxed flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span>{errorMessage}</span>
               </div>
             )}
             {successMessage && (
@@ -201,8 +395,8 @@ export default function AuthModal() {
             )}
 
             {/* Formulario Login */}
-            {activeTab === 'login' ? (
-              <form onSubmit={handleLogin} className="flex flex-col gap-3.5">
+            {viewState === 'login' ? (
+              <form onSubmit={handleLogin} className="flex flex-col gap-3.5 text-left">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
                     Correo Electrónico
@@ -247,12 +441,12 @@ export default function AuthModal() {
                 </button>
               </form>
             ) : (
-              /* Formulario Registro */
-              <form onSubmit={handleRegister} className="flex flex-col gap-3">
+              /* Formulario Registro 100% Coherente con Schema Supabase */
+              <form onSubmit={handleRegister} className="flex flex-col gap-3 text-left">
                 <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Nombre
+                      Nombre *
                     </label>
                     <div className="relative flex items-center">
                       <User className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
@@ -268,7 +462,7 @@ export default function AuthModal() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Apellido
+                      Apellido *
                     </label>
                     <input
                       type="text"
@@ -283,7 +477,7 @@ export default function AuthModal() {
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Correo Electrónico
+                    Correo Electrónico (Recibirá el código OTP) *
                   </label>
                   <div className="relative flex items-center">
                     <Mail className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
@@ -300,7 +494,7 @@ export default function AuthModal() {
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Contraseña (mínimo 6 caracteres)
+                    Contraseña (mínimo 6 caracteres) *
                   </label>
                   <div className="relative flex items-center">
                     <Lock className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
@@ -326,8 +520,8 @@ export default function AuthModal() {
                       onChange={(e) => setRegRole(e.target.value as 'user' | 'entrepreneur')}
                       className="w-full px-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
                     >
-                      <option value="user">👤 Visitante / Turista</option>
-                      <option value="entrepreneur">🛍️ Emprendedor / MiPyme</option>
+                      <option value="user">👤 Explorador Cultural</option>
+                      <option value="entrepreneur">🛍️ Emprendedor Local</option>
                     </select>
                   </div>
                   <div>
@@ -336,13 +530,15 @@ export default function AuthModal() {
                     </label>
                     <div className="relative flex items-center">
                       <MapPin className="absolute left-2.5 w-3 h-3 text-slate-400" />
-                      <input
-                        type="text"
+                      <select
                         value={regCity}
                         onChange={(e) => setRegCity(e.target.value)}
-                        placeholder="León"
                         className="w-full pl-7 pr-2.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                      />
+                      >
+                        {['León', 'Masaya', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'San Juan de Oriente', 'Nagarote', 'Managua'].map((c) => (
+                          <option key={c} value={c}>{c}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -353,12 +549,14 @@ export default function AuthModal() {
                   className="w-full mt-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700 active:scale-[0.98] text-white font-black text-xs shadow-lg shadow-purple-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>{submitting ? 'Creando cuenta...' : 'Completar Registro'}</span>
+                  <span>{submitting ? 'Enviando código OTP...' : 'Registrarse y Verificar con OTP'}</span>
                 </button>
               </form>
             )}
+
           </div>
         )}
+
       </div>
     </div>
   );

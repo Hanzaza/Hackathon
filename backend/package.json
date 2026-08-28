@@ -8,7 +8,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "lint": "eslint src"
+    "test-db": "tsx scripts/testConnection.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",

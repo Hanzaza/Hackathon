@@ -1,9 +1,9 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export async function fetchFromApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const base = API_BASE_URL.replace(/\/$/, '');
-  const path = endpoint.replace(/^\//, '');
-  const url = `${base}/${path}`;
+  const base = API_BASE_URL ? API_BASE_URL.replace(/\/$/, '') : '';
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = `${base}${path}`;
   
   const res = await fetch(url, {
     ...options,
@@ -14,14 +14,23 @@ export async function fetchFromApi<T>(endpoint: string, options?: RequestInit): 
   });
 
   if (!res.ok) {
-    const errorBody = await res.text().catch(() => '');
-    throw new Error(`API Error [${res.status}] ${res.statusText}: ${errorBody}`);
+    let errorMessage = `Error [${res.status}] ${res.statusText}`;
+    try {
+      const errorData = await res.json();
+      if (errorData?.message) {
+        errorMessage = errorData.message;
+      } else if (errorData?.error) {
+        errorMessage = errorData.error;
+      }
+    } catch {
+      const text = await res.text().catch(() => '');
+      if (text) errorMessage = text;
+    }
+    throw new Error(errorMessage);
   }
 
   return res.json() as Promise<T>;
 }
-
-const TOKEN_STORAGE_KEY = 'roots_auth_token';
 
 export interface UserProfile {
   id: string;
@@ -58,60 +67,8 @@ export interface LoginPayload {
   password: string;
 }
 
-export interface AuthResponse {
-  success: boolean;
-  message?: string;
-  user: UserProfile;
-  token: string;
-  expiresIn: string;
-}
-
-export const authStorage = {
-  getToken(): string | null {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem(TOKEN_STORAGE_KEY);
-  },
-  setToken(token: string): void {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(TOKEN_STORAGE_KEY, token);
-  },
-  clearToken(): void {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
-  },
-};
-
 export const apiClient = {
   getLocations: () => fetchFromApi('/api/locations'),
   getMapData: () => fetchFromApi('/api/map-data'),
   getHealth: () => fetchFromApi('/health'),
-  
-  // Métodos de Autenticación
-  auth: {
-    login: (payload: LoginPayload) =>
-      fetchFromApi<AuthResponse>('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      }),
-
-    register: (payload: RegisterPayload) =>
-      fetchFromApi<AuthResponse>('/api/auth/register', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      }),
-
-    getMe: (token?: string) => {
-      const activeToken = token || authStorage.getToken();
-      return fetchFromApi<{ success: boolean; user: UserProfile }>('/api/auth/me', {
-        headers: activeToken ? { Authorization: `Bearer ${activeToken}` } : {},
-      });
-    },
-
-    logout: () => {
-      authStorage.clearToken();
-      return fetchFromApi<{ success: boolean; message: string }>('/api/auth/logout', {
-        method: 'POST',
-      });
-    },
-  },
 };

@@ -633,7 +633,7 @@ export default function MapaInmersivo({
           )}
 
           {/* Controles y Botones de Acción Estilo Apple Maps */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 pt-2 border-t border-slate-100">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2 border-t border-slate-100">
             {/* Botón 1: Explorar Punto en Mapa */}
             <button
               type="button"
@@ -666,16 +666,16 @@ export default function MapaInmersivo({
               {sheetExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
               <span className="truncate">{sheetExpanded ? 'Cerrar' : 'Paradas'}</span>
             </button>
-
-            {/* Botón 4: Guía Oficial de la Ciudad */}
-            <Link
-              href={`/ciudades-creativas/${cityData.slug}`}
-              className="hidden sm:inline-flex items-center justify-center gap-1 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 font-bold text-xs shadow-xs transition-all active:scale-98 text-center"
-            >
-              <span>Guía</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
           </div>
+
+          {/* Botón Destacado Principal: Aprender más de la Ciudad */}
+          <Link
+            href={`/ciudades-creativas/${cityData.slug}`}
+            className="w-full mt-2 py-2.5 px-4 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-md shadow-purple-600/30 flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+          >
+            <span>Aprender más sobre {cityData.name}</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Link>
 
           {/* ================= CONTENIDO EXPANDIDO: LISTA DE PARADAS ================= */}
           {sheetExpanded && (

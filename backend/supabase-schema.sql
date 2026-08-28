@@ -1,198 +1,306 @@
-create extension if not exists postgis;
+-- ==============================================================================
+-- BASE DE DATOS MAESTRA PARA SUPABASE: RED DE CIUDADES CREATIVAS DE NICARAGUA
+-- ARQUITECTURA SEGURA: Integrada nativamente con Supabase Auth (auth.users)
+-- ==============================================================================
 
-create table if not exists countries (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  slug text unique not null,
-  iso_code text not null,
-  status text not null default 'active',
-  created_at timestamptz not null default now()
+-- 1. Extensiones necesarias
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "postgis";
+
+-- 2. Estructura de Tablas
+
+-- 2.1 Países
+CREATE TABLE IF NOT EXISTS public.countries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  iso_code TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists departments (
-  id uuid primary key default gen_random_uuid(),
-  country_id uuid references countries(id) on delete cascade,
-  name text not null,
-  slug text unique not null,
-  description text,
-  is_creative_region boolean not null default false,
-  geom geometry(Geometry,4326),
-  created_at timestamptz not null default now()
+-- 2.2 Departamentos
+CREATE TABLE IF NOT EXISTS public.departments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  country_id UUID REFERENCES public.countries(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  is_creative_region BOOLEAN NOT NULL DEFAULT false,
+  geom GEOMETRY(Geometry, 4326),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists municipalities (
-  id uuid primary key default gen_random_uuid(),
-  department_id uuid references departments(id) on delete cascade,
-  name text not null,
-  slug text unique not null,
-  description text,
-  is_creative boolean not null default false,
-  municipality_type text not null default 'tradicional',
-  geom geometry(Point,4326),
-  department_name text,
-  status text not null default 'active',
-  created_at timestamptz not null default now()
+-- 2.3 Municipios / Ciudades Creativas
+CREATE TABLE IF NOT EXISTS public.municipalities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  department_id UUID REFERENCES public.departments(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  is_creative BOOLEAN NOT NULL DEFAULT false,
+  municipality_type TEXT NOT NULL DEFAULT 'tradicional',
+  geom GEOMETRY(Point, 4326),
+  department_name TEXT,
+  status TEXT NOT NULL DEFAULT 'active',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists creative_routes (
-  id uuid primary key default gen_random_uuid(),
-  municipality_id uuid references municipalities(id) on delete cascade,
-  name text not null,
-  slug text unique not null,
-  description text,
-  status text not null default 'draft',
-  cover_image text,
-  theme text,
-  difficulty text,
-  estimated_duration integer,
-  points_award integer not null default 0,
-  badge_name text,
-  is_visible_in_map boolean not null default true,
-  created_at timestamptz not null default now()
+-- 2.4 Circuitos y Rutas Creativas
+CREATE TABLE IF NOT EXISTS public.creative_routes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  municipality_id UUID REFERENCES public.municipalities(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  status TEXT NOT NULL DEFAULT 'published',
+  cover_image TEXT,
+  theme TEXT,
+  difficulty TEXT DEFAULT 'Fácil',
+  estimated_duration INTEGER DEFAULT 120,
+  points_award INTEGER NOT NULL DEFAULT 0,
+  badge_name TEXT,
+  is_visible_in_map BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists route_places (
-  id uuid primary key default gen_random_uuid(),
-  route_id uuid references creative_routes(id) on delete cascade,
-  name text not null,
-  slug text unique not null,
-  description text,
-  category text,
-  geom geometry(Point,4326),
-  is_active boolean not null default true,
-  created_at timestamptz not null default now()
+-- 2.5 Lugares / Puntos dentro de una Ruta
+CREATE TABLE IF NOT EXISTS public.route_places (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  route_id UUID REFERENCES public.creative_routes(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  category TEXT,
+  geom GEOMETRY(Point, 4326),
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists map_points (
-  id uuid primary key default gen_random_uuid(),
-  municipality_id uuid references municipalities(id) on delete set null,
-  name text not null,
-  point_type text not null,
-  category text,
-  description text,
-  geom geometry(Point,4326),
-  status text not null default 'pending_review',
-  is_visible boolean not null default true,
-  created_at timestamptz not null default now()
+-- 2.6 Puntos Libres del Mapa
+CREATE TABLE IF NOT EXISTS public.map_points (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  municipality_id UUID REFERENCES public.municipalities(id) ON DELETE SET NULL,
+  name TEXT NOT NULL,
+  point_type TEXT NOT NULL,
+  category TEXT,
+  description TEXT,
+  geom GEOMETRY(Point, 4326),
+  status TEXT NOT NULL DEFAULT 'approved',
+  is_visible BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists users (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  lastname text not null,
-  email text unique not null,
-  password_hash text not null,
-  avatar text,
-  role text not null default 'user',
-  status text not null default 'active',
-  points integer not null default 0,
-  level integer not null default 1,
-  bio text,
-  country text,
-  city text,
-  favorite_categories text[],
-  notifications_enabled boolean not null default true,
-  created_at timestamptz not null default now()
+-- 2.7 Perfiles de Usuarios (Vinculados 1:1 a auth.users de Supabase)
+-- Las contraseñas y sesiones se gestionan de forma segura en auth.users
+CREATE TABLE IF NOT EXISTS public.users (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  lastname TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  avatar TEXT,
+  role TEXT NOT NULL DEFAULT 'user', -- 'user' | 'entrepreneur' | 'admin'
+  status TEXT NOT NULL DEFAULT 'active',
+  points INTEGER NOT NULL DEFAULT 0,
+  level INTEGER NOT NULL DEFAULT 1,
+  bio TEXT,
+  country TEXT DEFAULT 'Nicaragua',
+  city TEXT DEFAULT 'León',
+  favorite_categories TEXT[],
+  notifications_enabled BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists entrepreneur_requests (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references users(id) on delete cascade,
-  request_type text not null default 'entrepreneur',
-  status text not null default 'pending',
-  motivation text,
-  business_name text,
-  business_type text not null default 'fisico',
-  address text,
-  geom geometry(Point,4326),
-  documents text[],
-  created_at timestamptz not null default now()
+-- 2.8 Solicitudes de Registro de Emprendedores
+CREATE TABLE IF NOT EXISTS public.entrepreneur_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  request_type TEXT NOT NULL DEFAULT 'entrepreneur',
+  status TEXT NOT NULL DEFAULT 'pending',
+  motivation TEXT,
+  business_name TEXT NOT NULL,
+  business_type TEXT NOT NULL DEFAULT 'fisico',
+  address TEXT,
+  geom GEOMETRY(Point, 4326),
+  documents TEXT[],
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists entrepreneurs (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid unique references users(id) on delete cascade,
-  municipality_id uuid references municipalities(id) on delete set null,
-  business_name text not null,
-  business_type text not null default 'fisico',
-  description text,
-  address text,
-  geom geometry(Point,4326),
-  status text not null default 'active',
-  is_visible_in_map boolean not null default true,
-  created_at timestamptz not null default now()
+-- 2.9 Emprendimientos Acreditados
+CREATE TABLE IF NOT EXISTS public.entrepreneurs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE REFERENCES public.users(id) ON DELETE CASCADE,
+  municipality_id UUID REFERENCES public.municipalities(id) ON DELETE SET NULL,
+  business_name TEXT NOT NULL,
+  business_type TEXT NOT NULL DEFAULT 'fisico',
+  description TEXT,
+  address TEXT,
+  geom GEOMETRY(Point, 4326),
+  status TEXT NOT NULL DEFAULT 'active',
+  is_visible_in_map BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists entrepreneur_events (
-  id uuid primary key default gen_random_uuid(),
-  entrepreneur_id uuid references entrepreneurs(id) on delete cascade,
-  municipality_id uuid references municipalities(id) on delete set null,
-  title text not null,
-  description text,
-  start_date timestamptz not null,
-  end_date timestamptz not null,
-  location_name text,
-  location_geom geometry(Point,4326),
-  status text not null default 'published',
-  created_at timestamptz not null default now()
+-- 2.10 Eventos Culturales y de Emprendedores
+CREATE TABLE IF NOT EXISTS public.entrepreneur_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  entrepreneur_id UUID REFERENCES public.entrepreneurs(id) ON DELETE SET NULL,
+  municipality_id UUID REFERENCES public.municipalities(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  start_date TIMESTAMPTZ NOT NULL,
+  end_date TIMESTAMPTZ NOT NULL,
+  location_name TEXT,
+  location_geom GEOMETRY(Point, 4326),
+  status TEXT NOT NULL DEFAULT 'published',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists achievements (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  slug text unique not null,
-  description text,
-  achievement_type text not null,
-  icon text,
-  points_reward integer not null default 0,
-  required_count integer not null default 1,
-  created_at timestamptz not null default now()
+-- 2.11 Logros y Medallas de Gamificación
+CREATE TABLE IF NOT EXISTS public.achievements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  achievement_type TEXT NOT NULL,
+  icon TEXT,
+  points_reward INTEGER NOT NULL DEFAULT 0,
+  required_count INTEGER NOT NULL DEFAULT 1,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists user_achievements (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references users(id) on delete cascade,
-  achievement_id uuid references achievements(id) on delete cascade,
-  earned_at timestamptz not null default now(),
-  progress integer not null default 100,
-  status text not null default 'unlocked'
+-- 2.12 Logros Desbloqueados por Usuarios
+CREATE TABLE IF NOT EXISTS public.user_achievements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  achievement_id UUID REFERENCES public.achievements(id) ON DELETE CASCADE,
+  earned_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  progress INTEGER NOT NULL DEFAULT 100,
+  status TEXT NOT NULL DEFAULT 'unlocked'
 );
 
-create table if not exists user_progress (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid references users(id) on delete cascade,
-  route_id uuid references creative_routes(id) on delete set null,
-  completed_places uuid[],
-  progress_percent integer not null default 0,
-  status text not null default 'in_progress',
-  last_visited_at timestamptz,
-  created_at timestamptz not null default now()
+-- 2.13 Progreso de Rutas de Usuarios
+CREATE TABLE IF NOT EXISTS public.user_progress (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  route_id UUID REFERENCES public.creative_routes(id) ON DELETE SET NULL,
+  completed_places UUID[],
+  progress_percent INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'in_progress',
+  last_visited_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists reviews (
-  id uuid primary key default gen_random_uuid(),
-  target_type text not null,
-  target_id uuid not null,
-  user_id uuid references users(id) on delete cascade,
-  rating integer not null check (rating between 1 and 5),
-  comment text,
-  status text not null default 'approved',
-  created_at timestamptz not null default now()
+-- 2.14 Reseñas
+CREATE TABLE IF NOT EXISTS public.reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  target_type TEXT NOT NULL,
+  target_id UUID NOT NULL,
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT,
+  status TEXT NOT NULL DEFAULT 'approved',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create table if not exists reports (
-  id uuid primary key default gen_random_uuid(),
-  reported_by uuid references users(id) on delete cascade,
-  target_type text not null,
-  target_id uuid not null,
-  reason text not null,
-  status text not null default 'pending',
-  created_at timestamptz not null default now()
+-- 2.15 Reportes y Moderación
+CREATE TABLE IF NOT EXISTS public.reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reported_by UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  target_type TEXT NOT NULL,
+  target_id UUID NOT NULL,
+  reason TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-create index if not exists idx_departments_country_id on departments(country_id);
-create index if not exists idx_municipalities_department_id on municipalities(department_id);
-create index if not exists idx_creative_routes_municipality_id on creative_routes(municipality_id);
-create index if not exists idx_route_places_route_id on route_places(route_id);
-create index if not exists idx_map_points_geom on map_points using gist (geom);
-create index if not exists idx_user_progress_user_id on user_progress(user_id);
+-- 3. Índices de Rendimiento
+CREATE INDEX IF NOT EXISTS idx_departments_country_id ON public.departments(country_id);
+CREATE INDEX IF NOT EXISTS idx_municipalities_department_id ON public.municipalities(department_id);
+CREATE INDEX IF NOT EXISTS idx_creative_routes_municipality_id ON public.creative_routes(municipality_id);
+CREATE INDEX IF NOT EXISTS idx_route_places_route_id ON public.route_places(route_id);
+CREATE INDEX IF NOT EXISTS idx_user_progress_user_id ON public.user_progress(user_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+
+-- 4. Trigger Automático para Crear Perfil al Registrarse en Supabase Auth
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.users (
+    id,
+    email,
+    name,
+    lastname,
+    role,
+    avatar,
+    city
+  )
+  VALUES (
+    new.id,
+    new.email,
+    COALESCE(new.raw_user_meta_data->>'name', split_part(new.email, '@', 1)),
+    COALESCE(new.raw_user_meta_data->>'lastname', ''),
+    COALESCE(new.raw_user_meta_data->>'role', 'user'),
+    COALESCE(new.raw_user_meta_data->>'avatar', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop'),
+    COALESCE(new.raw_user_meta_data->>'city', 'León')
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    email = EXCLUDED.email;
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 5. Configuración de Row Level Security (RLS)
+ALTER TABLE public.countries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.municipalities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.creative_routes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.route_places ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.map_points ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.entrepreneur_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.entrepreneurs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.entrepreneur_events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.achievements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_achievements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_progress ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de Lectura Pública
+CREATE POLICY "Public read for countries" ON public.countries FOR SELECT USING (true);
+CREATE POLICY "Public read for departments" ON public.departments FOR SELECT USING (true);
+CREATE POLICY "Public read for municipalities" ON public.municipalities FOR SELECT USING (true);
+CREATE POLICY "Public read for creative_routes" ON public.creative_routes FOR SELECT USING (true);
+CREATE POLICY "Public read for route_places" ON public.route_places FOR SELECT USING (true);
+CREATE POLICY "Public read for map_points" ON public.map_points FOR SELECT USING (true);
+CREATE POLICY "Public read for achievements" ON public.achievements FOR SELECT USING (true);
+CREATE POLICY "Public read for events" ON public.entrepreneur_events FOR SELECT USING (true);
+CREATE POLICY "Public read for entrepreneurs" ON public.entrepreneurs FOR SELECT USING (true);
+CREATE POLICY "Public read for users" ON public.users FOR SELECT USING (true);
+
+-- Políticas de Edición de Usuario
+CREATE POLICY "Users can insert own profile" ON public.users FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can update own profile" ON public.users FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Users can insert own requests" ON public.entrepreneur_requests FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can view own requests" ON public.entrepreneur_requests FOR SELECT USING (auth.uid() = user_id);
+
+-- 6. Sincronización Retroactiva (Ejecutar para importar usuarios ya creados en auth.users a public.users)
+INSERT INTO public.users (id, email, name, lastname, role, avatar, city)
+SELECT 
+  id,
+  email,
+  COALESCE(raw_user_meta_data->>'name', split_part(email, '@', 1)),
+  COALESCE(raw_user_meta_data->>'lastname', ''),
+  COALESCE(raw_user_meta_data->>'role', 'user'),
+  COALESCE(raw_user_meta_data->>'avatar', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop'),
+  COALESCE(raw_user_meta_data->>'city', 'León')
+FROM auth.users
+ON CONFLICT (id) DO UPDATE SET
+  email = EXCLUDED.email;

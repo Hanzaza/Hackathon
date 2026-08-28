@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -15,8 +15,14 @@ import {
   Store,
   CheckCircle2,
   Clock,
-  Navigation as NavigationIcon
+  Navigation as NavigationIcon,
+  AlertTriangle,
+  Lock,
+  Sliders,
+  ExternalLink,
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { adminService, MunicipalityItem } from '@/services/adminService';
 
 export interface CityData {
   name: string;
@@ -26,6 +32,7 @@ export interface CityData {
   subtitle: string;
   description: string;
   coverImage?: string;
+  status?: 'active' | 'inactive';
   theme: {
     color: string;
     gradient: string;
@@ -62,11 +69,113 @@ interface CityDetailViewProps {
 }
 
 export default function CityDetailView({ city, prevCity, nextCity }: CityDetailViewProps) {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'patrimonio' | 'circuitos' | 'gastronomia' | 'agenda'>('patrimonio');
+  const [cityStatus, setCityStatus] = useState<'active' | 'inactive'>(city.status || 'active');
+
+  useEffect(() => {
+    // Sincronizar estado en tiempo real con el panel de administración
+    adminService.getCities().then((cities) => {
+      const match = cities.find((c) => c.slug === city.slug || c.name.toLowerCase() === city.name.toLowerCase());
+      if (match && match.status) {
+        setCityStatus(match.status);
+      }
+    });
+  }, [city.slug, city.name]);
+
+  const isAdmin = user?.role === 'admin';
+  const isInactive = cityStatus === 'inactive';
+
+  // Si la ciudad está inhabilitada y el usuario NO es admin, mostrar pantalla de mantenimiento elegante
+  if (isInactive && !isAdmin) {
+    return (
+      <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden font-sans">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(147,51,234,0.15),transparent_70%)] pointer-events-none" />
+        
+        <div className="relative max-w-lg w-full bg-slate-900/90 border border-amber-500/30 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6">
+          <div className="w-20 h-20 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400 shadow-lg shadow-amber-500/10 animate-pulse">
+            <AlertTriangle className="w-10 h-10" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase tracking-wider border border-amber-500/30 inline-block">
+              Curaduría & Mantenimiento
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-black text-white">
+              {city.name} en Actualización
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Estamos trabajando en la curaduría cultural, nuevas rutas interactivas y registro de emprendedores para esta Ciudad Creativa.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-950/70 border border-white/5 text-left text-xs space-y-1.5 text-slate-300">
+            <div className="flex items-center gap-2 font-bold text-white">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span>Próximamente disponible:</span>
+            </div>
+            <p className="text-[11px] text-slate-400 pl-6">
+              • Nuevos circuitos con navegación 3D geolocalizada.
+            </p>
+            <p className="text-[11px] text-slate-400 pl-6">
+              • Agenda de ferias, festivales y talleres vivenciales.
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href="/ciudades-creativas"
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Compass className="w-4 h-4" />
+              <span>Explorar Otras Ciudades</span>
+            </Link>
+
+            <Link
+              href="/auth"
+              className="w-full sm:w-auto px-4 py-3 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white font-bold text-xs border border-white/10 transition-all flex items-center justify-center gap-1.5"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Acceso Administrador</span>
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-800 font-sans pt-6 lg:pt-24 pb-36">
       
+      {/* Banner Exclusivo de Vista Previa para Administradores */}
+      {isInactive && isAdmin && (
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-4">
+          <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-wider text-amber-800">
+                  Modo Vista Previa de Administrador
+                </h4>
+                <p className="text-xs text-amber-700 font-medium">
+                  Esta ciudad está en estado <strong>Inactivo / Mantenimiento</strong> y no es visible para los usuarios normales.
+                </p>
+              </div>
+            </div>
+
+            <Link
+              href="/admin?tab=ciudades"
+              className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs self-start sm:self-auto flex items-center gap-1.5 transition-all shadow-sm"
+            >
+              <Sliders className="w-3.5 h-3.5" />
+              <span>Editar en Panel Admin</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* MIGA DE PAN (Breadcrumb) */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-4">
         <div className="text-xs font-bold text-slate-500 flex items-center gap-2">

@@ -97,12 +97,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
 
         try {
-          await supabase.from('users').upsert([
+          const { error: upsertErr } = await supabase.from('users').upsert([
             {
               id: newProfile.id,
               name: newProfile.name,
               lastname: newProfile.lastname,
               email: newProfile.email,
+              password_hash: '',
               avatar: newProfile.avatar,
               role: 'user',
               status: newProfile.status,
@@ -112,8 +113,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               city: newProfile.city,
             },
           ]);
-        } catch {
-          // Continuar con objeto en memoria
+          if (upsertErr) {
+            console.warn('Advertencia guardando perfil en public.users:', upsertErr.message);
+          }
+        } catch (dbErr) {
+          console.warn('Error en upsert de usuario:', dbErr);
         }
 
         setUser(newProfile);
@@ -225,8 +229,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (payload: RegisterPayload): Promise<{ needsVerification: boolean }> => {
     setIsLoading(true);
     try {
+      const email = payload.email.trim().toLowerCase();
       const { data, error } = await supabase.auth.signUp({
-        email: payload.email.trim().toLowerCase(),
+        email,
         password: payload.password,
         options: {
           data: {
@@ -249,7 +254,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { needsVerification: false };
       }
 
-      // Si data.session es null pero el usuario fue creado, Supabase ha enviado el código OTP al email
+      // Fallback: Intentar iniciar sesión automáticamente con las credenciales dadas
+      const loginAttempt = await supabase.auth.signInWithPassword({
+        email,
+        password: payload.password,
+      });
+
+      if (loginAttempt.data?.session?.user) {
+        await syncUserProfile(loginAttempt.data.session.user, loginAttempt.data.session.access_token);
+        closeAuthModal();
+        return { needsVerification: false };
+      }
+
+      // Si el usuario ya estaba registrado en Supabase
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        throw new Error('Este correo ya está registrado. Por favor selecciona "Iniciar Sesión".');
+      }
+
       return { needsVerification: true };
     } finally {
       setIsLoading(false);

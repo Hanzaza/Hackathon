@@ -115,7 +115,7 @@ export default function AuthModal() {
         setOtpEmail(regEmail.trim().toLowerCase());
         setViewState('otp');
         setResendCooldown(60); // 60 segundos de cooldown
-        setSuccessMessage(`Hemos enviado un código OTP de 6 dígitos a ${regEmail.trim().toLowerCase()}`);
+        setSuccessMessage(`Hemos enviado un enlace de confirmación a ${regEmail.trim().toLowerCase()}`);
       } else {
         setSuccessMessage('¡Cuenta creada e iniciada exitosamente!');
       }
@@ -127,27 +127,7 @@ export default function AuthModal() {
     }
   };
 
-  // 3. Manejo de Verificación de OTP
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!otpCode.trim()) return;
-
-    setErrorMessage(null);
-    setSuccessMessage(null);
-    setSubmitting(true);
-
-    try {
-      await verifyOtp(otpEmail, otpCode.trim(), 'signup');
-      setSuccessMessage('¡Correo verificado con éxito! Bienvenido a la Red de Ciudades Creativas.');
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Código OTP incorrecto o expirado.';
-      setErrorMessage(message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // 4. Reenviar Código OTP
+  // 3. Reenviar Correo de Confirmación
   const handleResendOtp = async () => {
     if (resendCooldown > 0 || !otpEmail) return;
 
@@ -156,9 +136,9 @@ export default function AuthModal() {
     try {
       await resendOtp(otpEmail, 'signup');
       setResendCooldown(60);
-      setSuccessMessage('¡Se ha enviado un nuevo código OTP a tu correo!');
+      setSuccessMessage('¡Se ha reenviado el correo de confirmación!');
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Error reenviando código OTP';
+      const message = err instanceof Error ? err.message : 'Error reenviando el correo';
       setErrorMessage(message);
     } finally {
       setSubmitting(false);
@@ -259,8 +239,8 @@ export default function AuthModal() {
             </button>
           </div>
         ) : viewState === 'otp' ? (
-          /* ================= VISTA: VERIFICACIÓN OTP DE 6 DÍGITOS ================= */
-          <div className="flex flex-col text-left animate-fadeIn">
+          /* ================= VISTA: ESPERANDO CONFIRMACIÓN POR ENLACE ================= */
+          <div className="flex flex-col text-center items-center animate-fadeIn py-2">
             
             <button
               type="button"
@@ -268,67 +248,71 @@ export default function AuthModal() {
               className="inline-flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-900 mb-4 cursor-pointer self-start"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Volver o corregir datos</span>
+              <span>Volver o cambiar correo</span>
             </button>
 
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-purple-100 border border-purple-200 text-purple-700 flex items-center justify-center shrink-0 shadow-sm">
-                <KeyRound className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-slate-900 leading-tight">
-                  Código de Verificación
-                </h3>
-                <p className="text-xs text-slate-500 font-medium">
-                  Hemos enviado un código OTP de 6 dígitos a:
-                </p>
-                <p className="text-xs font-bold text-purple-700">{otpEmail}</p>
-              </div>
+            <div className="relative w-16 h-16 rounded-3xl bg-gradient-to-tr from-purple-600 to-indigo-500 text-white flex items-center justify-center shadow-xl shadow-purple-500/25 mb-4 animate-bounce">
+              <Mail className="w-8 h-8" />
+            </div>
+
+            <h3 className="text-2xl font-black text-slate-900 leading-tight mb-2">
+              ¡Revisa tu Correo!
+            </h3>
+            <p className="text-xs text-slate-500 font-medium mb-1">
+              Hemos enviado un enlace de confirmación a:
+            </p>
+            <div className="inline-block px-3.5 py-1.5 rounded-full bg-purple-100 border border-purple-200 text-purple-900 font-black text-xs mb-5 break-all max-w-full">
+              {otpEmail}
             </div>
 
             {errorMessage && (
-              <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold leading-relaxed flex items-start gap-2">
+              <div className="w-full p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold leading-relaxed flex items-start gap-2 text-left">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {successMessage && (
-              <div className="p-3 mb-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-1.5">
+              <div className="w-full p-3 mb-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-1.5 text-left">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                 <span>{successMessage}</span>
               </div>
             )}
 
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                  Ingresa el Código OTP de 6 Dígitos
-                </label>
-                <input
-                  type="text"
-                  required
-                  maxLength={6}
-                  autoFocus
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, ''))}
-                  placeholder="••••••"
-                  className="w-full py-3.5 px-4 rounded-2xl bg-slate-50 border-2 border-purple-300 text-center text-2xl font-black tracking-[0.4em] text-slate-900 placeholder:text-slate-300 focus:outline-none focus:border-purple-600 focus:bg-white transition-all shadow-inner"
-                />
+            <div className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-left space-y-2.5 mb-5 shadow-sm">
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-purple-200 text-purple-800 text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  1
+                </div>
+                <p className="text-xs text-slate-700 font-medium">
+                  Abre tu bandeja de entrada o la carpeta de spam.
+                </p>
               </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-purple-200 text-purple-800 text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  2
+                </div>
+                <p className="text-xs text-slate-700 font-medium">
+                  Haz clic en el botón <strong>&ldquo;Confirmar mi correo electrónico&rdquo;</strong>.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <div className="w-5 h-5 rounded-full bg-purple-200 text-purple-800 text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5">
+                  3
+                </div>
+                <p className="text-xs text-slate-700 font-medium">
+                  ¡Listo! Tu sesión se activará automáticamente aquí.
+                </p>
+              </div>
+            </div>
 
-              <button
-                type="submit"
-                disabled={submitting || otpCode.length < 6}
-                className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700 text-white font-black text-xs shadow-lg shadow-purple-900/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.98]"
-              >
-                <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>{submitting ? 'Verificando código...' : 'Verificar y Entrar a Roots'}</span>
-              </button>
-            </form>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-50 text-purple-700 text-xs font-bold mb-4 border border-purple-100">
+              <Clock className="w-3.5 h-3.5 animate-spin" />
+              <span>Esperando que confirmes tu enlace...</span>
+            </div>
 
-            <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-              <span>¿No recibiste el código?</span>
+            <div className="w-full pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>¿No te llegó el correo?</span>
               <button
                 type="button"
                 disabled={resendCooldown > 0 || submitting}
@@ -336,7 +320,7 @@ export default function AuthModal() {
                 className="font-bold text-purple-700 hover:underline flex items-center gap-1 disabled:text-slate-400 disabled:no-underline cursor-pointer"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>{resendCooldown > 0 ? `Reenviar en ${resendCooldown}s` : 'Reenviar OTP'}</span>
+                <span>{resendCooldown > 0 ? `Reenviar en ${resendCooldown}s` : 'Reenviar enlace'}</span>
               </button>
             </div>
 
@@ -479,7 +463,7 @@ export default function AuthModal() {
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Correo Electrónico (Recibirá el código OTP) *
+                    Correo Electrónico *
                   </label>
                   <div className="relative flex items-center">
                     <Mail className="absolute left-3 w-3.5 h-3.5 text-slate-400" />
@@ -572,7 +556,7 @@ export default function AuthModal() {
                   className="w-full mt-2 py-3 px-4 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-600 hover:from-purple-800 hover:to-indigo-700 active:scale-[0.98] text-white font-black text-xs shadow-lg shadow-purple-900/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-amber-300" />
-                  <span>{submitting ? 'Enviando código OTP...' : 'Registrarse y Verificar con OTP'}</span>
+                  <span>{submitting ? 'Creando cuenta...' : 'Crear Cuenta y Entrar'}</span>
                 </button>
               </form>
             )}

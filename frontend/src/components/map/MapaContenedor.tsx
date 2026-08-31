@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import NicaraguaSVG from './NicaraguaSVG';
 import LeonDepartamentoSVG from './LeonDepartamentoSVG';
 import ManaguaDepartamentoSVG from './ManaguaDepartamentoSVG';
 import MapaInmersivo from './MapaInmersivo';
+import { useUI } from '@/context/UIContext';
 
 export type NivelMapa = 'nacional' | 'departamental' | 'inmersivo';
 
@@ -17,8 +18,15 @@ export default function MapaContenedor({
   initialNivel = 'nacional',
   showLegend = true,
 }: MapaContenedorProps) {
+  const { setIsImmersiveMapActive } = useUI();
+
   // Nivel actual de la navegación en el mapa
   const [nivelActual, setNivelActual] = useState<NivelMapa>(initialNivel);
+
+  useEffect(() => {
+    setIsImmersiveMapActive(nivelActual === 'inmersivo');
+    return () => setIsImmersiveMapActive(false);
+  }, [nivelActual, setIsImmersiveMapActive]);
   
   // Departamento seleccionado ('NILE', 'NIMN', etc.)
   const [departamentoActivo, setDepartamentoActivo] = useState<string>('NILE');

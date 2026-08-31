@@ -20,14 +20,16 @@ import {
   Footprints,
   Info,
 } from 'lucide-react';
-import { CreativeRouteItem, RoutePlaceItem, adminService } from '@/services/adminService';
+import { CreativeRouteItem, RoutePlaceItem, MunicipalityItem, adminService } from '@/services/adminService';
+import { MapLocationPicker } from '@/components/map/MapLocationPicker';
 
 interface RoutesManagerTabProps {
   routes: CreativeRouteItem[];
+  cities?: MunicipalityItem[];
   onRefresh: () => void;
 }
 
-export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, onRefresh }) => {
+export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, cities = [], onRefresh }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoute, setEditingRoute] = useState<CreativeRouteItem | null>(null);
   const [formData, setFormData] = useState<{
@@ -784,6 +786,24 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, onRe
                 </div>
               </div>
 
+              {/* Selector Interactivo de Ubicación con Pin en el Mapa */}
+              <div className="pt-1">
+                <MapLocationPicker
+                  lat={placeForm.lat}
+                  lng={placeForm.lng}
+                  defaultCityName={selectedRouteForPlaces?.municipality_name}
+                  height="250px"
+                  label="Ubicación Exacta de la Parada (Arrastrá o Haz Clic)"
+                  onChange={(newLat, newLng) => {
+                    setPlaceForm((prev) => ({
+                      ...prev,
+                      lat: newLat,
+                      lng: newLng,
+                    }));
+                  }}
+                />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
@@ -796,7 +816,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, onRe
                     value={placeForm.lat}
                     onChange={(e) => setPlaceForm({ ...placeForm, lat: e.target.value })}
                     placeholder="12.4350"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs focus:outline-hidden focus:border-purple-600 focus:bg-white"
                   />
                 </div>
 
@@ -811,7 +831,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, onRe
                     value={placeForm.lng}
                     onChange={(e) => setPlaceForm({ ...placeForm, lng: e.target.value })}
                     placeholder="-86.8782"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs focus:outline-hidden focus:border-purple-600 focus:bg-white"
                   />
                 </div>
               </div>
@@ -887,21 +907,43 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, onRe
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                    Municipio Sede
+                    Municipio Sede (Habilitado) *
                   </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.municipality_name}
-                    onChange={(e) => setFormData({ ...formData, municipality_name: e.target.value })}
-                    placeholder="Ej. León"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                  />
+                  {(() => {
+                    const activeCities = cities.filter((c) => c.status === 'active');
+                    if (activeCities.length > 0) {
+                      return (
+                        <select
+                          required
+                          value={formData.municipality_name}
+                          onChange={(e) => setFormData({ ...formData, municipality_name: e.target.value })}
+                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 font-bold focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                        >
+                          <option value="">-- Elige municipio habilitado --</option>
+                          {activeCities.map((c) => (
+                            <option key={c.id} value={c.name}>
+                              📍 {c.name} ({c.department_name || 'Nicaragua'})
+                            </option>
+                          ))}
+                        </select>
+                      );
+                    }
+                    return (
+                      <input
+                        type="text"
+                        required
+                        value={formData.municipality_name}
+                        onChange={(e) => setFormData({ ...formData, municipality_name: e.target.value })}
+                        placeholder="Ej. León"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                      />
+                    );
+                  })()}
                 </div>
 
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                    Eje Temático
+                    Eje Temático *
                   </label>
                   <input
                     type="text"

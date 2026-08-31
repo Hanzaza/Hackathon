@@ -20,6 +20,7 @@ export async function GET() {
         category,
         icon_name,
         image_url,
+        gallery,
         audio_guide_url,
         vr_360_url,
         is_primary_route_point,
@@ -29,16 +30,20 @@ export async function GET() {
         lat,
         lng,
         status,
+        order_num,
         creative_routes (
+          id,
           name,
           slug
         ),
         municipalities (
+          id,
           name,
           slug
         )
       `)
-      .eq('status', 'active');
+      .eq('status', 'active')
+      .order('order_num', { ascending: true });
 
     if (error) {
       throw error;
@@ -57,14 +62,20 @@ export async function GET() {
           description: loc.description,
           icon_name: loc.icon_name || 'MapPin',
           image_url: loc.image_url,
+          gallery: Array.isArray(loc.gallery) ? loc.gallery : [],
           audio_guide_url: loc.audio_guide_url,
           vr_360_url: loc.vr_360_url,
           is_primary_route_point: loc.is_primary_route_point ?? true,
           walk_time: loc.walk_time,
           points_reward: loc.points_reward || 50,
+          route_id: loc.route_id || loc.creative_routes?.id,
           route_name: loc.creative_routes?.name,
+          route_slug: loc.creative_routes?.slug,
+          municipality_id: loc.municipality_id || loc.municipalities?.id,
           city_name: loc.municipalities?.name,
+          city_slug: loc.municipalities?.slug,
           status: loc.status || 'active',
+          order_num: loc.order_num || 0,
         },
         geometry: {
           type: 'Point' as const,

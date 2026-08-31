@@ -440,6 +440,79 @@ export const adminService = {
     return false;
   },
 
+  async setMunicipalityStatus(
+    departmentId: string,
+    departmentName: string,
+    municipalityName: string,
+    status: 'active' | 'disabled' | 'inactive'
+  ): Promise<boolean> {
+    try {
+      if (supabase) {
+        const cleanName = municipalityName.trim();
+        const slug = cleanName
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/(^-|-$)/g, '');
+
+        // Buscar si ya existe por slug o nombre
+        const { data: existing } = await supabase
+          .from('municipalities')
+          .select('id, department_id, name, slug')
+          .or(`slug.eq.${slug},name.ilike.${cleanName}`)
+          .limit(1)
+          .maybeSingle();
+
+        if (existing) {
+          const { error } = await supabase
+            .from('municipalities')
+            .update({
+              status,
+              department_id: departmentId || existing.department_id,
+            })
+            .eq('id', existing.id);
+          return !error;
+        } else {
+          // Crear nuevo registro para el municipio
+          const { error } = await supabase.from('municipalities').insert([
+            {
+              department_id: departmentId || null,
+              name: cleanName,
+              slug,
+              status,
+              is_creative: false,
+              municipality_type: 'tradicional',
+              description: `Municipio de ${cleanName}, Departamento de ${departmentName}.`,
+            },
+          ]);
+          return !error;
+        }
+      }
+    } catch (err) {
+      console.error('Error setting municipality status:', err);
+    }
+    return false;
+  },
+
+  async setDepartmentAllMunicipalities(
+    departmentId: string,
+    departmentName: string,
+    municipalityNames: string[],
+    status: 'active' | 'disabled'
+  ): Promise<boolean> {
+    try {
+      const promises = municipalityNames.map((name) =>
+        this.setMunicipalityStatus(departmentId, departmentName, name, status)
+      );
+      const results = await Promise.all(promises);
+      return results.every((r) => r === true);
+    } catch (err) {
+      console.error('Error batch setting municipalities:', err);
+      return false;
+    }
+  },
+
   async createCity(data: Partial<MunicipalityItem>): Promise<boolean> {
     try {
       if (supabase) {

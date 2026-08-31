@@ -1,8 +1,7 @@
-'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { CircuitoSelectorModal, CircuitoInfo } from './CircuitoSelectorModal';
+import { adminService, CreativeRouteItem } from '@/services/adminService';
 export type { CircuitoInfo };
 
 export interface ManaguaDepartamentoSVGProps {
@@ -51,16 +50,65 @@ export default function ManaguaDepartamentoSVG({
 }: ManaguaDepartamentoSVGProps) {
   const [hoveredMunicipio, setHoveredMunicipio] = useState<string | null>(null);
   const [selectedMunicipioForCircuits, setSelectedMunicipioForCircuits] = useState<string | null>(null);
+  const [dynamicRoutes, setDynamicRoutes] = useState<CreativeRouteItem[]>([]);
+  const [dbCities, setDbCities] = useState<any[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      adminService.getRoutes(),
+      adminService.getCities(),
+    ]).then(([routesRes, citiesRes]) => {
+      if (routesRes && routesRes.length > 0) setDynamicRoutes(routesRes);
+      if (citiesRes && citiesRes.length > 0) setDbCities(citiesRes);
+    }).catch(console.error);
+  }, []);
 
   const handleClick = (m: MunicipioInfo) => {
-    if (m.isCreative && m.slug) {
-      setSelectedMunicipioForCircuits(m.slug);
-    }
+    setSelectedMunicipioForCircuits(m.slug || m.id);
   };
 
-  const currentSelection = selectedMunicipioForCircuits === 'managua' 
-    ? { name: 'Managua', circuits: CIRCUITOS_MANAGUA } 
-    : null;
+  const getCircuitos = () => {
+    if (!selectedMunicipioForCircuits) return null;
+    const mun = MUNICIPIOS.find(m => m.id === selectedMunicipioForCircuits || m.slug === selectedMunicipioForCircuits);
+    const munName = mun?.name || (selectedMunicipioForCircuits === 'managua' ? 'Managua' : selectedMunicipioForCircuits);
+    const munSlug = mun?.slug || selectedMunicipioForCircuits;
+
+    // Verificar si el municipio está habilitado en la BD
+    const munCity = dbCities.find(
+      (c) =>
+        c.name.toLowerCase().trim() === munName.toLowerCase().trim() ||
+        c.slug.toLowerCase().trim() === munSlug.toLowerCase().trim()
+    );
+    const isEnabled = munCity ? munCity.status === 'active' : (munSlug === 'managua');
+
+    // Buscar rutas dinámicas para este municipio
+    const matchedRoutes = dynamicRoutes.filter(r => {
+      const rMun = (r.municipality_name || '').toLowerCase();
+      const sTarget = munName.toLowerCase();
+      const sSlug = munSlug.toLowerCase();
+      return rMun.includes(sTarget) || (r.slug && r.slug.includes(sSlug)) || (r.municipality_id && mun?.id && r.municipality_id === mun.id);
+    });
+
+    if (matchedRoutes.length > 0) {
+      const formatted: CircuitoInfo[] = matchedRoutes.map(r => ({
+        id: r.id || r.slug,
+        name: r.name,
+        subtitle: r.theme || 'Circuito Creativo & Metropolitano',
+        description: r.description || '',
+        image: r.cover_image || '/mapa_circuitos_creativos_cards/leon/circuito_dariano.png',
+        isAvailable: r.status === 'published',
+        citySlug: munSlug,
+        badge: r.status === 'published' ? 'Circuito Habilitado' : 'En Construcción',
+      }));
+      return { id: mun?.id, name: munName, slug: munSlug, isEnabled, circuits: formatted };
+    }
+
+    if (selectedMunicipioForCircuits === 'managua') return { id: 'managua', name: 'Managua', slug: 'managua', isEnabled, circuits: CIRCUITOS_MANAGUA };
+
+    return { id: mun?.id, name: munName, slug: munSlug, isEnabled, circuits: [] };
+  };
+
+  const currentSelection = getCircuitos();
 
   return (
     <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-50/90 via-white to-purple-50/30 border border-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)] select-none flex flex-col items-center justify-center">
@@ -100,8 +148,8 @@ export default function ManaguaDepartamentoSVG({
             const isCreative = m.isCreative;
 
             let fillClass = isHovered 
-              ? "fill-slate-300 stroke-slate-400 stroke-[5px] opacity-100" 
-              : "fill-[#e2e8f0] stroke-[#cbd5e1] stroke-[4px] opacity-100";
+              ? "fill-slate-300 stroke-slate-400 stroke-[5px] opacity-100 cursor-pointer" 
+              : "fill-[#e2e8f0] stroke-[#cbd5e1] stroke-[4px] opacity-100 cursor-pointer";
 
             if (isCreative) {
               fillClass = isHovered
@@ -164,7 +212,7 @@ export default function ManaguaDepartamentoSVG({
       </div>
 
       {/* ================= BARRA FLOTANTE INFERIOR DE ACCESO A CIRCUITOS ================= */}
-      <div className="absolute bottom-3 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-md">
+      <div className="absolute bottom-20 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-md">
         <div className="rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-2xl p-2 sm:p-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.06)] flex items-center justify-between gap-2">
           
           <button

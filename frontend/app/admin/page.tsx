@@ -197,13 +197,13 @@ export default function AdminDashboardPage() {
                 <AdminStatsGrid stats={stats} onNavigate={(tab) => setActiveTab(tab)} />
               )}
               {activeTab === 'departamentos' && (
-                <DepartmentsManagerTab departments={departments} users={users} onRefresh={loadAllData} />
+                <DepartmentsManagerTab departments={departments} users={users} cities={cities} onRefresh={loadAllData} />
               )}
               {activeTab === 'solicitudes' && (
                 <EntrepreneurRequestsTab requests={requests} onRefresh={loadAllData} />
               )}
               {activeTab === 'rutas' && (
-                <RoutesManagerTab routes={routes} onRefresh={loadAllData} />
+                <RoutesManagerTab routes={routes} cities={cities} onRefresh={loadAllData} />
               )}
               {activeTab === 'ciudades' && (
                 <CitiesManagerTab cities={cities} onRefresh={loadAllData} />

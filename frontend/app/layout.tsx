@@ -6,6 +6,7 @@ import Navigation from "../src/components/ui/Navigation";
 import SplashScreen from "../src/components/ui/SplashScreen";
 import AuthModal from "../src/components/auth/AuthModal";
 import { AuthProvider } from "../src/context/AuthContext";
+import { UIProvider } from "../src/context/UIContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -51,19 +52,21 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-white text-slate-800">
         <AuthProvider>
-          {/* Pantalla de carga inicial estilo Splash con Logo grande centrado */}
-          <SplashScreen />
+          <UIProvider>
+            {/* Pantalla de carga inicial estilo Splash con Logo grande centrado */}
+            <SplashScreen />
 
-          {/* Barra de navegación global */}
-          <Navigation />
+            {/* Barra de navegación global */}
+            <Navigation />
 
-          {/* Modal / Card interactivo de Login y Registro */}
-          <AuthModal />
-          
-          {/* Contenido principal */}
-          <main className="flex-grow pb-16 lg:pb-0">
-            {children}
-          </main>
+            {/* Modal / Card interactivo de Login y Registro */}
+            <AuthModal />
+            
+            {/* Contenido principal */}
+            <main className="flex-grow">
+              {children}
+            </main>
+          </UIProvider>
         </AuthProvider>
       </body>
     </html>

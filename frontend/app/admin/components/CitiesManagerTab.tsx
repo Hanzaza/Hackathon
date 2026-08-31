@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { MunicipalityItem, adminService } from '@/services/adminService';
 import { NICARAGUA_GEO_DATA } from '@/data/nicaraguaGeo';
+import { MapLocationPicker } from '@/components/map/MapLocationPicker';
 
 interface CitiesManagerTabProps {
   cities: MunicipalityItem[];
@@ -495,45 +496,33 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
               {/* TAB 1: INFORMACIÓN GENERAL */}
               {modalTab === 'info' && (
                 <div className="space-y-4 animate-fadeIn">
+                  {/* Selector de Departamento */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                        Nombre del Municipio *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formName}
-                        onChange={(e) => handleNameChange(e.target.value)}
-                        placeholder="Ej. San Juan de Oriente"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                        Slug de URL (Ruta en web) *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={formSlug}
-                        onChange={(e) => setFormSlug(e.target.value)}
-                        placeholder="san-juan-de-oriente"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                        Departamento de Nicaragua
+                        1. Departamento de Nicaragua *
                       </label>
                       <select
                         value={formDepartment}
-                        onChange={(e) => setFormDepartment(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                        onChange={(e) => {
+                          const newDept = e.target.value;
+                          setFormDepartment(newDept);
+                          if (!editingCity) {
+                            const geo = NICARAGUA_GEO_DATA.find(
+                              (d) => d.name.toLowerCase() === newDept.toLowerCase()
+                            );
+                            const enabledInNewDept = geo?.municipalities.filter((m) => {
+                              const found = cities.find(
+                                (c) => c.name.toLowerCase().trim() === m.toLowerCase().trim()
+                              );
+                              return found ? found.status === 'active' : false;
+                            }) || [];
+                            if (enabledInNewDept.length > 0) {
+                              handleNameChange(enabledInNewDept[0]);
+                            }
+                          }
+                        }}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white font-bold"
                       >
                         {NICARAGUA_GEO_DATA.map((d) => (
                           <option key={d.id} value={d.name}>{d.name}</option>
@@ -557,6 +546,85 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
                       </select>
                     </div>
                   </div>
+
+                  {/* Selector de Municipio Habilitado */}
+                  {(() => {
+                    const geo = NICARAGUA_GEO_DATA.find(
+                      (d) => d.name.toLowerCase() === formDepartment.toLowerCase()
+                    );
+                    const enabledMuns = geo?.municipalities.filter((m) => {
+                      const found = cities.find(
+                        (c) => c.name.toLowerCase().trim() === m.toLowerCase().trim()
+                      );
+                      return found ? found.status === 'active' : false;
+                    }) || [];
+
+                    return (
+                      <div>
+                        {!editingCity && (
+                          <div className="mb-3">
+                            <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                              2. Seleccionar Municipio Habilitado *
+                            </label>
+                            {enabledMuns.length > 0 ? (
+                              <select
+                                value={formName}
+                                onChange={(e) => handleNameChange(e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 font-bold focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                              >
+                                <option value="">-- Elige un municipio habilitado --</option>
+                                {enabledMuns.map((mun) => (
+                                  <option key={mun} value={mun}>
+                                    📍 {mun} (Habilitado)
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                                <div>
+                                  <span className="font-bold block">No hay municipios habilitados en {formDepartment}</span>
+                                  <span className="text-[11px] text-amber-800">
+                                    Debes habilitar los municipios en <strong>Departamentos y Delegados</strong> para poder agregarlos aquí.
+                                  </span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                              Nombre del Municipio *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={formName}
+                              onChange={(e) => handleNameChange(e.target.value)}
+                              placeholder="Ej. San Juan de Oriente"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
+                              Slug de URL (Ruta en web) *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              value={formSlug}
+                              onChange={(e) => setFormSlug(e.target.value)}
+                              placeholder="san-juan-de-oriente"
+                              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   <div>
                     <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
@@ -672,6 +740,19 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
               {/* TAB 3: GEOLOCALIZACIÓN Y VOCACIONES */}
               {modalTab === 'geo' && (
                 <div className="space-y-4 animate-fadeIn">
+                  {/* Selector Interactivo de Ubicación con Pin en el Mapa */}
+                  <MapLocationPicker
+                    lat={formLat}
+                    lng={formLng}
+                    defaultCityName={formName}
+                    height="240px"
+                    label="Ubicación Central del Municipio (Arrastrá o Haz Clic)"
+                    onChange={(newLat, newLng) => {
+                      setFormLat(newLat);
+                      setFormLng(newLng);
+                    }}
+                  />
+
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
@@ -683,7 +764,7 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
                         value={formLat}
                         onChange={(e) => setFormLat(e.target.value)}
                         placeholder="12.4350"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
                       />
                     </div>
                     <div>
@@ -696,7 +777,7 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
                         value={formLng}
                         onChange={(e) => setFormLng(e.target.value)}
                         placeholder="-86.8782"
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-mono text-xs placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
                       />
                     </div>
                   </div>

@@ -273,8 +273,13 @@ export default function CircuitosPage() {
                           </div>
                         ))
                       ) : (
-                        <div className="p-3.5 rounded-2xl bg-white/70 border border-slate-200 text-slate-500 text-xs sm:col-span-2">
-                          Circuitos interactivos en proceso de integración territorial.
+                        <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-amber-900 text-xs sm:col-span-2 flex flex-col gap-1.5">
+                          <div className="flex items-center gap-2 font-black text-xs text-amber-950">
+                            <span>🛠️ Próximamente / En Construcción</span>
+                          </div>
+                          <p className="text-[11px] text-amber-800 leading-relaxed font-medium">
+                            Por el momento no hay rutas creativas publicadas para {city.name}. Están en diseño y estarán disponibles pronto, ¡pero ya podés ingresar a conocer todos los demás puntos y sitios emblemáticos de esta ciudad!
+                          </p>
                         </div>
                       )}
                     </div>

@@ -15,8 +15,11 @@ import {
   IoMapOutline, 
   IoStorefront, 
   IoStorefrontOutline,
+  IoPerson,
+  IoPersonOutline,
 } from 'react-icons/io5';
 import { useAuth } from '../../context/AuthContext';
+import { useUI } from '../../context/UIContext';
 import { User as UserIcon } from 'lucide-react';
 
 // Enlaces de la barra de navegación para escritorio
@@ -33,57 +36,23 @@ const DESKTOP_NAV_ITEMS = [
 const MOBILE_NAV_ITEMS = [
   { name: 'Inicio', href: '/', iconActive: IoHome, iconInactive: IoHomeOutline },
   { name: 'Circuitos', href: '/circuitos', iconActive: IoCompass, iconInactive: IoCompassOutline },
-  { name: 'Agenda', href: '/agenda', iconActive: IoCalendar, iconInactive: IoCalendarOutline },
   { name: 'Mapa', href: '/ciudades-creativas', iconActive: IoMap, iconInactive: IoMapOutline },
-  { name: 'Emprendedores', href: '/emprendedores', iconActive: IoStorefront, iconInactive: IoStorefrontOutline },
+  { name: 'Agenda', href: '/agenda', iconActive: IoCalendar, iconInactive: IoCalendarOutline },
 ];
 
 export default function Navigation() {
   const pathname = usePathname();
   const { user, isAuthenticated, openAuthModal } = useAuth();
+  const { isImmersiveMapActive } = useUI();
 
   if (pathname === '/login' || pathname.startsWith('/admin')) return null;
 
-  // El logo móvil sólo se muestra en las secciones principales (Home, Agenda, Emprendedores, Experiencias, etc.)
-  // y desaparece en vistas interactivas del mapa o detalle para no superponerse con controles o modales.
-  const isMapRoute = pathname.startsWith('/ciudades-creativas');
-  const showMobileTopLogo = !isMapRoute;
+  // El navbar móvil se muestra en el mapa nacional / departamental para permitir navegación general,
+  // y se oculta ÚNICAMENTE cuando el usuario entra al mapa 3D inmersivo de una ciudad/circuito.
+  const showMobileBottomNav = !isImmersiveMapActive;
 
   return (
     <>
-      {/* ================= 0. LOGO CIRCULAR MÓVIL (Superior Derecho - Al tocar despliega Login Card / Registro) ================= */}
-      {showMobileTopLogo && (
-        <div className="lg:hidden fixed top-3 right-3.5 z-[9990] pointer-events-auto animate-fadeIn">
-          <button
-            type="button"
-            onClick={openAuthModal}
-            className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.25)] border-2 border-slate-100 flex items-center justify-center p-1 hover:scale-105 active:scale-95 transition-all overflow-hidden relative cursor-pointer group"
-            aria-label="Abrir Perfil o Iniciar Sesión"
-          >
-            <div className="relative w-full h-full rounded-full overflow-hidden">
-              <Image
-                src={isAuthenticated && user?.avatar ? user.avatar : '/logos/Logo.png'}
-                alt={user?.name || 'Logo'}
-                fill
-                sizes="64px"
-                className={`object-contain p-0.5 transition-transform group-hover:scale-110 ${
-                  isAuthenticated && user?.avatar ? 'object-cover' : 'scale-110'
-                }`}
-              />
-            </div>
-
-            {/* Badge indicador de estado activo / autenticado */}
-            {isAuthenticated ? (
-              <span className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm ring-1 ring-emerald-600/30" />
-            ) : (
-              <span className="absolute bottom-0 inset-x-0 bg-black/75 text-[8px] font-black text-white py-0.5 text-center leading-none tracking-tighter">
-                LOGIN
-              </span>
-            )}
-          </button>
-        </div>
-      )}
-
       {/* ================= 1. NAVBAR DE ESCRITORIO (Flotante Superior) ================= */}
       <nav className="hidden lg:block fixed top-4 left-1/2 z-[9999] w-[min(94vw,1400px)] -translate-x-1/2 pointer-events-auto">
         <div className="rounded-full border border-slate-200/80 bg-white/90 px-6 py-2.5 shadow-[0_18px_45px_rgba(15,23,42,0.12)] backdrop-blur-xl">
@@ -191,47 +160,97 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* ================= 2. NAVBAR MÓVIL (Barra Inferior Estilo App PWA con Altura Cómoda y Safe Area) ================= */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-[9999] bg-black/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-12px_45px_rgba(0,0,0,0.9)] pb-safe pt-2.5">
-        <div className="flex items-center justify-around min-h-[64px] max-w-md mx-auto px-3">
-          {MOBILE_NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-            const Icon = isActive ? item.iconActive : item.iconInactive;
-            
-            return (
+      {/* ================= 2. NAVBAR MÓVIL (Barra Inferior Estilo App PWA con Perfil Directamente Integrado) ================= */}
+      {showMobileBottomNav && (
+        <nav className="lg:hidden fixed bottom-0 inset-x-0 z-[9999] bg-black/95 backdrop-blur-2xl border-t border-white/10 shadow-[0_-12px_45px_rgba(0,0,0,0.9)] pb-safe pt-2 animate-fadeIn">
+          <div className="flex items-center justify-around min-h-[62px] max-w-md mx-auto px-2">
+            {MOBILE_NAV_ITEMS.map((item) => {
+              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              const Icon = isActive ? item.iconActive : item.iconInactive;
+              
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`flex flex-col items-center justify-center flex-1 py-1 rounded-2xl transition-all duration-200 cursor-pointer ${
+                    isActive 
+                      ? 'text-white font-black scale-105' 
+                      : 'text-white/60 hover:text-white font-medium active:scale-95'
+                  }`}
+                >
+                  <div className={`relative p-1.5 rounded-2xl transition-all duration-200 ${
+                    isActive ? 'bg-white/15 shadow-[0_0_16px_rgba(255,255,255,0.15)]' : ''
+                  }`}>
+                    <Icon 
+                      className={`w-[22px] h-[22px] shrink-0 transition-all duration-200 ${
+                        isActive 
+                          ? 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]' 
+                          : 'text-white/70'
+                      }`} 
+                    />
+                    {isActive && (
+                      <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.95)]" />
+                    )}
+                  </div>
+                  <span className={`text-[10px] tracking-tight mt-1 leading-none transition-colors ${
+                    isActive ? 'text-white font-black' : 'text-white/60 font-medium'
+                  }`}>
+                    {item.name}
+                  </span>
+                </Link>
+              );
+            })}
+
+            {/* ITEM 5: PERFIL / INICIAR SESIÓN MÓVIL INTEGRADO */}
+            {isAuthenticated && user ? (
               <Link
-                key={item.href}
-                href={item.href}
+                href="/perfil"
                 className={`flex flex-col items-center justify-center flex-1 py-1 rounded-2xl transition-all duration-200 cursor-pointer ${
-                  isActive 
-                    ? 'text-white font-black scale-105' 
+                  pathname === '/perfil'
+                    ? 'text-white font-black scale-105'
                     : 'text-white/60 hover:text-white font-medium active:scale-95'
                 }`}
               >
-                <div className={`relative p-2 rounded-2xl transition-all duration-200 ${
-                  isActive ? 'bg-white/15 shadow-[0_0_16px_rgba(255,255,255,0.15)]' : ''
+                <div className={`relative p-0.5 rounded-full transition-all duration-200 ${
+                  pathname === '/perfil'
+                    ? 'ring-2 ring-purple-400 bg-purple-600/30 shadow-[0_0_12px_rgba(168,85,247,0.5)]'
+                    : ''
                 }`}>
-                  <Icon 
-                    className={`w-[24px] h-[24px] shrink-0 transition-all duration-200 ${
-                      isActive 
-                        ? 'text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]' 
-                        : 'text-white/70'
-                    }`} 
-                  />
-                  {isActive && (
-                    <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.95)]" />
-                  )}
+                  <div className="relative w-[24px] h-[24px] rounded-full overflow-hidden border border-white/60 bg-purple-900/60">
+                    <Image
+                      src={user.avatar || '/logos/Logo.png'}
+                      alt={user.name || 'Perfil'}
+                      fill
+                      sizes="32px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-black shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
                 </div>
-                <span className={`text-[10.5px] tracking-tight mt-1 leading-none transition-colors ${
-                  isActive ? 'text-white font-black' : 'text-white/60 font-medium'
+                <span className={`text-[10px] tracking-tight mt-1 leading-none transition-colors ${
+                  pathname === '/perfil' ? 'text-white font-black' : 'text-white/60 font-medium'
                 }`}>
-                  {item.name}
+                  Perfil
                 </span>
               </Link>
-            );
-          })}
-        </div>
-      </nav>
+            ) : (
+              <button
+                type="button"
+                onClick={openAuthModal}
+                className="flex flex-col items-center justify-center flex-1 py-1 rounded-2xl transition-all duration-200 cursor-pointer text-white/60 hover:text-white font-medium active:scale-95"
+              >
+                <div className="relative p-1.5 rounded-2xl transition-all duration-200">
+                  <IoPersonOutline className="w-[22px] h-[22px] shrink-0 text-white/70" />
+                </div>
+                <span className="text-[10px] tracking-tight mt-1 leading-none text-white/60 font-medium">
+                  Ingresar
+                </span>
+              </button>
+            )}
+
+          </div>
+        </nav>
+      )}
     </>
   );
 }

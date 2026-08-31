@@ -4,12 +4,13 @@ export const backendAdminService = {
   async getDashboardStats() {
     try {
       const supabase = getSupabaseClient();
-      const [usersRes, reqRes, routesRes, citiesRes, eventsRes, reportsRes] = await Promise.allSettled([
+      const [usersRes, reqRes, routesRes, citiesRes, eventsRes, deptsRes, reportsRes] = await Promise.allSettled([
         supabase.from('users').select('id, role', { count: 'exact' }),
         supabase.from('entrepreneur_requests').select('id', { count: 'exact' }).eq('status', 'pending'),
         supabase.from('creative_routes').select('id', { count: 'exact' }),
         supabase.from('municipalities').select('id', { count: 'exact' }),
         supabase.from('entrepreneur_events').select('id', { count: 'exact' }),
+        supabase.from('departments').select('id', { count: 'exact' }),
         supabase.from('reports').select('id', { count: 'exact' }).eq('status', 'pending'),
       ]);
 
@@ -18,6 +19,7 @@ export const backendAdminService = {
       const routesCount = routesRes.status === 'fulfilled' ? routesRes.value.count || 0 : 0;
       const citiesCount = citiesRes.status === 'fulfilled' ? citiesRes.value.count || 0 : 0;
       const eventsCount = eventsRes.status === 'fulfilled' ? eventsRes.value.count || 0 : 0;
+      const deptsCount = deptsRes.status === 'fulfilled' ? deptsRes.value.count || 0 : 0;
       const reportsCount = reportsRes.status === 'fulfilled' ? reportsRes.value.count || 0 : 0;
 
       return {
@@ -25,17 +27,19 @@ export const backendAdminService = {
         pendingRequests: pendingReqCount,
         totalRoutes: routesCount,
         totalCities: citiesCount,
+        totalDepartments: deptsCount,
         totalEvents: eventsCount,
         pendingReports: reportsCount,
       };
     } catch {
       return {
-        totalUsers: 3,
-        pendingRequests: 3,
-        totalRoutes: 4,
-        totalCities: 9,
-        totalEvents: 3,
-        pendingReports: 2,
+        totalUsers: 0,
+        pendingRequests: 0,
+        totalRoutes: 0,
+        totalCities: 0,
+        totalDepartments: 0,
+        totalEvents: 0,
+        pendingReports: 0,
       };
     }
   },

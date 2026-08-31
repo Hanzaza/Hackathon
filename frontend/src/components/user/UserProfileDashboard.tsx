@@ -193,12 +193,31 @@ export default function UserProfileDashboard() {
     setIsSubmittingRequest(true);
     try {
       if (supabase && user.id) {
+        // Obtener IDs de departamento y municipio si existen
+        const { data: dept } = await supabase
+          .from('departments')
+          .select('id')
+          .ilike('name', `%${businessDepartment}%`)
+          .limit(1)
+          .maybeSingle();
+
+        const { data: mun } = await supabase
+          .from('municipalities')
+          .select('id')
+          .ilike('name', `%${businessCity}%`)
+          .limit(1)
+          .maybeSingle();
+
         await supabase.from('entrepreneur_requests').insert([
           {
             user_id: user.id,
+            department_id: dept?.id || null,
+            municipality_id: mun?.id || null,
             business_name: businessName.trim(),
             business_type: businessType,
+            category: businessType,
             address: businessAddress.trim(),
+            description: businessDescription.trim(),
             motivation: businessMotivation.trim(),
             status: 'pending',
           },

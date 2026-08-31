@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AdminHeader } from './components/AdminHeader';
 import { AdminSidebar, AdminTab } from './components/AdminSidebar';
 import { AdminStatsGrid } from './components/AdminStatsGrid';
+import { DepartmentsManagerTab } from './components/DepartmentsManagerTab';
 import { EntrepreneurRequestsTab } from './components/EntrepreneurRequestsTab';
 import { RoutesManagerTab } from './components/RoutesManagerTab';
 import { CitiesManagerTab } from './components/CitiesManagerTab';
@@ -14,6 +15,7 @@ import { ReportsModerationTab } from './components/ReportsModerationTab';
 import {
   adminService,
   AdminStats,
+  DepartmentItem,
   EntrepreneurRequestItem,
   CreativeRouteItem,
   MunicipalityItem,
@@ -39,9 +41,11 @@ export default function AdminDashboardPage() {
     totalRoutes: 0,
     totalEvents: 0,
     totalCities: 0,
+    totalDepartments: 0,
     pendingReports: 0,
     supabaseConnected: true,
   });
+  const [departments, setDepartments] = useState<DepartmentItem[]>([]);
   const [requests, setRequests] = useState<EntrepreneurRequestItem[]>([]);
   const [routes, setRoutes] = useState<CreativeRouteItem[]>([]);
   const [cities, setCities] = useState<MunicipalityItem[]>([]);
@@ -54,6 +58,7 @@ export default function AdminDashboardPage() {
     try {
       const [
         statsData,
+        deptsData,
         requestsData,
         routesData,
         citiesData,
@@ -63,6 +68,7 @@ export default function AdminDashboardPage() {
         reportsData,
       ] = await Promise.all([
         adminService.getStats(),
+        adminService.getDepartments(),
         adminService.getEntrepreneurRequests(),
         adminService.getRoutes(),
         adminService.getCities(),
@@ -73,6 +79,7 @@ export default function AdminDashboardPage() {
       ]);
 
       setStats(statsData);
+      setDepartments(deptsData);
       setRequests(requestsData);
       setRoutes(routesData);
       setCities(citiesData);
@@ -98,9 +105,9 @@ export default function AdminDashboardPage() {
   // Guardia de Carga
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
-        <Loader2 className="w-10 h-10 animate-spin text-purple-500 mb-4" />
-        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Verificando credenciales de seguridad...</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center text-slate-800">
+        <Loader2 className="w-10 h-10 animate-spin text-purple-600 mb-4" />
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-500">Verificando credenciales de seguridad...</p>
       </div>
     );
   }
@@ -108,23 +115,23 @@ export default function AdminDashboardPage() {
   // Guardia de Acceso de Ciberseguridad (RBAC)
   if (!isAuthenticated || user?.role !== 'admin') {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-white text-center select-none">
-        <div className="relative w-24 h-24 rounded-3xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center mb-6 shadow-2xl shadow-rose-500/20">
-          <ShieldAlert className="w-12 h-12 text-rose-500" />
-          <div className="absolute -bottom-2 -right-2 p-2 rounded-full bg-slate-900 border border-slate-700">
-            <Lock className="w-4 h-4 text-amber-400" />
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-slate-900 text-center select-none">
+        <div className="relative w-24 h-24 rounded-3xl bg-rose-50 border border-rose-200 flex items-center justify-center mb-6 shadow-xl shadow-rose-500/10">
+          <ShieldAlert className="w-12 h-12 text-rose-600" />
+          <div className="absolute -bottom-2 -right-2 p-2 rounded-full bg-white border border-slate-200 shadow-sm">
+            <Lock className="w-4 h-4 text-amber-500" />
           </div>
         </div>
 
-        <span className="px-3.5 py-1 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-black uppercase tracking-widest border border-rose-500/40 mb-4">
+        <span className="px-3.5 py-1 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black uppercase tracking-widest border border-rose-200 mb-4">
           Acceso Restringido • Protocolo RBAC
         </span>
 
-        <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-950 mb-3">
           Panel de Administración Protegido
         </h1>
 
-        <p className="text-sm text-slate-400 max-w-md mb-8 leading-relaxed">
+        <p className="text-sm text-slate-600 max-w-md mb-8 leading-relaxed">
           Esta sección está reservada exclusivamente para administradores autorizados de la Red Nacional de Ciudades Creativas.
           {isAuthenticated
             ? ` Tu usuario actual (${user?.email}) tiene rol "${user?.role}".`
@@ -134,7 +141,7 @@ export default function AdminDashboardPage() {
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <Link
             href="/"
-            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 border border-slate-700"
+            className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition-all flex items-center justify-center gap-2 border border-slate-300 shadow-sm"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Volver al Inicio</span>
@@ -144,7 +151,7 @@ export default function AdminDashboardPage() {
             <button
               type="button"
               onClick={openAuthModal}
-              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs transition-all shadow-lg shadow-purple-600/30 cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs transition-all shadow-lg shadow-purple-600/30 cursor-pointer"
             >
               Iniciar Sesión como Administrador
             </button>
@@ -155,7 +162,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-purple-600 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-purple-600 selection:text-white">
       
       {/* 1. Header Fijo Superior */}
       <AdminHeader
@@ -176,11 +183,11 @@ export default function AdminDashboardPage() {
         />
 
         {/* Content View Area */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full bg-slate-50">
           {isLoading ? (
-            <div className="h-[60vh] flex flex-col items-center justify-center gap-3 text-purple-400">
+            <div className="h-[60vh] flex flex-col items-center justify-center gap-3 text-purple-600">
               <Loader2 className="w-8 h-8 animate-spin" />
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Sincronizando con Supabase...
               </p>
             </div>
@@ -188,6 +195,9 @@ export default function AdminDashboardPage() {
             <div className="animate-fadeIn">
               {activeTab === 'resumen' && (
                 <AdminStatsGrid stats={stats} onNavigate={(tab) => setActiveTab(tab)} />
+              )}
+              {activeTab === 'departamentos' && (
+                <DepartmentsManagerTab departments={departments} users={users} onRefresh={loadAllData} />
               )}
               {activeTab === 'solicitudes' && (
                 <EntrepreneurRequestsTab requests={requests} onRefresh={loadAllData} />

@@ -51,9 +51,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .maybeSingle();
 
       // El rol se obtiene estrictamente de la base de datos de Supabase (sin hardcodes ni auto-elevación)
-      const determinedRole: 'user' | 'entrepreneur' | 'admin' =
+      const determinedRole: 'user' | 'entrepreneur' | 'admin' | 'department_manager' =
         profile?.role === 'admin'
           ? 'admin'
+          : profile?.role === 'department_manager'
+          ? 'department_manager'
           : profile?.role === 'entrepreneur'
           ? 'entrepreneur'
           : 'user';

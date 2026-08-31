@@ -496,18 +496,12 @@ export default function AuthModal() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Tipo de Perfil
-                  </label>
-                  <select
-                    value={regRole}
-                    onChange={(e) => setRegRole(e.target.value as 'user' | 'entrepreneur')}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  >
-                    <option value="user">👤 Explorador Cultural / Turista</option>
-                    <option value="entrepreneur">🛍️ Emprendedor Creativo / MiPyme</option>
-                  </select>
+                {/* Nota de rol y acreditación de emprendedor */}
+                <div className="p-2.5 rounded-xl bg-purple-50 border border-purple-100/80 text-[11px] text-purple-900 leading-snug">
+                  <span className="font-bold">👤 Perfil: Explorador Cultural / Turista</span>
+                  <p className="text-[10px] text-purple-700 mt-0.5">
+                    ¿Tienes un taller o negocio creativo? Podrás solicitar tu acreditación como Emprendedor verificado desde tu Pasaporte de Usuario.
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">

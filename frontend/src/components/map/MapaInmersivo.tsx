@@ -27,6 +27,11 @@ interface PointOfInterest {
   lng: number;
   lat: number;
   highlight: string;
+  audioGuideUrl?: string;
+  vr360Url?: string;
+  pointsReward?: number;
+  cityName?: string;
+  routeName?: string;
 }
 
 interface MapaInmersivoProps {
@@ -258,14 +263,68 @@ export default function MapaInmersivo({
   const [activeCategory, setActiveCategory] = useState<string>('todos');
   const [currentStyleIdx, setCurrentStyleIdx] = useState<number>(0);
   const [showStyleMenu, setShowStyleMenu] = useState<boolean>(false);
+  const [livePoints, setLivePoints] = useState<PointOfInterest[]>([]);
 
   const cityData = useMemo(() => {
     return municipioCoordinates[municipioId] || municipioCoordinates.leon;
   }, [municipioId]);
 
+  // Carga en vivo desde Supabase
+  useEffect(() => {
+    async function loadLivePoints() {
+      try {
+        const res = await fetch('/api/locations');
+        if (res.ok) {
+          const geojson = await res.json();
+          if (geojson && Array.isArray(geojson.features)) {
+            const mapped: PointOfInterest[] = geojson.features.map((f: any) => ({
+              id: f.properties.id || f.properties.slug,
+              name: f.properties.name,
+              category: f.properties.category || 'Patrimonio Cultural',
+              desc: f.properties.description || '',
+              image: f.properties.image_url || 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=500&auto=format&fit=crop&q=60',
+              walkTime: f.properties.walk_time || 'A pie',
+              rating: '4.9 ★',
+              lng: f.geometry.coordinates[0],
+              lat: f.geometry.coordinates[1],
+              highlight: f.properties.is_primary_route_point ? '🌟 Hito Principal' : '📍 Punto de Ciudad',
+              audioGuideUrl: f.properties.audio_guide_url,
+              vr360Url: f.properties.vr_360_url,
+              pointsReward: f.properties.points_reward,
+              cityName: f.properties.city_name,
+              routeName: f.properties.route_name,
+            }));
+
+            if (mapped.length > 0) {
+              setLivePoints(mapped);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching live points for map:', err);
+      }
+    }
+    loadLivePoints();
+  }, [municipioId, circuitoId]);
+
   const rawPoints = useMemo(() => {
+    // Si hay puntos en vivo que coincidan con la ciudad o circuito
+    const matchingLive = livePoints.filter(p => {
+      const matchCity = p.cityName && cityData.name && p.cityName.toLowerCase().includes(cityData.name.toLowerCase());
+      const matchSlug = p.cityName && cityData.slug && p.cityName.toLowerCase().includes(cityData.slug.toLowerCase());
+      return matchCity || matchSlug;
+    });
+
+    if (matchingLive.length > 0) {
+      return matchingLive;
+    }
+
+    if (livePoints.length > 0 && municipioId === 'leon') {
+      return livePoints;
+    }
+
     return circuitoId && CIRCUIT_POINTS[circuitoId] ? CIRCUIT_POINTS[circuitoId] : (CIRCUIT_POINTS.dariano || []);
-  }, [circuitoId]);
+  }, [livePoints, cityData, circuitoId, municipioId]);
 
   const filteredPoints = useMemo(() => {
     if (activeCategory === 'todos') return rawPoints;
@@ -609,19 +668,34 @@ export default function MapaInmersivo({
 
               {/* Textos y Etiquetas */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5">
+                <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
                   <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-900 border border-purple-200 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wide">
                     {selectedPoint.category}
                   </span>
                   <span className="text-[10px] sm:text-[11px] font-bold text-amber-600">
                     {selectedPoint.rating}
                   </span>
+                  {selectedPoint.pointsReward && (
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-100 text-amber-900 border border-amber-300">
+                      +{selectedPoint.pointsReward} pts
+                    </span>
+                  )}
+                  {selectedPoint.audioGuideUrl && (
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-purple-100 text-purple-900 border border-purple-300 flex items-center gap-0.5">
+                      🎧 Audio
+                    </span>
+                  )}
+                  {selectedPoint.vr360Url && (
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-cyan-100 text-cyan-900 border border-cyan-300 flex items-center gap-0.5">
+                      🌐 VR 360°
+                    </span>
+                  )}
                   <span className="text-[10px] text-slate-400 hidden xs:inline">
                     • {selectedPoint.walkTime}
                   </span>
                 </div>
 
-                <h3 className="text-sm sm:text-base font-black text-slate-900 truncate leading-tight">
+                <h3 className="text-sm sm:text-base font-black text-slate-950 truncate leading-tight">
                   {selectedPoint.name}
                 </h3>
                 

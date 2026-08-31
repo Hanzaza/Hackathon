@@ -71,7 +71,7 @@ interface CityDetailViewProps {
 export default function CityDetailView({ city, prevCity, nextCity }: CityDetailViewProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'patrimonio' | 'circuitos' | 'gastronomia' | 'agenda'>('patrimonio');
-  const [cityStatus, setCityStatus] = useState<'active' | 'inactive'>(city.status || 'active');
+  const [cityStatus, setCityStatus] = useState<'active' | 'inactive' | 'disabled' | 'pending'>((city.status as any) || 'active');
 
   useEffect(() => {
     // Sincronizar estado en tiempo real con el panel de administración
@@ -84,7 +84,7 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
   }, [city.slug, city.name]);
 
   const isAdmin = user?.role === 'admin';
-  const isInactive = cityStatus === 'inactive';
+  const isInactive = cityStatus === 'inactive' || cityStatus === 'disabled';
 
   // Si la ciudad está inhabilitada y el usuario NO es admin, mostrar pantalla de mantenimiento elegante
   if (isInactive && !isAdmin) {

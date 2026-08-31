@@ -1,344 +1,415 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from 'react';
-import { Sparkles, CalendarDays, Search } from 'lucide-react';
-import { EventCard, Evento } from './components/EventCard';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import {
+  Sparkles,
+  CalendarDays,
+  Search,
+  MapPin,
+  Clock,
+  Plus,
+  Filter,
+  Layers,
+  Award,
+  RefreshCw,
+  SlidersHorizontal,
+  ChevronRight,
+  Compass,
+  CheckCircle2,
+} from 'lucide-react';
+import { EventCard } from './components/EventCard';
+import { EventDetailModal } from './components/EventDetailModal';
+import { ProposeEventModal } from './components/ProposeEventModal';
+import { AdminEventItem, adminService } from '@/services/adminService';
+import { useAuth } from '@/context/AuthContext';
 
-const EVENTOS_AGENDA: Evento[] = [
-  {
-    id: 1,
-    titulo: 'Noche de Mitos y Leyendas',
-    ciudad: 'León',
-    lugar: 'Plaza Sutiaba',
-    fecha: '15 Ago',
-    hora: '19:00 - 22:00',
-    categoria: 'Tradición',
-    imagen: 'https://images.unsplash.com/photo-1542296332-2a44733e56a9?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-violet-100 text-violet-800',
-  },
-  {
-    id: 2,
-    titulo: 'Festival de la Marimba',
-    ciudad: 'Masaya',
-    lugar: 'Mercado de Artesanías',
-    fecha: '22 Ago',
-    hora: '16:00 - 20:00',
-    categoria: 'Música',
-    imagen: 'https://images.unsplash.com/photo-1533174000255-8324508d4b33?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-fuchsia-100 text-fuchsia-800',
-  },
-  {
-    id: 3,
-    titulo: 'Taller de Cerámica Viva',
-    ciudad: 'San Juan de Oriente',
-    lugar: 'Taller Escuela de Cerámica',
-    fecha: '28 Ago',
-    hora: '09:00 - 12:00',
-    categoria: 'Arte y Taller',
-    imagen: 'https://images.unsplash.com/photo-1610719875571-0618059ffbd2?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-amber-100 text-amber-800',
-  },
-  {
-    id: 4,
-    titulo: 'Feria Gastronómica Colonial',
-    ciudad: 'Granada',
-    lugar: 'Plaza de la Independencia',
-    fecha: '05 Sep',
-    hora: '11:00 - 18:00',
-    categoria: 'Gastronomía',
-    imagen: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-orange-100 text-orange-800',
-  },
-  {
-    id: 5,
-    titulo: 'Ruta del Muralismo Abierto',
-    ciudad: 'Estelí',
-    lugar: 'Centro Histórico',
-    fecha: '12 Sep',
-    hora: '14:00 - 17:00',
-    categoria: 'Arte Urbano',
-    imagen: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-emerald-100 text-emerald-800',
-  },
-  {
-    id: 6,
-    titulo: 'Festival Palo de Mayo Vibes',
-    ciudad: 'Bluefields',
-    lugar: 'Parque Reyes',
-    fecha: '30 Sep',
-    hora: '15:00 - 23:00',
-    categoria: 'Danza y Cultura',
-    imagen: 'https://images.unsplash.com/photo-1533147670608-2a2f9776d3ac?w=1200&h=800&fit=crop&auto=format',
-    colorTag: 'bg-cyan-100 text-cyan-800',
-  },
+const FILTROS_TIEMPO = [
+  { key: 'todas', label: 'Todos los Eventos' },
+  { key: 'semana', label: 'Esta Semana' },
+  { key: 'mes', label: 'Este Mes' },
+  { key: 'proximos', label: 'Próximos' },
 ];
 
-const FILTROS_TIEMPO = ['Todas', 'Hoy', 'Esta semana', 'Este mes'];
-const CIUDADES_FILTRO = ['León', 'Masaya', 'Granada', 'Estelí', 'Bluefields', 'San Juan de Oriente', 'Managua', 'Matagalpa', 'Juigalpa', 'Rivas'];
+const CATEGORIAS_CULTURALES = [
+  'Todas las Categorías',
+  'Tradición & Folclore',
+  'Música & Danza',
+  'Artesanía & Tradición',
+  'Gastronomía Tradicional',
+  'Arte Urbano',
+  'Danza & Música',
+];
 
 export default function AgendaPage() {
+  const { user, isAuthenticated } = useAuth();
+  const [events, setEvents] = useState<AdminEventItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Filtros y Búsqueda
   const [busqueda, setBusqueda] = useState('');
   const [filtroCiudad, setFiltroCiudad] = useState('Todas');
-  const [filtroTiempo, setFiltroTiempo] = useState('Todas');
+  const [filtroTiempo, setFiltroTiempo] = useState('todas');
+  const [filtroCategoria, setFiltroCategoria] = useState('Todas las Categorías');
 
-  // Helper: parse fecha like "15 Ago" into a Date (current year)
-  const parseFecha = (fechaStr: string) => {
-    const meses: { [k: string]: number } = {
-      Ene: 0, Feb: 1, Mar: 2, Abr: 3, May: 4, Jun: 5, Jul: 6, Ago: 7, Sep: 8, Oct: 9, Nov: 10, Dic: 11,
-    };
-    const parts = fechaStr.split(' ');
-    const dia = parseInt(parts[0], 10);
-    const mesTxt = parts[1];
-    const mes = meses[mesTxt] ?? 0;
-    const year = new Date().getFullYear();
-    return new Date(year, mes, dia);
-  };
+  // Modales
+  const [selectedEvent, setSelectedEvent] = useState<AdminEventItem | null>(null);
+  const [isProposeModalOpen, setIsProposeModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Carga de Eventos desde Supabase
+  const loadEvents = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const data = await adminService.getEvents();
+      setEvents(data);
+    } catch (err) {
+      console.error('Error cargando agenda de eventos:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadEvents();
+  }, [loadEvents]);
+
+  // Lista dinámica de Ciudades
+  const availableCities = useMemo(() => {
+    const set = new Set<string>();
+    events.forEach((e) => {
+      if (e.city) set.add(e.city);
+    });
+    return ['Todas', ...Array.from(set)];
+  }, [events]);
+
+  // Filtrado de Eventos
   const eventosFiltrados = useMemo(() => {
     const termino = busqueda.trim().toLowerCase();
     const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
-    const filtered = EVENTOS_AGENDA.filter((evento) => {
-      const coincideCiudad = filtroCiudad === 'Todas' || evento.ciudad === filtroCiudad;
-      const coincideBusqueda = termino === '' || evento.titulo.toLowerCase().includes(termino) || evento.ciudad.toLowerCase().includes(termino) || evento.categoria.toLowerCase().includes(termino);
+    const inicioSemana = new Date(hoy);
+    inicioSemana.setDate(hoy.getDate() - hoy.getDay());
+    const finSemana = new Date(inicioSemana);
+    finSemana.setDate(inicioSemana.getDate() + 6);
+    finSemana.setHours(23, 59, 59, 999);
 
-      if (!coincideCiudad || !coincideBusqueda) return false;
+    const mesActual = hoy.getMonth();
+    const yearActual = hoy.getFullYear();
 
-      // tiempo
-      const fechaEvento = parseFecha(evento.fecha);
-      if (filtroTiempo === 'Hoy') {
-        return fechaEvento.getDate() === hoy.getDate() && fechaEvento.getMonth() === hoy.getMonth() && fechaEvento.getFullYear() === hoy.getFullYear();
+    return events.filter((evento) => {
+      // 1. Filtro por Ciudad
+      if (filtroCiudad !== 'Todas' && evento.city.toLowerCase() !== filtroCiudad.toLowerCase()) {
+        return false;
       }
-      if (filtroTiempo === 'Esta semana') {
-        const diff = (fechaEvento.getTime() - hoy.setHours(0,0,0,0)) / (1000 * 60 * 60 * 24);
-        return diff >= 0 && diff <= 7;
+
+      // 2. Filtro por Categoría
+      if (
+        filtroCategoria !== 'Todas las Categorías' &&
+        !evento.category.toLowerCase().includes(filtroCategoria.toLowerCase())
+      ) {
+        return false;
       }
-      if (filtroTiempo === 'Este mes') {
-        return fechaEvento.getMonth() === hoy.getMonth() && fechaEvento.getFullYear() === hoy.getFullYear();
+
+      // 3. Filtro por Tiempo
+      const fechaEv = new Date(evento.start_date);
+      if (filtroTiempo === 'semana') {
+        if (fechaEv < inicioSemana || fechaEv > finSemana) return false;
+      } else if (filtroTiempo === 'mes') {
+        if (fechaEv.getMonth() !== mesActual || fechaEv.getFullYear() !== yearActual) return false;
+      } else if (filtroTiempo === 'proximos') {
+        if (fechaEv < hoy) return false;
+      }
+
+      // 4. Búsqueda de Texto
+      if (termino) {
+        const enTitulo = evento.title.toLowerCase().includes(termino);
+        const enCiudad = evento.city.toLowerCase().includes(termino);
+        const enLugar = evento.location_name.toLowerCase().includes(termino);
+        const enDesc = evento.description.toLowerCase().includes(termino);
+        const enCat = evento.category.toLowerCase().includes(termino);
+        if (!enTitulo && !enCiudad && !enLugar && !enDesc && !enCat) return false;
       }
 
       return true;
     });
+  }, [events, busqueda, filtroCiudad, filtroTiempo, filtroCategoria]);
 
-    // Ordenar por fecha ascendente y por título
-    filtered.sort((a, b) => {
-      const da = parseFecha(a.fecha).getTime();
-      const db = parseFecha(b.fecha).getTime();
-      if (da !== db) return da - db;
-      return a.titulo.localeCompare(b.titulo);
-    });
-
-    return filtered;
-  }, [busqueda, filtroCiudad, filtroTiempo]);
+  const handleAttendanceReward = (pointsEarned: number) => {
+    setToastMessage(`¡Felicidades! Has ganado +${pointsEarned} puntos por confirmar tu asistencia.`);
+    setTimeout(() => setToastMessage(null), 5000);
+  };
 
   return (
-    <main className="min-h-screen bg-white text-slate-800 font-sans pt-4 lg:pt-24 pb-32">
-      <section className="relative overflow-hidden bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12">
-          <div className="grid gap-8 xl:grid-cols-[1.4fr_0.9fr] items-start">
-            <div className="relative overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_20px_80px_rgba(15,23,42,0.06)]">
-              <div className="relative p-10 lg:p-14 xl:p-16">
-                <span className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700 shadow-sm">
-                  <Sparkles size={16} /> Agenda más activa
-                </span>
-                <h1 className="mt-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 max-w-2xl">
-                  Próximos eventos culturales en las Ciudades Creativas
-                </h1>
-                <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-                  Descubrí los eventos, talleres y festivales más destacados de Nicaragua. Filtra por ciudad, explora actividades y encontrá tu próxima experiencia cultural.
-                </p>
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20 selection:bg-purple-600 selection:text-white">
+      
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-slate-900 text-white border border-slate-700 shadow-2xl flex items-center gap-3 animate-fadeIn">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span className="text-xs font-bold">{toastMessage}</span>
+        </div>
+      )}
 
-                <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-3xl border border-slate-100 bg-white p-5">
-                    <p className="text-sm uppercase tracking-[0.24em] text-slate-600">Eventos</p>
-                    <p className="mt-3 text-3xl font-semibold text-slate-900">{EVENTOS_AGENDA.length}</p>
-                  </div>
-                  <div className="rounded-3xl border border-slate-100 bg-white p-5">
-                    <p className="text-sm uppercase tracking-[0.24em] text-slate-600">Ciudades</p>
-                    <p className="mt-3 text-3xl font-semibold text-slate-900">{new Set(EVENTOS_AGENDA.map(e => e.ciudad)).size}</p>
-                  </div>
-                  <div className="rounded-3xl border border-slate-100 bg-white p-5">
-                    <p className="text-sm uppercase tracking-[0.24em] text-slate-600">Categorías</p>
-                    <p className="mt-3 text-3xl font-semibold text-slate-900">{new Set(EVENTOS_AGENDA.map(e => e.categoria)).size}</p>
-                  </div>
-                  <div className="rounded-3xl border border-slate-100 bg-white p-5">
-                    <p className="text-sm uppercase tracking-[0.24em] text-slate-600">Favoritos</p>
-                    <p className="mt-3 text-3xl font-semibold text-slate-900">+2.4K</p>
-                  </div>
-                </div>
+      {/* ========================================================================= */}
+      {/* HERO SECTION DE LA AGENDA */}
+      {/* ========================================================================= */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-purple-50 via-white to-slate-50 pt-28 pb-14 sm:pb-20 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            
+            <div className="max-w-3xl space-y-4">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 text-purple-900 border border-purple-200 text-xs font-bold uppercase tracking-wider">
+                <CalendarDays className="w-4 h-4 text-purple-700" />
+                <span>Cartelera Cultural Oficial de Nicaragua</span>
               </div>
+
+              <h1 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+                Agenda de Festivales, <br className="hidden sm:inline" />
+                <span className="bg-gradient-to-r from-purple-700 via-indigo-600 to-purple-800 bg-clip-text text-transparent">
+                  Tradiciones y Noches Vivas
+                </span>
+              </h1>
+
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl font-normal">
+                Descubre en tiempo real ferias de artesanía, festivales de marimbas, conciertos tradicionales y eventos artísticos en todas las ciudades de la Red Creativa. ¡Asiste y acumula puntos de explorador cultural!
+              </p>
             </div>
 
-            <aside className="space-y-6 rounded-[2rem] border border-slate-100 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-              <div className="rounded-3xl border border-purple-50 bg-purple-50 p-6">
-                <p className="text-sm uppercase tracking-[0.25em] text-purple-700 font-semibold mb-4">Recibí lo mejor</p>
-                <h2 className="text-2xl font-bold text-slate-900 mb-3">Suscribite y no te pierdas nada</h2>
-                <p className="text-slate-600 leading-7">
-                  Recibí en tu correo los eventos, novedades y experiencias de las ciudades creativas de Nicaragua.
-                </p>
-                <div className="mt-6 space-y-4">
-                  <input
-                    type="email"
-                    placeholder="tu@correo.com"
-                    className="w-full rounded-3xl border border-slate-100 bg-white px-5 py-3 text-slate-700 placeholder:text-slate-400 outline-none focus:border-purple-700 focus:ring-2 focus:ring-purple-50"
-                  />
-                  <button className="w-full rounded-3xl bg-purple-700 px-5 py-3 text-sm font-semibold uppercase tracking-[0.15em] text-white shadow transition-colors hover:bg-purple-800">
-                    Suscribirme
-                  </button>
+            {/* Quick Stats & Action Button */}
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs text-center">
+                  <span className="block text-2xl font-black text-purple-700">
+                    {events.length}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Eventos Activos
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-3xl bg-white border border-slate-200 shadow-xs text-center">
+                  <span className="block text-2xl font-black text-amber-600">
+                    +{events.reduce((acc, e) => acc + (e.points_reward || 100), 0)}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Puntos Disponibles
+                  </span>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-slate-100 bg-white p-6">
-                <p className="text-sm uppercase tracking-[0.25em] text-slate-600 font-semibold mb-4">Top ciudades</p>
-                <div className="grid gap-3">
-                  {['León', 'Masaya', 'Granada', 'Estelí'].map((ciudad) => (
-                    <div key={ciudad} className="rounded-3xl bg-slate-50 p-4 border border-slate-100">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="font-semibold text-slate-900">{ciudad}</p>
-                        <span className="px-3 py-1 rounded-full bg-slate-100 text-xs text-slate-600 uppercase tracking-[0.2em]">
-                          +14 eventos
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={() => setIsProposeModalOpen(true)}
+                className="px-6 py-3 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-md shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Publicar una Actividad Cultural</span>
+              </button>
+            </div>
 
-              <div className="rounded-3xl border border-slate-100 bg-white p-6 flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-purple-50 text-purple-700">
-                  <Sparkles size={24} />
-                </div>
-                <div>
-                  <p className="text-sm uppercase tracking-[0.25em] text-slate-600 font-semibold">Inspiración</p>
-                  <p className="mt-2 text-slate-700 leading-6">
-                    Encuentra un plan perfecto para tu viaje cultural a Nicaragua.
-                  </p>
-                </div>
-              </div>
-            </aside>
           </div>
+
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.25em] text-violet-300 font-semibold">Agenda Cultural</p>
-            <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">Próximos eventos que no te podés perder</h2>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            {FILTROS_TIEMPO.map((item) => (
-              <button
-                key={item}
-                onClick={() => setFiltroTiempo(item)}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filtroTiempo === item ? 'bg-purple-700 text-white shadow-[0_8px_30px_rgba(99,102,241,0.12)]' : 'bg-white text-slate-700 border border-slate-200 hover:bg-purple-50'}`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between bg-white rounded-[2rem] border border-slate-100 p-5 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-              <div>
-                <span className="text-sm uppercase tracking-[0.25em] text-purple-700">Buscar evento</span>
-                <h3 className="mt-2 text-2xl font-bold text-slate-900">Filtrá por ciudad o palabra clave</h3>
-              </div>
-              <div className="flex w-full max-w-md items-center gap-3 rounded-full border border-slate-100 bg-white px-4 py-3">
-                <Search className="text-purple-700" size={18} />
-                <input
-                  type="text"
-                  value={busqueda}
-                  onChange={(event) => setBusqueda(event.target.value)}
-                  placeholder="Buscar marimba, taller, León..."
-                  className="w-full bg-transparent text-slate-700 placeholder:text-slate-400 outline-none"
-                />
-              </div>
+      {/* ========================================================================= */}
+      {/* BARRA DE BÚSQUEDA Y FILTROS */}
+      {/* ========================================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-7 relative z-20">
+        <div className="p-4 sm:p-5 rounded-3xl bg-white border border-slate-200 shadow-lg space-y-4">
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            {/* Buscador de Texto */}
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por festival, municipio, monumento o tipo de evento..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white transition-all font-medium"
+              />
+              {busqueda && (
+                <button
+                  type="button"
+                  onClick={() => setBusqueda('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 p-1"
+                >
+                  Limpiar
+                </button>
+              )}
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              {CIUDADES_FILTRO.slice(0, 9).map((ciudad) => (
+            {/* Selector de Ciudad */}
+            <div className="flex items-center gap-2 sm:w-64">
+              <MapPin className="w-4 h-4 text-purple-700 shrink-0" />
+              <select
+                value={filtroCiudad}
+                onChange={(e) => setFiltroCiudad(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3 py-3 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white font-medium cursor-pointer"
+              >
+                {availableCities.map((c) => (
+                  <option key={c} value={c}>
+                    {c === 'Todas' ? '🏙️ Todas las Ciudades' : `📍 ${c}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Chips de Tiempo y Categorías */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+            
+            {/* Filtros de Tiempo */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
+              {FILTROS_TIEMPO.map((f) => (
                 <button
-                  key={ciudad}
-                  onClick={() => setFiltroCiudad(ciudad)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filtroCiudad === ciudad ? 'bg-purple-700 text-white shadow-[0_8px_30px_rgba(99,102,241,0.12)]' : 'bg-white text-slate-700 border border-slate-200 hover:bg-purple-50'}`}
+                  key={f.key}
+                  type="button"
+                  onClick={() => setFiltroTiempo(f.key)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    filtroTiempo === f.key
+                      ? 'bg-purple-700 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-600 hover:text-slate-900'
+                  }`}
                 >
-                  {ciudad}
+                  {f.label}
                 </button>
               ))}
-              <button
-                onClick={() => setFiltroCiudad('Todas')}
-                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${filtroCiudad === 'Todas' ? 'bg-white text-slate-900 shadow-[0_8px_30px_rgba(0,0,0,0.04)]' : 'bg-white text-slate-700 border border-slate-200 hover:bg-purple-50'}`}
-              >
-                Todas
-              </button>
             </div>
 
-            {eventosFiltrados.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
-                {eventosFiltrados.map((evento) => (
-                  <EventCard key={evento.id} evento={evento} />
+            {/* Selector de Categoría */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0 no-scrollbar">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 hidden sm:inline">
+                Categoría:
+              </span>
+              <select
+                value={filtroCategoria}
+                onChange={(e) => setFiltroCategoria(e.target.value)}
+                className="bg-slate-100 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-hidden focus:border-purple-600 font-bold cursor-pointer"
+              >
+                {CATEGORIAS_CULTURALES.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
-              </div>
-            ) : (
-              <div className="rounded-[2rem] border border-slate-100 bg-white p-10 text-center text-slate-700 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-                <CalendarDays size={48} className="mx-auto text-purple-700 mb-4" />
-                <h3 className="text-2xl font-bold text-slate-900 mb-3">No hay resultados</h3>
-                <p className="max-w-xl mx-auto text-slate-600">No encontramos ningún evento con esos filtros. Probá cambiar términos o seleccioná otra ciudad.</p>
-              </div>
-            )}
+              </select>
+            </div>
 
-            <div className="flex justify-center mt-6">
-              <button className="rounded-full bg-white px-10 py-4 text-sm font-semibold uppercase tracking-[0.15em] text-slate-950 shadow-[0_18px_40px_rgba(255,255,255,0.18)] hover:bg-slate-100 transition-colors">
-                Cargar más eventos
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* CUADRÍCULA DE EVENTOS CULTURALES */}
+      {/* ========================================================================= */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        
+        {/* Header de Resultados */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-950 flex items-center gap-2">
+              <span>Eventos Encontrados</span>
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-100 text-purple-900">
+                {eventosFiltrados.length}
+              </span>
+            </h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Haz clic en cualquier evento para ver el programa completo y confirmar tu asistencia.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={loadEvents}
+            className="p-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 shadow-xs flex items-center gap-2 text-xs font-bold cursor-pointer transition-all active:scale-95"
+            title="Actualizar eventos"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-purple-700' : ''}`} />
+            <span className="hidden sm:inline">Actualizar</span>
+          </button>
+        </div>
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="py-20 flex flex-col items-center justify-center gap-3 text-purple-700">
+            <RefreshCw className="w-8 h-8 animate-spin" />
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Cargando cartelera cultural en vivo...
+            </p>
+          </div>
+        ) : eventosFiltrados.length === 0 ? (
+          /* Empty State */
+          <div className="p-12 sm:p-16 rounded-[2.5rem] bg-white border border-slate-200 text-center shadow-xs space-y-4 max-w-xl mx-auto">
+            <div className="w-16 h-16 rounded-3xl bg-purple-50 text-purple-700 flex items-center justify-center mx-auto border border-purple-200">
+              <CalendarDays className="w-8 h-8" />
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-slate-950">
+                No se encontraron actividades con estos filtros
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto font-normal">
+                Prueba ajustando los criterios de búsqueda, seleccionando otra ciudad o publicando una nueva actividad.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setBusqueda('');
+                  setFiltroCiudad('Todas');
+                  setFiltroTiempo('todas');
+                  setFiltroCategoria('Todas las Categorías');
+                }}
+                className="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+              >
+                Restablecer Filtros
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsProposeModalOpen(true)}
+                className="px-5 py-2.5 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-md cursor-pointer"
+              >
+                Inscribir Evento
               </button>
             </div>
           </div>
+        ) : (
+          /* Grid de Eventos */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {eventosFiltrados.map((evento) => (
+              <EventCard
+                key={evento.id}
+                evento={evento}
+                onSelect={(ev) => setSelectedEvent(ev)}
+              />
+            ))}
+          </div>
+        )}
 
-          <aside className="space-y-6">
-            <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-              <p className="text-sm uppercase tracking-[0.2em] text-purple-700 font-semibold mb-4">Resumen rápido</p>
-              <div className="grid gap-4">
-                <div className="rounded-3xl bg-slate-50 p-4 border border-slate-100">
-                  <p className="text-sm text-slate-600">Eventos disponibles</p>
-                  <p className="mt-2 text-3xl font-bold text-slate-900">{eventosFiltrados.length}</p>
-                </div>
-                <div className="rounded-3xl bg-slate-50 p-4 border border-slate-100">
-                  <p className="text-sm text-slate-600">Ciudad seleccionada</p>
-                  <p className="mt-2 text-2xl font-bold text-slate-900">{filtroCiudad}</p>
-                </div>
-                <div className="rounded-3xl bg-slate-50 p-4 border border-slate-100">
-                  <p className="text-sm text-slate-600">Recomendación</p>
-                  <p className="mt-2 text-slate-900 leading-7">Viví un recorrido cultural con música, artesanía y gastronomía en un solo fin de semana.</p>
-                </div>
-              </div>
-            </div>
+      </main>
 
-            <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
-              <div className="flex items-center justify-between gap-4 mb-5">
-                <span className="rounded-3xl bg-purple-50 px-4 py-2 text-sm text-purple-700">Guía rápida</span>
-                <span className="rounded-full bg-slate-50 px-3 py-1 text-xs uppercase tracking-[0.25em] text-slate-500">Top</span>
-              </div>
-              <ul className="space-y-4 text-slate-700">
-                <li className="rounded-3xl border border-slate-100 bg-slate-50 p-4">
-                  <p className="font-semibold text-slate-900">Elige la ciudad</p>
-                  <p className="text-sm text-slate-600">Filtra rápidamente según la ciudad que querés visitar.</p>
-                </li>
-                <li className="rounded-3xl border border-slate-100 bg-slate-50 p-4">
-                  <p className="font-semibold text-slate-900">Encuentra el evento</p>
-                  <p className="text-sm text-slate-600">Usá la búsqueda para ver talleres, música o gastronomía.</p>
-                </li>
-                <li className="rounded-3xl border border-slate-100 bg-slate-50 p-4">
-                  <p className="font-semibold text-slate-900">Planifica tu viaje</p>
-                  <p className="text-sm text-slate-600">Agrupa actividades por fecha y armá un fin de semana completo.</p>
-                </li>
-              </ul>
-            </div>
-          </aside>
-        </div>
-      </section>
-    </main>
+      {/* ========================================================================= */}
+      {/* MODAL DE DETALLE DE EVENTO */}
+      {/* ========================================================================= */}
+      <EventDetailModal
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+        onAttendanceConfirmed={handleAttendanceReward}
+      />
+
+      {/* ========================================================================= */}
+      {/* MODAL PARA PROPONER / PUBLICAR EVENTO */}
+      {/* ========================================================================= */}
+      <ProposeEventModal
+        isOpen={isProposeModalOpen}
+        onClose={() => setIsProposeModalOpen(false)}
+        onEventCreated={loadEvents}
+      />
+
+    </div>
   );
 }

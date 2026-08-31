@@ -1,6 +1,7 @@
 -- =========================================================================================
 -- MASTER SQL MIGRATION & SEED FOR SUPABASE
 -- Proyecto: Red Nacional de Ciudades Creativas de Nicaragua
+-- Ejecutar en Supabase Dashboard -> SQL Editor -> Run
 -- =========================================================================================
 
 -- 1. LIMPIEZA DE TABLAS OBSOLETAS Y RELACIONES ANTERIORES
@@ -232,7 +233,6 @@ ALTER TABLE public.entrepreneur_events DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.achievements DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reports DISABLE ROW LEVEL SECURITY;
 
--- Otorgar permisos de consulta y mutación a anon y authenticated
 GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, authenticated;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres, service_role;

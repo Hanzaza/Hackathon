@@ -38,13 +38,15 @@ export interface UserProfile {
   lastname: string;
   email: string;
   avatar?: string | null;
-  role: 'user' | 'entrepreneur' | 'admin';
+  role: 'user' | 'entrepreneur' | 'admin' | 'department_manager';
   status: 'active' | 'inactive' | 'pending';
   points: number;
   level: number;
   bio?: string | null;
   country?: string | null;
   city?: string | null;
+  department?: string | null;
+  assigned_department_id?: string | null;
   favorite_categories?: string[];
   notifications_enabled: boolean;
   created_at?: string;
@@ -55,7 +57,7 @@ export interface RegisterPayload {
   lastname: string;
   email: string;
   password: string;
-  role?: 'user' | 'entrepreneur' | 'admin';
+  role?: 'user' | 'entrepreneur' | 'admin' | 'department_manager';
   avatar?: string;
   city?: string;
   country?: string;

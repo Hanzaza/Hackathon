@@ -38,21 +38,20 @@ export default function MapaContenedor({
   const [circuitoSeleccionado, setCircuitoSeleccionado] = useState<string | undefined>(undefined);
 
   // Clic en el Mapa Nacional
-  const manejarSeleccionNacional = (idDepartamento: string) => {
-    setDepartamentoActivo(idDepartamento);
+  const manejarSeleccionNacional = (idOIdentificador: string) => {
     setCircuitoSeleccionado(undefined);
 
-    if (idDepartamento === 'NILE') {
-      // Si es León, abrimos el SVG departamental detallado de León
-      setSeleccion('leon');
+    if (idOIdentificador === 'NILE' || idOIdentificador === 'leon' || idOIdentificador === 'nagarote') {
+      setDepartamentoActivo('NILE');
+      setSeleccion(idOIdentificador === 'nagarote' ? 'nagarote' : 'leon');
       setNivelActual('departamental');
-    } else if (idDepartamento === 'NIMN') {
-      // Si es Managua, abrimos el SVG departamental detallado de Managua
+    } else if (idOIdentificador === 'NIMN' || idOIdentificador === 'managua') {
+      setDepartamentoActivo('NIMN');
       setSeleccion('managua');
       setNivelActual('departamental');
     } else {
-      // Para otros departamentos creativos, pasamos al mapa inmersivo 3D directamente
-      setSeleccion(idDepartamento);
+      setDepartamentoActivo(idOIdentificador);
+      setSeleccion(idOIdentificador);
       setNivelActual('inmersivo');
     }
   };

@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, MapPin, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Sparkles, MapPin, ArrowRight, Compass, Layers, CheckCircle2, ChevronRight } from "lucide-react";
 
 interface NicaraguaSVGProps {
   onSelect?: (idDepartamento: string) => void;
@@ -9,15 +11,172 @@ interface NicaraguaSVGProps {
   showMarkers?: boolean;
 }
 
+export interface CreativeCityPin {
+  id: string;
+  name: string;
+  slug: string;
+  deptId: string;
+  icon: string;
+  tagline: string;
+  specialty: string;
+  hasCircuit: boolean;
+  circuitsCount: number;
+  coords: [number, number]; // [cx, cy]
+  badgeColor: string;
+  logo: string;
+}
+
+export const CREATIVE_CITIES: CreativeCityPin[] = [
+  {
+    id: "leon",
+    name: "León",
+    slug: "leon",
+    deptId: "NILE",
+    icon: "🏛️",
+    tagline: "Capital de la Poesía & Patrimonio UNESCO",
+    specialty: "Literatura & Arte Mural",
+    hasCircuit: true,
+    circuitsCount: 2,
+    coords: [224, 508],
+    badgeColor: "from-purple-600 to-indigo-600",
+    logo: "/logos/logo4.png",
+  },
+  {
+    id: "nagarote",
+    name: "Nagarote",
+    slug: "nagarote",
+    deptId: "NILE",
+    icon: "🧀",
+    tagline: "Municipio Azul y Cuna del Quesillo",
+    specialty: "Gastronomía Tradicional",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [256, 542],
+    badgeColor: "from-blue-600 to-cyan-600",
+    logo: "/logos/logo10.png",
+  },
+  {
+    id: "managua",
+    name: "Managua",
+    slug: "managua",
+    deptId: "NIMN",
+    icon: "🏙️",
+    tagline: "Capital Multicultural y de las Artes",
+    specialty: "Arte Contemporáneo & Patrimonio",
+    hasCircuit: true,
+    circuitsCount: 2,
+    coords: [298, 574],
+    badgeColor: "from-purple-600 to-pink-600",
+    logo: "/logos/logo8.png",
+  },
+  {
+    id: "masaya",
+    name: "Masaya",
+    slug: "masaya",
+    deptId: "NIMS",
+    icon: "🎭",
+    tagline: "Capital del Folclore Nacional",
+    specialty: "Danza, Teatro & Artesanías",
+    hasCircuit: true,
+    circuitsCount: 1,
+    coords: [332, 608],
+    badgeColor: "from-amber-600 to-orange-600",
+    logo: "/logos/logo2.png",
+  },
+  {
+    id: "san-juan-de-oriente",
+    name: "San Juan de Oriente",
+    slug: "san-juan-de-oriente",
+    deptId: "NIMS",
+    icon: "🏺",
+    tagline: "Cuna de la Cerámica Precolombina",
+    specialty: "Alfarería & Circuito Tierra Viva",
+    hasCircuit: true,
+    circuitsCount: 1,
+    coords: [344, 630],
+    badgeColor: "from-orange-600 to-amber-700",
+    logo: "/logos/logo3.png",
+  },
+  {
+    id: "granada",
+    name: "Granada",
+    slug: "granada",
+    deptId: "NIGR",
+    icon: "⛵",
+    tagline: "La Gran Sultana & Arquitectura Colonial",
+    specialty: "Diseño Colonial & Poesía",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [368, 642],
+    badgeColor: "from-rose-600 to-red-600",
+    logo: "/logos/logo5.png",
+  },
+  {
+    id: "esteli",
+    name: "Estelí",
+    slug: "esteli",
+    deptId: "NIES",
+    icon: "🎨",
+    tagline: "Diamante de las Segovias & Muralismo",
+    specialty: "Murales & Música Segoviana",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [288, 396],
+    badgeColor: "from-emerald-600 to-teal-600",
+    logo: "/logos/logo6.png",
+  },
+  {
+    id: "matagalpa",
+    name: "Matagalpa",
+    slug: "matagalpa",
+    deptId: "NIMT",
+    icon: "☕",
+    tagline: "Perla del Septentrión & Caficultura",
+    specialty: "Café de Altura & Memoria Indígena",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [438, 442],
+    badgeColor: "from-amber-700 to-yellow-800",
+    logo: "/logos/logo9.png",
+  },
+  {
+    id: "juigalpa",
+    name: "Juigalpa",
+    slug: "juigalpa",
+    deptId: "NICO",
+    icon: "🐂",
+    tagline: "Corazón Ganadero & Arqueología",
+    specialty: "Cultura Taurina & Arqueología",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [496, 606],
+    badgeColor: "from-indigo-600 to-blue-700",
+    logo: "/logos/logo7.png",
+  },
+  {
+    id: "bluefields",
+    name: "Bluefields",
+    slug: "bluefields",
+    deptId: "NIAS",
+    icon: "🥁",
+    tagline: "Cuna de la Diversidad & Maypole",
+    specialty: "Multiculturalismo & Danza Caribeña",
+    hasCircuit: false,
+    circuitsCount: 1,
+    coords: [704, 608],
+    badgeColor: "from-cyan-600 to-blue-600",
+    logo: "/logos/logo1.png",
+  },
+];
+
 interface DepartamentoData {
   id: string;
   name: string;
   isCreative: boolean;
   hasCircuit: boolean;
   slug?: string;
-  circuitsCount?: number;
   subtitle?: string;
-  center: [number, number]; // [cx, cy]
+  center: [number, number];
   d: string;
 }
 
@@ -28,7 +187,6 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     isCreative: true,
     hasCircuit: true,
     slug: "leon",
-    circuitsCount: 2,
     subtitle: "Ruta Dariana y Ruta Sutiabeña",
     center: [236, 526],
     d: "M149 526l4.1-2.4 9-1 3.1-1.4 3.1-1.8 1.8-1.1 9.5-9.9 3.7-6 1.4-3.7 0.7-1.2 3.6-3.4 4.6-5.1 4.5-4.9 3.6-1.6 3.5-4.3 2.6-4.9 1.3-1.3 2-1.1 13.2-1.8 2.6-0.6 1.5-0.6 3.2-2 2.3-5.3 0.6-5.9-1.7-22.7-2.3-5.3-2.5-4-3.9-9-1.8-6.4 3.2-1.3 1.8-0.1 2.4 0 2.9 1 3.6 1.8 2.1-0.2 3.8-0.8 12.1-4.1 10.2-2.2 2.2 0.6 1.4 0.7 3.3 3.4 4.9 8 1.8 2.6 1 1.6 1.3 4.7-0.4 5.9-4.1 7.2-0.2 2.1 0 1.6 1.9 3.3 6.1 3.1 22.5 6.6-0.6 4.6-2.1 18.7-1.9 16.5-7.2 4.5-2.7 2.5-1.5 2.1-0.5 1.1-0.2 0.9 0 0.7-0.3 1.9 0 0.7 0.1 0.5 0 0.9-0.3 1.2-1.1 3.3-0.2 0.9 0.1 0.5 0.4 0.9 0.2 0.5 1.7 2.5 0.1 0.1 1 0.9 0.3 0.4 0.1 0.5 0 1.1 0.1 0.7 0.3 0.7-0.3 0.5-0.7 0.9-17.9 17.7-12.2 12.4-2.6 3.6-0.3 2.9 0 13.3 0.3 1.3 0.5 1.1 0.7 0.6 0.9 0.6 1.2 1.4 0.3 3.3-2.4 5.2-3.5 4.2-6.9 5.3-1.1 0.5-0.5 0-2.6-0.5-2.6-1-0.4-0.1-0.4 0-0.5 0.1-0.5 0.1-2.8 1-1.3 0.3-0.6 0.3-0.5 0.3-0.3 0.4-0.2 0.4 0 0.6 0.1 0.5 0.3 1 1.2 2.6 0.9 1.1 0.2 0.4 0.2 0.6 0 0.5-0.1 0.5-0.8 1.4-0.6 0.7-4.6 3.3-3.5-4.4-6.9-12-6.5-17.7-1.8-2.8-4.5-4-37.6-23-2.3-2.9-10.3-6-5.6-6-12.7-5.8-0.5-4.3 2.1 2.8 3.6 2.4 4.2 1.7 4 0.8-4.2-4.7z",
@@ -39,7 +197,6 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     isCreative: true,
     hasCircuit: true,
     slug: "managua",
-    circuitsCount: 2,
     subtitle: "Circuito Histórico y de las Lagunas",
     center: [302, 582],
     d: "M231.5 611.9l4.6-3.3 0.6-0.7 0.8-1.4 0.1-0.5 0-0.5-0.2-0.6-0.2-0.4-0.9-1.1-1.2-2.6-0.3-1-0.1-0.5 0-0.6 0.2-0.4 0.3-0.4 0.5-0.3 0.6-0.3 1.3-0.3 2.8-1 0.5-0.1 0.5-0.1 0.4 0 0.4 0.1 2.6 1 2.6 0.5 0.5 0 1.1-0.5 6.9-5.3 3.5-4.2 2.4-5.2-0.3-3.3-1.2-1.4-0.9-0.6-0.7-0.6-0.5-1.1-0.3-1.3 0-13.3 0.3-2.9 2.6-3.6 12.2-12.4 17.9-17.7 0.7-0.9 0.3-0.5-0.3-0.7-0.1-0.7 0-1.1-0.1-0.5-0.3-0.4-1-0.9-0.1-0.1-1.7-2.5-0.2-0.5-0.4-0.9-0.1-0.5 0.2-0.9 1.1-3.3 0.3-1.2 0-0.9-0.1-0.5 0-0.7 0.3-1.9 0-0.7 0.2-0.9 0.5-1.1 1.5-2.1 2.7-2.5 7.2-4.5 31.1 6.9 3.3 1.1 2.7 2.5 2.8 3.2 2 1.6 1.8 1.2 11.3 4.4 3 0.6-1.1 3.3 0.7 6.3 0.9 2.7 1.2 2.1 2.4 3.1 4.6 5.1 0.6 1 0.2 1.2-0.3 3.7-0.1 3.1 0.3 1.4 0.6 0.9 16.1 15.2 0.3 0.7-0.3 1.1-3 4.6-1 5.2-3.2-1.4-1.4 0-1.5 0.5-5.8 4.2-15.4 7-3.2-0.9-1-0.5-0.4-0.2-0.5 0-3.2 0.4-6.2 2.6-5.4 0.9-3.3 2.5-11.1 11 0.6 2.4 2.6 2.8 1 1.4 0.5 1.1-0.2 4.2-2.1 3.3-1 1.2-1.1 1.1-1.5 0.8-1.7 0.4-1.4 0.2-2.2-0.6-1.3-0.6-5-3.9-4.3 5.4-2.2 3.3-11.5 9.4-3.5 5.8-1.4 1.3-4.9 3.7-1.9 2.8-2.3 2.2-0.7 0.4-1 0.3-2.1 0.6-1.1 0.1-1.5 0.1-1.8 1.1-4.6 4.5-2.5-3.1-4.9-11.1-2-1.6-1.8-1-4.8-4.9-2.9-4.1-3.1-5.9-0.6-2.8-0.9-2.6-2.1-2.2-4.5-3.5-0.8-1z",
@@ -48,9 +205,9 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     id: "NIMS",
     name: "Masaya",
     isCreative: true,
-    hasCircuit: false,
+    hasCircuit: true,
     slug: "masaya",
-    subtitle: "Capital del Folclore Nacional",
+    subtitle: "Capital del Folclore & San Juan de Oriente",
     center: [348, 626],
     d: "M302.9 620.1l4.3-5.4 5 3.9 1.3 0.6 2.2 0.6 1.4-0.2 1.7-0.4 1.5-0.8 1.1-1.1 1-1.2 2.1-3.3 0.2-4.2-0.5-1.1-1-1.4-2.6-2.8-0.6-2.4 11.1-11 3.3-2.5 5.4-0.9 6.2-2.6 3.2-0.4 0.5 0 0.4 0.2 1 0.5 3.2 0.9 6.1 6.9 0.6 2.9-7.4 16.3-6.6 14.7-0.6 1.4-1.7 3.9-3.6 7.8-1.5-0.5-9.8-2.9-0.4-0.5-2.4-3.3-5.4-2.6-16.7-6.7-2-2.4z",
   },
@@ -87,10 +244,8 @@ const DEPARTAMENTOS: DepartamentoData[] = [
   {
     id: "NIRI",
     name: "Rivas",
-    isCreative: true,
+    isCreative: false,
     hasCircuit: false,
-    slug: "rivas",
-    subtitle: "San Juan del Sur y Turismo Creativo",
     center: [434, 738],
     d: "M558.8 808.8l-4.3 1.6-4.2-0.5-29.6-11-26.3-9.8-6.6-2.4-24.8-9.2-18.5-6.9-5.9-3.4-5.2-4.6-5.3-2.8-6.1 2.6-5.1 7-3.4 7.3-4.4 7.2-0.1 0-9.2-3.8-3.5-0.6-2.6-1.4-1.5-3.3-1.7-6.8-3.3-5-19.6-22-1.6-1.2-0.8-0.4-2.9-2-0.6-0.8-6.3-1.8-2.9-2.6-6.1-7.5-4.9-2.6-6.3-6.6-7.9-4.6-2.7-2.4-0.7-1.5-1.6-5 0-0.1 5.3-9.7 1.2-2.3 0.6-0.7 6.4-4.3 4.3 1.1 1.4-0.2 0.6-0.6 5.1-2.6 0.7-0.5 2-3.3 2.9-6.2 0.5-0.5 0.5-0.3 0.5-0.1 0.3 0.1 0.9 0.2 0.8 0.5 0.7 0.7 1.8 1.9 0.9 0.3 8.1-2.1 6-1.8 68.1 0.3 77.2 9.2-43.9 90.6 7.5 6.8 16.4 6.1 9 3.8 24.6 9.1 15.7 5.4 10.4 6z",
   },
@@ -101,7 +256,7 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     hasCircuit: false,
     slug: "juigalpa",
     subtitle: "Juigalpa y Tradición Ganadera",
-    center: [498, 618],
+    center: [515, 618],
     d: "M609.7 637.8l-7.1-0.3-2-0.4-0.9-0.4-0.7-0.1-0.6-0.1-2.8 0.3-0.7-0.1-1.6-0.4-0.8 0-3.7 0.6-13.5-0.1-1 0.1-0.8 0.3-0.6 0.9-12.1 11.2-4.6 3-7.9 1.7-2.7 4.3-0.5 1.2 0 0.2-0.2 0.8-0.4 0.5-0.7 0.9-0.3 0.4-0.2 0.4-0.2 0.3-1.3 1.4-0.9 1.1-0.6 1.1-0.6 0.4-1.1 0.7-3.4 1.3-0.9 0.1-0.4-0.2-0.9-0.3-1.2 0.5-1.6 0.9-3.7 2.6-2.8 1.4-0.8 0.7-0.5 0.6-3.3 5.7-77.2-9.2-24.5-68.5 3-18.8 0.9-1.8 1.7-2.8 0.3-0.4 0.2-0.3 0.2-0.3 3.7-8.5 0.4-1.3 0-1.3-0.4-3.4-0.1-4.5 0.2-1.2 0.4-0.9 1.5-2.1 0.8-0.8 4.8-3.5 6.9-3.4 2.6-0.8 2 0.1 4.5 0.7 5.4 0.1 7.8 0.4 13.2-2.4 9.9-1.1 7.5-2.6 2.2-1.2 10.7-7.4 2.8-1.1 1.9-0.5 1.9 0.3 1.1-0.1 2.6-0.4 5.4-2.7 2.7-2 2-2 3.1-3.9 0.9-2.1 0.5-2.1 0.1-6.9 0.3-2.1 0.5-1.6 0.7-1.4 7-10.3 2.3-4.7 4.4 6.4 5.3 4.9 1.1 1.8 4 9 3.8 5.8 2.4 2.4 1.2 1.9 0.4 1.3-0.3 1.1-1 2.5-0.5 2.4-0.3 3.1 0.8 6.1 1 3.1 1.3 2.2 1.3 1.4 1.3 1.1 1.1 1.2 6.5 11.6 0.5 2.8-1.1 4.2 0.2 6.2 2.5 11.2 11.6 29.4 1.3 1.9 23.4 11.3-7.2 3-1.4 1.3 0.1 0.8 0.2 0.6 1.3 2.4 1 3.2z",
   },
   {
@@ -111,7 +266,7 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     hasCircuit: false,
     slug: "bluefields",
     subtitle: "Bluefields y Diversidad Étnica",
-    center: [635, 555],
+    center: [650, 560],
     d: "M772.6 809.5l-3.1-2.5-4.8-5.1-2.6-4.4-3.4-4.4-0.6-0.6-0.4-0.3-1.4-0.4-7.2-1.4-2.1-0.2-1.3 0-0.4 0.3-0.4 0.2-0.4 0.2-0.6 0-0.6-0.4-0.8-0.9-0.3-0.8-0.1-0.7-0.1-1.2 0-0.6-0.2-0.4-0.3-0.4-0.6-0.6-0.6-0.8-0.2-0.5-0.2-1 0-0.6 0.3-3.4-0.1-0.6-0.3-0.3-0.5-0.2-2.6 1.3-0.9 0.2-1.7 0.2-1.5 0.6-0.4 0.3-0.4 0.2-0.5 0.1-0.4 0.3-0.7 0-0.8-0.1-1.8-0.7-1.1-0.2-1.3 0.3-0.7 0.2-0.9 0.5-0.4 0.3-0.8 0.5-0.4 0.1-1.2 0.3-1.6 0.8-0.7-0.1-1-0.5-1.8-1.5-2-2.1-0.2-0.4-0.1-0.4 0-0.6 0.2-1-0.6-0.4-1.2-0.1-5.8 0.8-2.3-0.8-3-1.2-1.2-0.3-0.5 0-1.2 0-1.8 0.2-0.5 0-0.5-0.1-1.4-0.5-1-0.3-0.5-0.2-1.2-0.7-0.7-0.3-0.6-0.1-0.6 0-0.7-0.5-1-1.1-3.7-6.2-1.6-2.1-5.2-5.2-7.2-5.2-8.6-4.5-1.7-1.2-1.7-1.7-1.4-2.9-0.3-2.4-0.2-2.3-1.1-2.5-2.8-2.9-14.6-9.1-5.3-3.3-12.2-4.5-0.7-7.2-1.3-7.2 0-2.5 0.6-3.6 2.6-9 1.8-4.3 0.3-2 0.1-1.6-1.9-5.8-1.9-4.8-0.3-4.8 0.2-2.3-0.4-1.2-1.2-1.2-1.5-1.3-2.7-5-3.7-12.9-1-3.2-1.3-2.4-0.2-0.6-0.1-0.8 1.4-1.3 7.2-3-23.4-11.3-1.3-1.9-11.6-29.4-2.5-11.2-0.2-6.2 1.1-4.2-0.5-2.8-6.5-11.6-1.1-1.2-1.3-1.1-1.3-1.4-1.3-2.2-1-3.1-0.8-6.1 0.3-3.1 0.5-2.4 1-2.5 0.3-1.1-0.4-1.3-1.2-1.9-2.4-2.4-3.8-5.8-4-9-1.1-1.8-5.3-4.9-4.4-6.4-1-1-2.1-1.1-0.2-0.6-0.1-0.9 0.6-2.9-0.3-3.4-0.8-2.4-1.6-3-1.1-1.3-1.1-1-1.6-0.9-1.5-2.3-0.9-0.4-5.3-4.1-3.4-1.8-3.5 0.1-3.5 3.1-0.9 2.3-0.7 5.2-0.8 2.8-0.5-0.1-1.5 1-1.3 1.1 0 0.6-0.6 0.3-2.4 2.4 1.8 3 0.2 2.8-1.4 1.4-3.1-0.9-4.8-10.3-1.4-6.3-0.8-2.1-1.8-3.6-0.2-1.8 0.4-1.8 0.7-1.5 1.2-1.2 1.6-0.9 2.7-0.2 2 0.3 2.2 0.1 1.8-0.6 2.1-1.9 0.6-1.8 0-3 0.6-0.9 1.9-0.3 1.5 0.4 3.3 0.9 2 0.3 2.2-0.1 2.6-0.5 5-1.5 1.8-0.2 10.9 1.9 2.4 0.7 0.7-0.8 2.2-1.5 1.2-1 1.8-2.9 1.3-3.1 3.7 0.7 4.2-2.8 3.8-3.7 2.7-1.9 2.2-0.2 3.5-1 2.5-0.1 2.3 0.6 1.1 0.8 1 0.1 1.9-1.5 1.1-0.4 0.7 0.2 0.6-0.2 0.3-2.8 0.8-1.9 0.2-0.6 0.2-2.7 1.2-6.3 0.7-1.6 3.9-4.3 0.1-0.1 1.2-0.9 0.7-0.5 0.1-0.1-0.5-0.1-0.4 0.1-0.6 0.1-0.4 0.2-2 1.2-0.6 0.1-0.5 0.1-0.6 0-0.6-0.1-0.5-0.2-0.4-0.2-0.4-0.3-0.6-0.7-0.5-0.7-2.6-5.5-1.2-3.7-0.2-0.4-1.4-1.9-0.8-0.6-0.4-0.2-0.4-0.2-0.5-0.1-0.5-0.2-0.4-0.3-1.3-1.2-0.4-0.2-0.4-0.2 0.6-1.3 0.6-1 7.9-10.6 47.3-5.8 25.6-0.1 3.6-0.5 2.3-0.8 2.3-2.5 1.9-1.3 1.4-0.4 1.2-0.1 1.3 0.2 1 0.2 1.2 0.6 1.2 0.8 2.2 0.6 1.8 0 11-3.1 2.5-0.4 1.4 0.4 0.5 0.9 3.6 11.2 0.7 1.3 1 1.2 1.2 0.3 1.6 0.7 4.4-1.3 2.9 0.6-0.6-0.9-1-1.9-0.9-1 3.5 0.7 2.8 1.1 2.2-0.5 1.5-4 1.2 0.9 0.9 0.1 1.6-1 1.3 0 1.7 1.1 0.7-0.8-0.2-1.9-1.1-2.2 2 0.3 0.7 0.5 2.8 0.3 14.8 0.6 3.6 0.5 1.8 0.8 1.5 0.9 1.9 0.8 3.1 0.8 1.4 0.8 0.7 0.8-0.1 1.1-0.4 1.1-0.7 1.1-3.4 4.3-0.7 1-0.4 1.1-0.1 1.1 0.2 1 0.5 0.8 0.8 0.8 13.8 10.1 18 10.5 3.4 1.1 7.4-0.3 9.2 0.6 3.4-0.5 4 24.5-6.1 49.5 0 11 0.6 1.8 2.6 5.4 1.8 6 5.1 7.2 1.2 4.6-0.4 5.8-2 3-3.7 1.3-5.9 0.2-4.5 0.9-4.5 1.7-4.3 0.7-3.7-2 1.4-1.4 3.8-2.7 1.1-1.2 0.1-2.2-0.7-2.9-1.1-2.6-4-3.6 0.3-12.3-0.9-4.7 0.7-0.3 0.2-0.1 0.1-0.1 0.4-0.7 1.1 0 6.5 2.1 4.5-5.8 1.6-8.5-2.4-5.7 0-1.4 1.5-1.8 0.7-2.5 0.3-10.5 0.3-0.4 0.7-0.6 0.9-1 0.6-1.3-0.7-5-3.5-3-4.9-1.2-4.7 0.4-3.8 2.2-1.6 3.5 0.1 3.8 1.4 3.3 4.1 2.2 0.4 0.3-0.1 0.7 0.4 3.2 0.2 1.3 0.8 1.3 0.9 0.5 0.7 0.7 0.2 2 0 3.1-0.4 1.3-0.9 1.5 0.7 0.9 1.9 2.9-5.7 3.4-9.8 8.2-5.9 2.5-7.9 0.9-3.3 1.1-1.4 2.4 0 9.8 0.2 0.2 0.7-0.4 1.6 0.1 2.2 0.5 1.5-0.1 1.2 0.4 1.5 1.8 1.2 8.4-0.7 4-1.3 3.8-0.6 3.5 1.4 3.5 3.4 1.6 5.7-1.2 1 2.9-0.2 1.9-1 3.6-0.2 2.2 0.4 1.1 0.9-1.7 2.9-9.6 1.1-2.4 1.6-1 3.6 0.5 0.8 1.5-8.6 17.2-4 22.2 1.3 24 1.4 4.1-1.3 0.7-1.3 0.5 0.7-3.8-1.3-3.2-4.6-5.7-1.9-4.8 1.6-2 2.7-1.8 1.4-4.4-0.9-3.1-2.4-3.7-3.3-3.2-3.4-1.6-5.6 0.6 0.3 2.8 2.9 1.7 2.4-2.5 1.4 0 3.1 3.2 1.2 2 0.5 2.5-0.6 3.1-2.8 4.1-0.3 3-1 3.6-3.3 0.1-7.6-2.3-1 0.6 2.3 1.4 4.5 1.8 1 1.5 0.8 2 0.4 2.3 0.1 2.5-0.3 1.7-1.7 3.4-0.3 1.4 0.3 1 0.6 1.1 0.4 1.2-0.2 1.2-1 1.2-1 0.5-1 0.4-0.6 0.5-3.4 4.4-1.1 0.7-1.6 0.6-1.8 1.3-1.5 1.7-0.8 1.6 2.4 1.7 3 2.6 2.5 2.9 1.5 3.6 1.4 1 1.8 0.7 1.8 0.2 2.7-0.3 0.2-0.9-0.7-1.2-0.3-1.4 1.2-3.7 1-1.9 1.7-0.7 3-0.1 1.8 1.5 8.5 34.2 0.4 6.6-0.1 2.4-0.2 1.4-0.7 1.2-1.5 1.4-0.3-0.6-2.6 0.6-2.6 0.8-0.2 0.4-1.4 0.7-1.8 2.7-1.7 0.6-2.2 0-1.8 0.3-1.5 0.7-1.5 1.4-1.9 5.8-1.8 8.8-2.4 6.6-3.9-0.6-1.2 0-5.8 7.4-1.7 2.9-0.9 3.2 0 18.9 5.6 24.5 4 9.8 5.5 8.5 1.8 4.6 4.3 7.1 1.6 1.4 3.3 2.1 1.3 3.6z m-1.4-174.8l-1.4-5-0.4-6.8 1.3-5.9 3.7-2.6 0.3 0 0.2 0.2 0.1 0.3-0.1 0.6-1.2 2-1.3 3-0.9 3.4-0.3 3.1 1 6.8 0.1 2.5-1.1-1.6z m123.2-49.7l-0.4-4.1 1.8-3.3 2.5-1.4 2.1 1.7-0.7 1.3-5.3 5.8z",
   },
   {
@@ -167,7 +322,7 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     name: "Río San Juan",
     isCreative: false,
     hasCircuit: false,
-    center: [545, 745],
+    center: [555, 745],
     d: "M558.8 808.8l-10.4-6-15.7-5.4-24.6-9.1-9-3.8-16.4-6.1-7.5-6.8 43.9-90.6 3.3-5.7 0.5-0.6 0.8-0.7 2.8-1.4 3.7-2.6 1.6-0.9 1.2-0.5 0.9 0.3 0.4 0.2 0.9-0.1 3.4-1.3 1.1-0.7 0.6-0.4 0.6-1.1 0.9-1.1 1.3-1.4 0.2-0.3 0.2-0.4 0.3-0.4 0.7-0.9 0.4-0.5 0.2-0.8 0-0.2 0.5-1.2 2.7-4.3 7.9-1.7 4.6-3 12.1-11.2 0.6-0.9 0.8-0.3 1-0.1 13.5 0.1 3.7-0.6 0.8 0 1.6 0.4 0.7 0.1 2.8-0.3 0.6 0.1 0.7 0.1 0.9 0.4 2 0.4 7.1 0.3 3.7 12.9 2.7 5 1.5 1.3 1.2 1.2 0.4 1.2-0.2 2.3 0.3 4.8 1.9 4.8 1.9 5.8-0.1 1.6-0.3 2-1.8 4.3-2.6 9-0.6 3.6 0 2.5 1.3 7.2 0.7 7.2 12.2 4.5 5.3 3.3 14.6 9.1 2.8 2.9 1.1 2.5 0.2 2.3 0.3 2.4 1.4 2.9 1.7 1.7 1.7 1.2 8.6 4.5 7.2 5.2 5.2 5.2 1.6 2.1 3.7 6.2 1 1.1 0.7 0.5 0.6 0 0.6 0.1 0.7 0.3 1.2 0.7 0.5 0.2 1 0.3 1.4 0.5 0.5 0.1 0.5 0 1.8-0.2 1.2 0 0.5 0 1.2 0.3 3 1.2 2.3 0.8 5.8-0.8 1.2 0.1 0.6 0.4-0.2 1 0 0.6 0.1 0.4 0.2 0.4 2 2.1 1.8 1.5 1 0.5 0.7 0.1 1.6-0.8 1.2-0.3 0.4-0.1 0.8-0.5 0.4-0.3 0.9-0.5 0.7-0.2 1.3-0.3 1.1 0.2 1.8 0.7 0.8 0.1 0.7 0 0.4-0.3 0.5-0.1 0.4-0.2 0.4-0.3 1.5-0.6 1.7-0.2 0.9-0.2 2.6-1.3 0.5 0.2 0.3 0.3 0.1 0.6-0.3 3.4 0 0.6 0.2 1 0.2 0.5 0.6 0.8 0.6 0.6 0.3 0.4 0.2 0.4 0 0.6 0.1 1.2 0.1 0.7 0.3 0.8 0.8 0.9 0.6 0.4 0.6 0 0.4-0.2 0.4-0.2 0.4-0.3 1.3 0 2.1 0.2 7.2 1.4 1.4 0.4 0.4 0.3 0.6 0.6 3.4 4.4 2.6 4.4 4.8 5.1 3.1 2.5 1.5 4 3.2-0.6-0.7-2 1.4 0.4 1.5 3.2 0.4 0.2 0.3 1.1-0.5 2.5 1.8 1 0.1 4.1 1.7 6.6-0.5 5.1-6.5 3.3-12 2.9-1 0.2-12.1 4.6-3.8 4.5-0.7 0.4-5-1-1.2 0.4-2.6 1.8-1.7 0.3-1.8-0.2-1.2-0.6-11-8.8-0.9-3.2-2-1.4-2.5 0.5-2.1 2.1-3.2-0.7-4.5 2.9-2.2-2.2-1.3 0-2.1 1.6-2.1-0.8-3.4-3.3-2.2 0.4-1.6-0.3-1.3-0.2-2.9 0-2 1.5-1-1.3-4-3.2-0.4-0.7-0.8-0.8-0.3-1 0.8-1.5 0.7-0.5 2.6-1.3-0.7-4.5-3.2-2.7-3.5-1.8-1.6-1.8-1.9-1.3-8.6-3.3-1.9-1.8-0.5-1.3-2.4-3.1-0.9-1.4-0.3-2.3 0-1.9-0.4-1.4-1.8-0.9-1.5 1-9.9 6.4-1.7 0.8-2-0.2-2-0.8-1.6-0.9-1.6-1.4-4.2-5.2-0.7-0.5-0.9-0.5-1-0.4-1-0.3-9.1-4-4.2-1.4-4 0.2-3.2-0.4-6.9-5.1-3.3-1.4-5.7 1.4-13.6 9-18.9 12.5z",
   },
   {
@@ -185,98 +340,225 @@ export default function NicaraguaSVG({
   showLegend = true,
   showMarkers = true,
 }: NicaraguaSVGProps) {
+  const [hoveredCity, setHoveredCity] = useState<CreativeCityPin | null>(null);
   const [hoveredDept, setHoveredDept] = useState<DepartamentoData | null>(null);
+  const [filterMode, setFilterMode] = useState<"all" | "circuits">("all");
 
-  const handleClick = (dept: DepartamentoData) => {
+  const handleCityClick = (city: CreativeCityPin) => {
+    onSelect(city.slug);
+  };
+
+  const handleDeptClick = (dept: DepartamentoData) => {
     if (dept.isCreative) {
       onSelect(dept.id);
     }
   };
 
+  const activeCities = CREATIVE_CITIES.filter((c) =>
+    filterMode === "circuits" ? c.hasCircuit : true
+  );
+
   return (
-    <div className="relative w-full h-full min-h-[560px] sm:min-h-[640px] lg:min-h-[780px] rounded-2xl sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-slate-50/90 via-white to-purple-50/40 border border-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)] select-none flex flex-col items-center justify-center p-2 sm:p-4">
+    <div className="relative w-full min-h-[580px] sm:min-h-[660px] lg:min-h-[760px] rounded-3xl sm:rounded-[2.5rem] overflow-hidden bg-gradient-to-b from-[#f0f8ff] via-[#f7fbff] to-[#edf6fd] border border-sky-200/80 shadow-[0_20px_60px_rgba(14,116,144,0.08)] select-none flex flex-col items-center justify-between p-3 sm:p-6">
       
       {/* ================= CONTROLES SUPERIORES FLOTANTES ================= */}
-      <div className="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-20 flex items-center justify-between pointer-events-none gap-2">
+      <div className="w-full z-20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pointer-events-auto">
         
-        {/* Píldora de estado principal */}
-        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/90 backdrop-blur-xl border border-slate-200/90 text-slate-800 shadow-md pointer-events-auto">
-          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-purple-600 shrink-0 animate-bounce" />
-          <span className="text-[11px] sm:text-xs font-black tracking-wide hidden xs:inline">
-            Mapa Nacional • Ciudades Creativas
-          </span>
-          <span className="text-[11px] font-black tracking-wide xs:hidden">
-            Ciudades Creativas
+        {/* Píldora de Título y Estado */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/90 backdrop-blur-xl border border-sky-200 shadow-sm text-slate-800">
+          <div className="w-2.5 h-2.5 rounded-full bg-purple-600 animate-ping" />
+          <span className="text-xs font-black tracking-wide text-slate-900">
+            Nicaragua • Mapa Interactivo de Ciudades Creativas
           </span>
         </div>
 
-        {/* Badge de circuitos listos */}
-        <div className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-purple-50/90 backdrop-blur-xl border border-purple-200 text-purple-900 text-[10px] sm:text-xs font-bold shadow-md pointer-events-auto shrink-0">
-          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-600 shrink-0" />
-          <span className="hidden xs:inline">León y Managua Activos</span>
-          <span className="xs:hidden">2 Activos</span>
+        {/* Selector de Filtros Rápido */}
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/90 backdrop-blur-xl border border-sky-200 shadow-sm">
+          <button
+            onClick={() => setFilterMode("all")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+              filterMode === "all"
+                ? "bg-purple-700 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            }`}
+          >
+            Todas las Ciudades ({CREATIVE_CITIES.length})
+          </button>
+          <button
+            onClick={() => setFilterMode("circuits")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterMode === "circuits"
+                ? "bg-purple-700 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+            }`}
+          >
+            <Sparkles className="w-3 h-3 text-amber-400" />
+            <span>Circuitos Activos ({CREATIVE_CITIES.filter(c => c.hasCircuit).length})</span>
+          </button>
         </div>
 
       </div>
 
-      {/* ================= TOOLTIP / TARJETA FLOTANTE INFORMATIVA ================= */}
-      {hoveredDept && (
-        <div className="absolute top-14 sm:top-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-fadeIn w-[90%] max-w-sm sm:w-auto">
-          <div className={`px-3.5 py-2 rounded-2xl backdrop-blur-2xl border shadow-xl flex items-center gap-2.5 ${
-            hoveredDept.hasCircuit
-              ? 'bg-white/95 border-purple-300 text-purple-950'
-              : hoveredDept.isCreative
-              ? 'bg-white/95 border-indigo-200 text-slate-900'
-              : 'bg-white/95 border-slate-200 text-slate-700'
-          }`}>
-            <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              hoveredDept.hasCircuit ? 'bg-purple-600 animate-ping' : hoveredDept.isCreative ? 'bg-indigo-500' : 'bg-slate-400'
-            }`} />
-            <div className="flex flex-col text-left min-w-0 flex-1">
-              <span className="text-xs font-black leading-tight truncate">
-                {hoveredDept.name} {hoveredDept.hasCircuit ? '• Circuitos Habilitados' : hoveredDept.isCreative ? '• Ciudad Creativa' : ''}
-              </span>
-              {hoveredDept.subtitle && (
-                <span className="text-[10px] text-slate-500 leading-none mt-0.5 truncate">
-                  {hoveredDept.subtitle}
-                </span>
-              )}
+      {/* ================= PREVIEW CARD FLOTANTE AL HACER HOVER ================= */}
+      {hoveredCity && (
+        <div className="absolute top-18 sm:top-20 right-4 sm:right-8 z-30 pointer-events-auto animate-fadeIn max-w-xs w-full">
+          <div className="p-4 rounded-3xl bg-white/95 backdrop-blur-2xl border border-purple-200 shadow-2xl flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200/80 p-1.5 flex items-center justify-center shrink-0 shadow-xs">
+                <Image
+                  src={hoveredCity.logo}
+                  alt={hoveredCity.name}
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base font-black text-slate-950 truncate">
+                    {hoveredCity.name}
+                  </span>
+                  <span>{hoveredCity.icon}</span>
+                </div>
+                <p className="text-[11px] font-bold text-purple-700 leading-tight truncate">
+                  {hoveredCity.specialty}
+                </p>
+              </div>
             </div>
-            {hoveredDept.isCreative && (
-              <ArrowRight className="w-3.5 h-3.5 text-purple-600 shrink-0 ml-1" />
-            )}
+
+            <p className="text-xs text-slate-600 leading-relaxed font-normal">
+              {hoveredCity.tagline}
+            </p>
+
+            <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-[11px]">
+              <span className="font-bold text-slate-500">
+                {hoveredCity.hasCircuit ? `✨ ${hoveredCity.circuitsCount} circuito(s) activo(s)` : '📍 Ciudad Creativa'}
+              </span>
+              <button
+                onClick={() => handleCityClick(hoveredCity)}
+                className="font-black text-purple-700 hover:text-purple-900 flex items-center gap-1 cursor-pointer"
+              >
+                <span>Explorar</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* ================= CANVAS DEL MAPA SVG VECTORIAL DE NICARAGUA ================= */}
-      <div className="relative w-full h-full max-w-4xl max-h-[66vh] sm:max-h-[76vh] flex items-center justify-center pt-6 pb-12 sm:py-4">
+      <div className="relative w-full h-full max-w-5xl flex items-center justify-center my-auto py-2">
         <svg
           viewBox="85 85 765 745"
-          className="w-full h-full max-h-full drop-shadow-[0_15px_35px_rgba(0,0,0,0.08)] select-none touch-manipulation"
+          className="w-full h-full max-h-[64vh] sm:max-h-[72vh] select-none touch-manipulation drop-shadow-[0_12px_28px_rgba(0,0,0,0.06)]"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <g id="features">
+          {/* DEFINICIONES DE GRADIENTES, PATRONES Y SOMBRAS */}
+          <defs>
+            {/* Gradiente Oceánico */}
+            <linearGradient id="oceanShade" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#eaf4fc" />
+              <stop offset="50%" stopColor="#e1effa" />
+              <stop offset="100%" stopColor="#d5e8f7" />
+            </linearGradient>
+
+            {/* Gradiente Lago Cocibolca y Xolotlán */}
+            <linearGradient id="lakeWater" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#93c5fd" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.85" />
+            </linearGradient>
+
+            {/* Gradiente para Departamentos con Circuitos */}
+            <linearGradient id="gradCircuit" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#a855f7" />
+              <stop offset="100%" stopColor="#7e22ce" />
+            </linearGradient>
+
+            {/* Gradiente para Departamentos Creativos */}
+            <linearGradient id="gradCreative" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#818cf8" />
+              <stop offset="100%" stopColor="#4f46e5" />
+            </linearGradient>
+
+            {/* Sombra para Pines */}
+            <filter id="pinShadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#0f172a" floodOpacity="0.25" />
+            </filter>
+          </defs>
+
+          {/* FONDO MARÍTIMO CON ONDAS Y ROTULACIÓN DE OCÉANOS */}
+          <rect x="85" y="85" width="765" height="745" rx="36" fill="url(#oceanShade)" opacity="0.4" />
+
+          {/* Océano Pacífico (Suroeste) */}
+          <g className="opacity-40 select-none pointer-events-none">
+            <text x="140" y="730" className="fill-sky-800 text-[13px] font-black tracking-widest italic">
+              OCÉANO PACÍFICO
+            </text>
+            <path d="M120 745 Q160 735 200 745 T280 745" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.6" />
+          </g>
+
+          {/* Mar Caribe (Este) */}
+          <g className="opacity-40 select-none pointer-events-none">
+            <text x="730" y="490" className="fill-sky-800 text-[13px] font-black tracking-widest italic" textAnchor="middle">
+              MAR CARIBE
+            </text>
+            <path d="M680 505 Q720 495 760 505" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.6" />
+          </g>
+
+          {/* LAGOS PRINCIPALES DE NICARAGUA (Fondo acuático resaltado) */}
+          {/* Lago Xolotlán (Lago de Managua) */}
+          <g className="pointer-events-none">
+            <ellipse cx="270" cy="540" rx="28" ry="18" fill="url(#lakeWater)" stroke="#38bdf8" strokeWidth="1.5" className="drop-shadow-xs" />
+            <text x="270" y="543" textAnchor="middle" className="fill-sky-950 font-black text-[8px] tracking-tight opacity-75">
+              Lago Xolotlán
+            </text>
+          </g>
+
+          {/* Lago Cocibolca (Gran Lago de Nicaragua) */}
+          <g className="pointer-events-none">
+            <ellipse cx="450" cy="690" rx="72" ry="46" fill="url(#lakeWater)" stroke="#38bdf8" strokeWidth="1.8" className="drop-shadow-sm" />
+            {/* Isla de Ometepe */}
+            <circle cx="455" cy="700" r="10" fill="#a7f3d0" stroke="#059669" strokeWidth="1.2" />
+            <circle cx="468" cy="706" r="7" fill="#6ee7b7" stroke="#059669" strokeWidth="1" />
+            {/* Isla Zapatera */}
+            <circle cx="400" cy="655" r="5" fill="#a7f3d0" stroke="#059669" strokeWidth="1" />
+            <text x="450" y="680" textAnchor="middle" className="fill-sky-950 font-black text-[10px] tracking-wide opacity-80">
+              Lago Cocibolca
+            </text>
+            <text x="450" y="692" textAnchor="middle" className="fill-sky-900 font-bold text-[7.5px] opacity-70">
+              (Gran Lago de Nicaragua)
+            </text>
+          </g>
+
+          {/* DEPARTAMENTOS (Capa de Territorio) */}
+          <g id="departments-layer">
             {DEPARTAMENTOS.map((dept) => {
               const isHovered = hoveredDept?.id === dept.id;
               
-              let fillClass = "fill-slate-200 stroke-slate-300 stroke-[1.8px]";
-              
+              let fill = "#ffffff";
+              let stroke = "#cbd5e1";
+              let strokeWidth = "1.5";
+              let opacity = 0.95;
+
               if (dept.hasCircuit) {
-                // Departamentos con Circuitos Habilitados (León y Managua)
-                fillClass = isHovered
-                  ? "fill-purple-600 stroke-white stroke-[3px] drop-shadow-[0_8px_20px_rgba(147,51,234,0.45)] cursor-pointer opacity-100"
-                  : "fill-purple-500 stroke-white stroke-[2.2px] drop-shadow-[0_4px_12px_rgba(147,51,234,0.3)] cursor-pointer opacity-95";
+                // Departamentos con circuitos activos (León, Managua, Masaya)
+                fill = isHovered ? "url(#gradCircuit)" : "#9333ea";
+                stroke = "#ffffff";
+                strokeWidth = isHovered ? "2.8" : "2";
+                opacity = isHovered ? 1 : 0.92;
               } else if (dept.isCreative) {
-                // Ciudades Creativas de la Red Nacional
-                fillClass = isHovered
-                  ? "fill-indigo-500 stroke-white stroke-[2.5px] drop-shadow-[0_6px_16px_rgba(99,102,241,0.4)] cursor-pointer opacity-100"
-                  : "fill-indigo-400 stroke-white stroke-[2px] cursor-pointer opacity-95";
+                // Departamentos de la Red Creativa (Estelí, Matagalpa, Granada, Chontales, Caribe Sur)
+                fill = isHovered ? "url(#gradCreative)" : "#6366f1";
+                stroke = "#ffffff";
+                strokeWidth = isHovered ? "2.5" : "1.8";
+                opacity = isHovered ? 1 : 0.88;
               } else {
-                // Otros Departamentos (Contraste visible sobre fondo blanco)
-                fillClass = isHovered
-                  ? "fill-slate-300 stroke-slate-400 stroke-[2px] cursor-default opacity-100"
-                  : "fill-[#e2e8f0] stroke-[#cbd5e1] stroke-[1.8px] cursor-default opacity-100";
+                // Departamentos generales no creativos
+                fill = isHovered ? "#e2e8f0" : "#f8fafc";
+                stroke = "#94a3b8";
+                strokeWidth = "1.2";
+                opacity = isHovered ? 1 : 0.95;
               }
 
               return (
@@ -284,101 +566,167 @@ export default function NicaraguaSVG({
                   key={dept.id}
                   onMouseEnter={() => setHoveredDept(dept)}
                   onMouseLeave={() => setHoveredDept(null)}
-                  onClick={() => handleClick(dept)}
-                  className="transition-all duration-300"
+                  onClick={() => handleDeptClick(dept)}
+                  className="transition-all duration-200 cursor-pointer"
                 >
                   <path
                     id={dept.id}
                     d={dept.d}
-                    className={fillClass}
+                    fill={fill}
+                    stroke={stroke}
+                    strokeWidth={strokeWidth}
+                    opacity={opacity}
                     vectorEffect="non-scaling-stroke"
+                    className="transition-colors duration-200 drop-shadow-xs"
                   />
 
-                  {/* Pin y Etiqueta en SVG */}
-                  {dept.isCreative && showMarkers && (
-                    <g className="pointer-events-none">
-                      {/* Círculo indicador */}
-                      <circle
-                        cx={dept.center[0]}
-                        cy={dept.center[1]}
-                        r={dept.hasCircuit ? (isHovered ? 7.5 : 6) : (isHovered ? 5.5 : 4)}
-                        className={
-                          dept.hasCircuit
-                            ? "fill-white stroke-purple-600 stroke-[2.2px] shadow-sm"
-                            : "fill-white stroke-indigo-600 stroke-[1.8px] shadow-sm"
-                        }
-                      />
-                      
-                      {/* Texto del Departamento */}
-                      <text
-                        x={dept.center[0]}
-                        y={dept.center[1] - (dept.hasCircuit ? 9 : 7)}
-                        textAnchor="middle"
-                        className={`font-black tracking-normal select-none drop-shadow-[0_1.5px_3px_rgba(255,255,255,0.95)] ${
-                          dept.hasCircuit
-                            ? "fill-purple-950 text-[11.5px]"
-                            : dept.id === 'NIMS' || dept.id === 'NIGR'
-                            ? "fill-slate-900 text-[9.5px]"
-                            : "fill-slate-900 text-[10.5px]"
-                        }`}
-                      >
-                        {dept.name.toUpperCase()}
-                      </text>
-                    </g>
-                  )}
-
-                  {/* Etiqueta visible y legible para departamentos no creativos */}
+                  {/* Etiqueta suave para departamentos sin pines de ciudades creativas */}
                   {!dept.isCreative && (
                     <text
                       x={dept.center[0]}
                       y={dept.center[1]}
                       textAnchor="middle"
-                      className="pointer-events-none fill-slate-500 font-bold text-[9px] opacity-80 select-none drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)]"
+                      className="pointer-events-none fill-slate-500 font-bold text-[9px] tracking-wide select-none drop-shadow-[0_1px_2px_rgba(255,255,255,0.9)] opacity-75"
                     >
-                      {dept.name}
+                      {dept.name.toUpperCase()}
                     </text>
                   )}
                 </g>
               );
             })}
           </g>
+
+          {/* ROSA DE LOS VIENTOS / BRÚJULA CARTOGRÁFICA */}
+          <g transform="translate(735, 160)" className="pointer-events-none opacity-70">
+            <circle cx="0" cy="0" r="22" fill="white" stroke="#94a3b8" strokeWidth="1" />
+            <polygon points="0,-18 5,-4 0,0 -5,-4" fill="#7e22ce" />
+            <polygon points="0,18 4,4 0,0 -4,4" fill="#94a3b8" />
+            <polygon points="18,0 4,4 0,0 4,-4" fill="#94a3b8" />
+            <polygon points="-18,0 -4,4 0,0 -4,-4" fill="#94a3b8" />
+            <text x="0" y="-22" textAnchor="middle" className="fill-purple-900 font-black text-[10px]">N</text>
+          </g>
+
+          {/* PINES Y ETIQUETAS DE LAS 10 CIUDADES CREATIVAS */}
+          {showMarkers && (
+            <g id="creative-cities-layer">
+              {activeCities.map((city) => {
+                const isHovered = hoveredCity?.id === city.id;
+                const [cx, cy] = city.coords;
+
+                return (
+                  <g
+                    key={city.id}
+                    onMouseEnter={() => setHoveredCity(city)}
+                    onMouseLeave={() => setHoveredCity(null)}
+                    onClick={() => handleCityClick(city)}
+                    className="cursor-pointer transition-transform duration-200"
+                    transform={`translate(${cx}, ${cy}) ${isHovered ? 'scale(1.15)' : 'scale(1)'}`}
+                    filter="url(#pinShadow)"
+                  >
+                    {/* Anillo de Pulso Animado para Ciudades con Circuitos */}
+                    {city.hasCircuit && (
+                      <circle
+                        cx="0"
+                        cy="0"
+                        r={isHovered ? "14" : "11"}
+                        className="fill-purple-400/40 animate-ping"
+                      />
+                    )}
+
+                    {/* Fondo del Pin */}
+                    <circle
+                      cx="0"
+                      cy="0"
+                      r={isHovered ? "10" : "8"}
+                      className={
+                        city.hasCircuit
+                          ? "fill-amber-400 stroke-purple-950 stroke-[2px]"
+                          : "fill-white stroke-indigo-700 stroke-[2px]"
+                      }
+                    />
+
+                    {/* Icono / Emoji del Centro */}
+                    <text
+                      x="0"
+                      y="3.5"
+                      textAnchor="middle"
+                      className="text-[9px] select-none pointer-events-none"
+                    >
+                      {city.icon}
+                    </text>
+
+                    {/* Píldora con Nombre de la Ciudad */}
+                    <g transform="translate(0, -14)" className="pointer-events-none">
+                      <rect
+                        x="-38"
+                        y="-10"
+                        width="76"
+                        height="14"
+                        rx="7"
+                        className={
+                          city.hasCircuit
+                            ? "fill-purple-950 stroke-amber-400 stroke-[1px]"
+                            : "fill-white stroke-slate-300 stroke-[1px]"
+                        }
+                      />
+                      <text
+                        x="0"
+                        y="0.5"
+                        textAnchor="middle"
+                        className={`text-[7.5px] font-black tracking-tight select-none ${
+                          city.hasCircuit ? "fill-amber-300" : "fill-slate-900"
+                        }`}
+                      >
+                        {city.name}
+                      </text>
+                    </g>
+                  </g>
+                );
+              })}
+            </g>
+          )}
+
         </svg>
       </div>
 
-      {/* ================= BARRA FLOTANTE DE LEYENDA Y ACCIONES ================= */}
+      {/* ================= BARRA FLOTANTE DE LEYENDA ================= */}
       {showLegend && (
-        <div className="absolute bottom-20 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 flex justify-center pointer-events-none">
-          <div className="rounded-full border border-slate-200/90 bg-white/95 backdrop-blur-2xl px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-md flex items-center justify-center gap-2.5 sm:gap-3.5 text-xs pointer-events-auto overflow-hidden">
-            
+        <div className="w-full z-20 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-sky-200/80 text-xs">
+          
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5">
             {/* 1. Circuitos Habilitados */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-600 border border-white shadow-xs animate-pulse shrink-0" />
-              <span className="font-black text-slate-900 text-[10.5px] sm:text-xs">
-                Circuitos Activos
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-purple-600 border-2 border-white shadow-xs animate-pulse" />
+              <span className="font-black text-slate-900 text-xs">
+                Circuitos Activos (León, Managua, San Juan de Oriente, Masaya)
               </span>
             </div>
-
-            <span className="text-slate-300 select-none">•</span>
 
             {/* 2. Red de Ciudades Creativas */}
-            <div className="flex items-center gap-1.5 shrink-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 border border-white shadow-xs shrink-0" />
-              <span className="font-bold text-slate-700 text-[10.5px] sm:text-xs">
-                Ciudades Creativas
+            <div className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-indigo-500 border-2 border-white shadow-xs" />
+              <span className="font-bold text-slate-700 text-xs">
+                Red Ciudades Creativas (10)
               </span>
             </div>
 
-            <span className="text-slate-300 hidden xs:inline select-none">•</span>
-
-            {/* 3. Otros Departamentos */}
-            <div className="hidden xs:flex items-center gap-1.5 shrink-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-slate-300 border border-slate-400 shadow-xs shrink-0" />
-              <span className="font-semibold text-slate-500 text-[10.5px] sm:text-xs">
-                Otros
+            {/* 3. Lagos y Cuerpos de Agua */}
+            <div className="hidden md:flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-full bg-blue-400 border-2 border-white shadow-xs" />
+              <span className="font-semibold text-slate-600 text-xs">
+                Lagos Xolotlán & Cocibolca
               </span>
             </div>
-
           </div>
+
+          <Link
+            href="/ciudades-creativas"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-sm transition-all"
+          >
+            <span>Ver en Mapa Inmersivo 3D</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+
         </div>
       )}
 

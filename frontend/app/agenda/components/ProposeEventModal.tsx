@@ -126,7 +126,7 @@ export const ProposeEventModal: React.FC<ProposeEventModalProps> = ({
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white font-medium"
               >
-                {['León', 'Masaya', 'San Juan de Oriente', 'Catarina', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'Nagarote', 'Managua'].map((c) => (
+                {['León', 'Masaya', 'San Juan de Oriente', 'Granada', 'Estelí', 'Bluefields', 'Matagalpa', 'Juigalpa', 'Nagarote', 'Managua'].map((c) => (
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>

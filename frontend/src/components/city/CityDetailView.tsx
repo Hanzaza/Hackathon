@@ -24,6 +24,22 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { adminService, MunicipalityItem } from '@/services/adminService';
 
+export interface CircuitSite {
+  name: string;
+  sector?: 'Público' | 'Privado' | string;
+  cost?: string;
+  desc: string;
+  image?: string;
+}
+
+export interface CircuitData {
+  name: string;
+  desc: string;
+  duration?: string;
+  distance?: string;
+  sites?: CircuitSite[];
+}
+
 export interface CityData {
   name: string;
   slug: string;
@@ -48,12 +64,7 @@ export interface CityData {
     category?: string;
     image?: string;
   }[];
-  circuits: {
-    name: string;
-    desc: string;
-    duration?: string;
-    distance?: string;
-  }[];
+  circuits: CircuitData[];
   agenda: {
     event: string;
     date: string;
@@ -374,49 +385,104 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
           )}
 
           {activeTab === 'circuitos' && (
-            <div className="space-y-4 animate-fadeIn">
+            <div className="space-y-6 animate-fadeIn">
               {city.circuits.map((circ, cIdx) => (
                 <div
                   key={cIdx}
-                  className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                  className="rounded-3xl bg-white border border-slate-200/80 p-6 sm:p-8 shadow-sm hover:shadow-md transition-all flex flex-col gap-6"
                 >
-                  <div className="space-y-2 max-w-2xl">
-                    <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-purple-100 text-purple-800 text-xs font-black flex items-center justify-center">
-                        {cIdx + 1}
-                      </span>
-                      <h3 className="text-xl font-black text-slate-900">
-                        {circ.name}
-                      </h3>
-                    </div>
-                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      {circ.desc}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 shrink-0">
-                    <div className="flex flex-col text-left">
-                      {circ.duration && (
-                        <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5 text-slate-400" />
-                          {circ.duration}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-2 max-w-2xl">
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-xl bg-purple-100 text-purple-800 text-xs font-black flex items-center justify-center">
+                          {cIdx + 1}
                         </span>
-                      )}
-                      {circ.distance && (
-                        <span className="text-xs font-bold text-slate-500 flex items-center gap-1 mt-0.5">
-                          <NavigationIcon className="w-3.5 h-3.5 text-slate-400" />
-                          {circ.distance}
-                        </span>
-                      )}
+                        <h3 className="text-xl font-black text-slate-900">
+                          {circ.name}
+                        </h3>
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        {circ.desc}
+                      </p>
                     </div>
 
-                    <Link
-                      href="/ciudades-creativas"
-                      className="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition-all shrink-0"
-                    >
-                      Comenzar Ruta
-                    </Link>
+                    <div className="flex items-center gap-4 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-6 shrink-0">
+                      <div className="flex flex-col text-left">
+                        {circ.duration && (
+                          <span className="text-xs font-bold text-slate-500 flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                            {circ.duration}
+                          </span>
+                        )}
+                        {circ.distance && (
+                          <span className="text-xs font-bold text-slate-500 flex items-center gap-1 mt-0.5">
+                            <NavigationIcon className="w-3.5 h-3.5 text-slate-400" />
+                            {circ.distance}
+                          </span>
+                        )}
+                      </div>
+
+                      <Link
+                        href="/ciudades-creativas"
+                        className="px-4 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold transition-all shrink-0"
+                      >
+                        Comenzar Ruta
+                      </Link>
+                    </div>
                   </div>
+
+                  {/* Sitios que conforman el circuito */}
+                  {circ.sites && circ.sites.length > 0 && (
+                    <div className="pt-6 border-t border-slate-100">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Landmark className="w-4 h-4 text-purple-700" />
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-700">
+                          Sitios que conforman el circuito ({circ.sites.length})
+                        </h4>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        {circ.sites.map((site, sIdx) => (
+                          <div
+                            key={sIdx}
+                            className="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:border-purple-200/90 hover:shadow-sm transition-all flex flex-col justify-between"
+                          >
+                            <div className="space-y-1.5">
+                              <div className="flex items-start justify-between gap-2">
+                                <h5 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-2">
+                                  <span className="w-4 h-4 rounded-full bg-purple-200/70 text-purple-900 text-[10px] font-black flex items-center justify-center shrink-0">
+                                    {sIdx + 1}
+                                  </span>
+                                  <span>{site.name}</span>
+                                </h5>
+                                {site.sector && (
+                                  <span
+                                    className={`px-2 py-0.5 rounded-md text-[9.5px] font-black uppercase tracking-wider shrink-0 ${
+                                      site.sector.toLowerCase() === 'privado'
+                                        ? 'bg-amber-100 text-amber-800 border border-amber-200/60'
+                                        : 'bg-emerald-100 text-emerald-800 border border-emerald-200/60'
+                                    }`}
+                                  >
+                                    Sector {site.sector}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                                {site.desc}
+                              </p>
+                            </div>
+
+                            {site.cost && (
+                              <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-[11px] font-semibold text-slate-600 flex items-center gap-1.5">
+                                <span className="text-purple-700 font-bold">Costo / Entrada:</span>
+                                <span>{site.cost}</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

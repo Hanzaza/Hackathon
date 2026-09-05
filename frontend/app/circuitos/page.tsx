@@ -81,6 +81,19 @@ const DEFAULT_THEMES = [
   },
 ];
 
+const CITY_LOGO_MAP: Record<string, string> = {
+  bluefields: '/logos/logo1.png',
+  masaya: '/logos/logo2.png',
+  'san-juan-de-oriente': '/logos/logo3.png',
+  leon: '/logos/logo4.png',
+  granada: '/logos/logo5.png',
+  esteli: '/logos/logo6.png',
+  juigalpa: '/logos/logo7.png',
+  managua: '/logos/logo8.png',
+  matagalpa: '/logos/logo9.png',
+  nagarote: '/logos/logo10.png',
+};
+
 export default function CircuitosPage() {
   const [routes, setRoutes] = useState<CreativeRouteItem[]>([]);
   const [cities, setCities] = useState<MunicipalityItem[]>([]);
@@ -189,26 +202,26 @@ export default function CircuitosPage() {
                 {/* LADO IZQUIERDO: LOGO, NOMBRE Y VOCACIÓN */}
                 <div className="lg:col-span-5 flex flex-col items-center text-center p-6 sm:p-8 rounded-[2rem] bg-white/90 border border-slate-200/80 shadow-2xs">
                   
-                  {city.logo_url && (
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden bg-white p-2 border border-slate-100 shadow-md mb-4 flex items-center justify-center">
-                      <Image
-                        src={city.logo_url}
-                        alt={`Escudo ${city.name}`}
-                        width={96}
-                        height={96}
-                        className="w-full h-full object-contain"
-                      />
-                    </div>
-                  )}
+                  {(() => {
+                    const logoSrc = CITY_LOGO_MAP[city.slug] || city.logo_url || '/logos/Logo.png';
+                    return (
+                      <div className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-3xl overflow-hidden bg-white/95 p-3 border border-slate-200/80 shadow-lg mb-3 flex items-center justify-center group">
+                        <Image
+                          src={logoSrc}
+                          alt={`Escudo oficial de ${city.name}`}
+                          width={192}
+                          height={192}
+                          className="w-full h-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-300"
+                          unoptimized
+                        />
+                      </div>
+                    );
+                  })()}
 
-                  <span className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider ${theme.badgeBg} ${theme.badgeText}`}>
-                    {city.is_creative ? '✨ Ciudad Creativa de la Red' : '🏛️ Municipio Tradicional'}
-                  </span>
-
-                  <h3 className="text-2xl sm:text-3xl font-black text-slate-950 mt-2">
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-950 mt-1">
                     {city.name}
                   </h3>
-                  <p className={`text-xs font-bold ${theme.accentColor} mt-1 mb-4 leading-tight`}>
+                  <p className={`text-xs sm:text-sm font-bold ${theme.accentColor} mt-1 mb-3 leading-tight`}>
                     {city.subtitle || 'Identidad Cultural & Tradición Viva'}
                   </p>
 

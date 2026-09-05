@@ -3,7 +3,7 @@
     "name": "León",
     "slug": "leon",
     "badge": "Ciudad del Aprendizaje UNESCO",
-    "logo": "/logos/leon.png",
+    "logo": "/logos/logo4.png",
     "subtitle": "Corazón intelectual, arte mural y cuna de Rubén Darío.",
     "description": "León es un centro de cultura, arte, memoria histórica y vanguardia universitaria. Hogar de la universidad más antigua del país y de la imponente Insigne y Real Basílica Catedral (Patrimonio de la Humanidad por la UNESCO). Sus calles coloniales vibran con la poesía de Rubén Darío, los murales históricos y las tradiciones artesanales de Sutiaba.",
     "coverImage": "/banners/circuitos/leon/principal.png",
@@ -47,22 +47,63 @@
     ],
     "circuits": [
       {
-        "name": "Circuito Dariano",
-        "desc": "Recorrido por la vida y obra de Rubén Darío: Casa Museo, Parque de los Poetas, Catedral de León y Teatro Municipal.",
-        "duration": "3 horas",
-        "distance": "2.5 km"
-      },
-      {
-        "name": "Circuito Sutiabeño",
-        "desc": "Exploración de la herencia indígena de Sutiaba: talleres de carpintería, alfarería, medicina tradicional e Iglesia de San Juan Bautista.",
+        "name": "Circuito Creativo Dariano",
+        "desc": "Recorrido integral por la vida, obra y legado de Rubén Darío a través de los monumentos, espacios formativos, casas museo y centros culturales más emblemáticos de la ciudad de León.",
         "duration": "4 horas",
-        "distance": "4.0 km"
-      },
-      {
-        "name": "Ruta de los Murales y Memoria Histórica",
-        "desc": "Caminata urbana descubriendo la crónica gráfica de la Revolución Popular Sandinista plasmada en más de 20 murales.",
-        "duration": "2.5 horas",
-        "distance": "3.0 km"
+        "distance": "3.5 km",
+        "sites": [
+          {
+            "name": "Casa Museo Archivo Rubén Darío",
+            "sector": "Privado",
+            "cost": "Contribución voluntaria para nacionales; aprox. C$ 37 para extranjeros",
+            "desc": "Es la casa donde el «Príncipe de las Letras Castellanas» vivió durante su infancia y conserva manuscritos, primeras ediciones de sus libros y objetos personales."
+          },
+          {
+            "name": "Los Motivos del Lobo (Escultura)",
+            "sector": "Público",
+            "desc": "Símbolo de la herencia literaria del poeta Rubén Darío, como un mensaje universal de convivencia y compasión, que invita a los visitantes a descubrir la riqueza cultural y espiritual que define la identidad nicaragüense."
+          },
+          {
+            "name": "Centro Cultural Rubén Darío",
+            "sector": "Público",
+            "desc": "Espacio moderno inaugurado para la promoción del arte y la literatura, cuenta con biblioteca municipal, salón de robótica, áreas verdes, quiosco y aulas, ofreciendo un entorno ideal para la lectura y la tecnología."
+          },
+          {
+            "name": "Teatro Municipal José de la Cruz Mena",
+            "sector": "Público",
+            "desc": "Escenario principal para las artes escénicas, conciertos y eventos literarios que mantienen viva la rica herencia intelectual de la ciudad creativa de León, con actividades mensuales y abierto al público en general."
+          },
+          {
+            "name": "Parque de los Poetas",
+            "sector": "Público",
+            "desc": "Espacio histórico y cultural situado a dos cuadras de la Catedral, donde se rinde homenaje al «Príncipe de las Letras Castellanas» con una estatua central, rodeado por bustos de poetas leoneses, en un entorno de estilo colonial con jardines y gastronomía popular."
+          },
+          {
+            "name": "Vallas Informativas UNAN León",
+            "sector": "Público",
+            "desc": "Exposición pictórica permanente de Rubén Darío en la UNAN-León que consta de 14 vallas informativas en el jardín interior del edificio central, mostrando la vida y obra del poeta con docentes a disposición para recorridos guiados."
+          },
+          {
+            "name": "Basílica Catedral León, Tumba de Rubén Darío",
+            "sector": "Público",
+            "desc": "Espacio de estilo ecléctico (barroco y neoclásico) donde se alberga la tumba del poeta Rubén Darío, situada al pie de la estatua de San Pablo y marcada por un león doliente esculpido por Jorge Navas Cordonero."
+          },
+          {
+            "name": "Escuela de Bellas Artes Mariana Sansón Argüello",
+            "sector": "Público",
+            "desc": "Destacado centro de formación artística para niños, jóvenes y adultos en pintura, ballet, música (piano, violín, canto), teatro y percusión, con cafetería cultural para leer escritos de autores leoneses."
+          },
+          {
+            "name": "Plazoleta Rubén Darío",
+            "sector": "Público",
+            "desc": "Destaca por una escultura de 7 metros de altura del «Príncipe de las Letras Castellanas» creada por Sócrates Martínez, inspirada en su faceta diplomática, con actividades culturales y artísticas los fines de semana."
+          },
+          {
+            "name": "Parque Centenario de la Dignidad Rubén Darío",
+            "sector": "Público",
+            "desc": "Espacio cultural de referencia en la entrada sur (Carretera León-Managua), con pórtico neoclásico, cuatro leones esculpidos, fuentes decorativas, jardines de buganvilias y placa-retrato del insigne poeta."
+          }
+        ]
       }
     ],
     "agenda": [
@@ -93,7 +134,7 @@
     "name": "Granada",
     "slug": "granada",
     "badge": "La Gran Sultana del Gran Lago",
-    "logo": "/logos/granada.png",
+    "logo": "/logos/logo5.png",
     "subtitle": "La Gran Sultana, joya arquitectónica colonial a orillas del Cocibolca.",
     "description": "Fundada en 1524 por Francisco Hernández de Córdoba, Granada es una de las ciudades coloniales más antiguas del continente americano. Sus calles empedradas, iglesias barrocas y neoclásicas, coloridas casonas señoriales con patios andaluces y el majestuoso Lago de Nicaragua crean un entorno visual incomparable.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -135,22 +176,131 @@
     ],
     "circuits": [
       {
-        "name": "Circuito La Gran Sultana",
-        "desc": "Paseo por el Parque Central, Iglesia La Merced (con subida al campanario panorámico), Calle Real Xalteva y Fortaleza La Pólvora.",
-        "duration": "3 horas",
-        "distance": "3.2 km"
+        "name": "Ruta: Granada, una historia en cada paso (Zona Este)",
+        "desc": "Recorrido por la zona Este de Granada donde el arte, la cultura y la vida cotidiana se entrelazan entre iglesias coloniales, plazas señoriales, la emblemática Calle La Calzada y las costas del Gran Lago de Nicaragua.",
+        "duration": "2.5 horas",
+        "distance": "2.2 km",
+        "sites": [
+          {
+            "name": "Catedral Inmaculada Concepción",
+            "sector": "Público",
+            "desc": "Emblemática basílica de fachada amarilla neoclásica construida en el siglo XIX, símbolo visual y corazón cívico-espiritual de Granada."
+          },
+          {
+            "name": "Plaza de la Independencia",
+            "sector": "Público",
+            "desc": "Espacio cívico que conmemora los hechos independentistas, rodeado por el Palacio Episcopal y monumentos históricos."
+          },
+          {
+            "name": "Plaza de Los Leones",
+            "sector": "Público",
+            "desc": "Histórica plaza rodeada de casonas solariegas y portales coloniales con vista directa hacia los templos mayores."
+          },
+          {
+            "name": "Casa de los Tres Mundos",
+            "sector": "Privado",
+            "desc": "Patrimonio Nacional Histórico y Cultural; centro de intercambio cultural internacional, artes plásticas, biblioteca, teatro y conciertos."
+          },
+          {
+            "name": "Centro Cultural Museos Convento San Francisco",
+            "sector": "Público",
+            "desc": "Fundado en 1529, resguarda la impresionante estatuaria lítica precolombina de la Isla Zapatera y salas consagradas al arte primitivista de Solentiname."
+          },
+          {
+            "name": "Iglesia Conventual San Francisco",
+            "sector": "Público",
+            "desc": "Templo de extraordinario valor arquitectónico e histórico que formó parte del convento original más antiguo de Centroamérica."
+          },
+          {
+            "name": "Calle La Calzada",
+            "sector": "Público",
+            "desc": "Paseo peatonal adoquinado donde convergen la mejor oferta gastronómica, música en vivo, tertulias literarias y coloridas casas de estilo colonial."
+          },
+          {
+            "name": "Iglesia Guadalupe",
+            "sector": "Público",
+            "desc": "Templo colonial con aspecto de fortaleza militar construido en 1626, escenario de intensos combates en la Guerra Nacional de 1856."
+          },
+          {
+            "name": "Paseo La Gran Sultana",
+            "sector": "Público",
+            "desc": "Avenida arbolada y peatonal que conecta el centro histórico con la costa del Lago Cocibolca."
+          },
+          {
+            "name": "Malecón de Granada",
+            "sector": "Público",
+            "desc": "Paseo costero sobre el Gran Lago de Nicaragua con embarcaderos hacia las Isletas, áreas de recreación familiar y vista al imponente Volcán Mombacho."
+          }
+        ]
       },
       {
-        "name": "Circuito Isletas y Fortaleza San Pablo",
-        "desc": "Ruta lacustre en lancha ecológica descubriendo la historia de los piratas y la biodiversidad del Lago Cocibolca.",
+        "name": "Ruta: Granada, 500 años (Memoria Viva y Tradición)",
+        "desc": "Recorrido que evoca cinco siglos de preservación histórica, patrimonio vivo y creatividad. Inicia en el Parque Central entre el aroma del vigorón y culmina en la emblemática Fortaleza La Pólvora.",
+        "duration": "3 horas",
+        "distance": "2.8 km",
+        "sites": [
+          {
+            "name": "Parque Central o Parque Colón",
+            "sector": "Público",
+            "desc": "Punto de encuentro de la vida granadina desde 1892, con kiosco de influencia morisca, carruajes de caballos y ambiente festivo tradicional."
+          },
+          {
+            "name": "Paseo del Vigorón",
+            "sector": "Público",
+            "desc": "Corredor culinario tradicional donde las maestras cocineras sirven el vigorón granadino en hoja de plátano con chicharrón crujiente y refresco de grama."
+          },
+          {
+            "name": "Palacio Municipal de Granada",
+            "sector": "Público",
+            "desc": "Sede del gobierno local de sobria arquitectura neoclásica con arcos y galerías que custodian la memoria institucional de la ciudad."
+          },
+          {
+            "name": "Palacio de Cultura Maestro Jorge Navas Cordonero",
+            "sector": "Público",
+            "desc": "Centro de difusión artística y talleres creativos en honor al célebre escultor granadino autor del león doliente y la estatuaria nacional."
+          },
+          {
+            "name": "Bate que Bate Chocolate",
+            "sector": "Privado",
+            "desc": "Espacio interactivo y taller artesanal donde se aprende y experimenta la elaboración tradicional del chocolate a base de cacao nicaragüense."
+          },
+          {
+            "name": "Museo del Chocolate",
+            "sector": "Privado",
+            "desc": "Museo sensorial dedicado a la historia del cacao desde las ceremonias precolombinas mayas y chorotegas hasta los procesos modernos de chocolatería fina."
+          },
+          {
+            "name": "Centro Social Tío Antonio (Café de las Sonrisas)",
+            "sector": "Privado",
+            "desc": "Emblemático proyecto social inclusivo atendido por personas con discapacidad auditiva, célebre por su taller de hamacas artesanales de exportación."
+          },
+          {
+            "name": "Iglesia La Merced",
+            "sector": "Público",
+            "desc": "Templo barroco colonial famoso por su torre campanario, desde donde se obtiene la postal panorámica de 360° más hermosa de Granada y sus techos de teja."
+          },
+          {
+            "name": "Conjunto Urbanístico de Xalteva",
+            "sector": "Público",
+            "desc": "Histórico barrio indígena y plaza colonial con la Iglesia de Xalteva y vestigios de las murallas que defendían a la ciudad de invasiones piratas."
+          },
+          {
+            "name": "Iglesia María Auxiliadora",
+            "sector": "Público",
+            "desc": "Hermoso templo de arquitectura neogótica y profunda tradición educativa salesiana en el occidente de la ciudad."
+          },
+          {
+            "name": "Antigua Fortaleza La Pólvora y Museo de la Revolución",
+            "sector": "Público",
+            "desc": "Fuerte militar construido en 1748 para almacenar pólvora y pertrechos de guerra; hoy resguarda salas históricas y torres con miradores."
+          }
+        ]
+      },
+      {
+        "name": "Circuito Isletas y Fortaleza San Pablo (Ruta Lacustre)",
+        "desc": "Ruta lacustre en lancha ecológica descubriendo la historia de los piratas, las fortalezas coloniales y la biodiversidad del Lago Cocibolca.",
         "duration": "2.5 horas",
         "distance": "8.0 km (lacustre)"
-      },
-      {
-        "name": "Ruta del Vigorón y Dulces Tradicionales",
-        "desc": "Experiencia culinaria probando el vigorón con chicharrón crujiente y la cajeta granadina en los quioscos del Parque Colón.",
-        "duration": "2 horas",
-        "distance": "1.5 km"
       }
     ],
     "agenda": [
@@ -181,7 +331,7 @@
     "name": "Masaya",
     "slug": "masaya",
     "badge": "Cuna del Folklore Nacional",
-    "logo": "/logos/masaya.png",
+    "logo": "/logos/logo2.png",
     "subtitle": "Cuna del Folklore Nacional y Corazón de la Artesanía Popular.",
     "description": "Masaya es la capital de la identidad nicaragüense. Su gente conserva con orgullo las danzas del Güegüense, el son de marimba de arco, el tejido de hamacas de clase mundial y la elaboración de máscaras de madera para las festividades populares más extensas y coloridas de Centroamérica.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -201,44 +351,86 @@
     ],
     "attractions": [
       {
-        "name": "Mercado Nacional de Artesanías (Mercado Viejo)",
-        "desc": "Estructura neogótica tipo fortaleza donde más de 100 talleres exponen hamacas, cuero, madera tallada, textiles y dulces típicos.",
+        "name": "Mercado de las Artesanías – Museo del Folclore",
+        "desc": "Edificio estilo fortaleza neogótica donde más de 100 talleres exponen hamacas, cuero, madera tallada, textiles y dulces típicos con danzas semanales.",
         "category": "Artesanías & Cultura"
       },
       {
-        "name": "Barrio Indígena de Monimbó",
-        "desc": "Comunidad histórica con talleres familiares abiertos al público donde se fabrican marimbas de chiquirín, máscaras y juguetes tradicionales.",
+        "name": "Plaza de la Cultura y Antigua Estación",
+        "desc": "Centro cívico y artístico con memoria ferroviaria y dariana, donde se imparten talleres de marimba de arco y folclore nicaragüense.",
+        "category": "Patrimonio & Música"
+      },
+      {
+        "name": "Parque Mirador El Malecón de Masaya",
+        "desc": "Balcón panorámico con vistas espectaculares a la Laguna de Masaya y al Parque Nacional Volcán Masaya.",
+        "category": "Paisaje & Naturaleza"
+      },
+      {
+        "name": "Casa de las Artesanías y Talleres de Monimbó",
+        "desc": "Escuela de oficios tradicionales y talleres vivos de marimbas, máscaras de cedro, talabartería y bordados.",
         "category": "Patrimonio Vivo"
-      },
-      {
-        "name": "Parque Nacional Volcán Masaya",
-        "desc": "Uno de los volcanes activos más fascinantes del mundo, con su cráter Santiago emanando gases y lava incandescente visible de noche.",
-        "category": "Naturaleza & Volcanes"
-      },
-      {
-        "name": "Mirador de Catarina y Laguna de Apoyo",
-        "desc": "Espectacular panorámica de la laguna volcánica de Apoyo, rodeada de viveros de flores ornamentales y restaurantes típicos.",
-        "category": "Miradores & Paisaje"
       }
     ],
     "circuits": [
       {
+        "name": "Circuito Creativo de Artesanía y Arte Popular",
+        "desc": "Recorrido integral que conjuga los espacios históricos, talleres vivos y centros culturales de Masaya, fortaleciendo la identidad local, dinamizando la economía creativa y ofreciendo experiencias inmersivas con artesanos y maestras tradicionales.",
+        "duration": "4 horas",
+        "distance": "3.5 km",
+        "sites": [
+          {
+            "name": "Plaza de la Cultura",
+            "sector": "Público",
+            "desc": "Espacio emblemático que une turismo, historia y cultura, conservando la memoria del ferrocarril y de la histórica visita de Rubén Darío. Hoy funciona como centro comunitario y artístico donde se imparten clases abiertas de marimba tradicional."
+          },
+          {
+            "name": "Bordados Marisol",
+            "sector": "Privado",
+            "desc": "Taller artesanal fundado en 1985 que fusiona tradición textil con diseño contemporáneo. Sus bordados hechos a mano reflejan la identidad nicaragüense en vestidos, camisas estilizadas y accesorios únicos."
+          },
+          {
+            "name": "Buñuelos Calientes / Baho Vilma",
+            "sector": "Privado",
+            "desc": "Espacio gastronómico representativo donde se conserva y comparte la receta centenaria de los buñuelos de yuca con queso y miel caliente, así como el tradicional baho masayés."
+          },
+          {
+            "name": "Hamacas CMK",
+            "sector": "Privado",
+            "desc": "Taller y punto de venta artesanal dedicado a la elaboración de hamacas tradicionales tejidas a mano, preservando la técnica ancestral del urdido y finos acabados en macramé."
+          },
+          {
+            "name": "Casa de las Artesanías",
+            "sector": "Público",
+            "desc": "Espacio de formación y preservación cultural que representa la continuidad de un legado generacional en talla de madera, cuero, máscaras y barro."
+          },
+          {
+            "name": "Parque Mirador «El Malecón»",
+            "sector": "Público",
+            "desc": "Mirador panorámico que conecta la naturaleza de la Laguna de Masaya y el Volcán Masaya con leyendas ancestrales y la vida cotidiana de la capital del folclore."
+          },
+          {
+            "name": "Parque Central y Parroquia de la Asunción",
+            "sector": "Público",
+            "desc": "Corazón histórico con la Fuente de Neptuno, el Templo de la Música, monumentos a Darío, Sandino y Vega Matus, junto a la Parroquia Nuestra Señora de la Asunción del siglo XVIII."
+          },
+          {
+            "name": "Mercado de las Artesanías – Museo del Folclore",
+            "sector": "Público",
+            "desc": "Fortaleza neogótica convertida en el epicentro comercial y artístico de Masaya, con exhibición viva de artesanías, presentaciones folklóricas y gastronomía típica."
+          }
+        ]
+      },
+      {
         "name": "Circuito Manos Creativas de Monimbó",
-        "desc": "Visita interactiva a los talleres de lauderos, hilanderas de hamacas y artesanos del cuero en Monimbó.",
+        "desc": "Visita interactiva a los talleres de lauderos, hilanderas de hamacas y artesanos del cuero en el histórico barrio indígena de Monimbó.",
         "duration": "3.5 horas",
         "distance": "3.0 km"
       },
       {
         "name": "Ruta de los Agüizotes y Máscaras Tradicionales",
-        "desc": "Taller vivencial de confección de máscaras de papel maché y madera de talalate con los artesanos tradicionales.",
+        "desc": "Taller vivencial de confección de máscaras de papel maché y madera de talalate con los artesanos tradicionales de Masaya.",
         "duration": "2.5 horas",
         "distance": "2.0 km"
-      },
-      {
-        "name": "Circuito de los Pueblos Blancos y Miradores",
-        "desc": "Ruta que conecta Masaya, Catarina y San Juan de Oriente entre flores, artesanías y gastronomía.",
-        "duration": "5 horas",
-        "distance": "12.0 km"
       }
     ],
     "agenda": [
@@ -269,9 +461,9 @@
     "name": "San Juan de Oriente",
     "slug": "san-juan-de-oriente",
     "badge": "Cuna de la Cerámica Precolombina",
-    "logo": "/logos/san-juan-de-oriente.png",
+    "logo": "/logos/logo3.png",
     "subtitle": "Pueblo de Alfareros y Maestros de la Cerámica Precolombina.",
-    "description": "San Juan de Oriente es un museo vivo donde más del 80% de las familias se dedican a transformar el barro en piezas de arte reconocidas mundialmente. Sus maestros alfareros combinan técnicas precolombinas de bruñido con piedra de río y pigmentos minerales con estética contemporánea.",
+    "description": "El Circuito Creativo de San Juan de Oriente “Tierra Viva” celebra la tradición alfarera y la riqueza artesanal de esta ciudad reconocida como cuna de la cerámica nicaragüense. A través de sus talleres, calles y espacios emblemáticos, los visitantes experimentan la creatividad y el talento de generaciones de artesanos que han convertido la arcilla en símbolo de identidad cultural en un auténtico museo abierto vivo.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
     "theme": {
       "color": "orange",
@@ -284,61 +476,137 @@
     "specialties": [
       "Cerámica Precolombina",
       "Alfarería al Torno",
-      "Escultura en Barro",
-      "Bruñido con Piedra de Río"
+      "Escultura y Modelado en Arcilla",
+      "Bruñido con Piedra de Río",
+      "Muralismo Cultural y Danza de Chinegros"
     ],
     "attractions": [
       {
-        "name": "Calle de los Artesanos y Talleres Familiares",
-        "desc": "Corredor peatonal con decenas de talleres donde los visitantes pueden sentarse al torno y moldear su propia vasija de barro.",
-        "category": "Artesanía en Vivo"
+        "name": "Plaza San Juan de los Platos",
+        "desc": "Espacio cívico y cultural con anfiteatro y tiendas de artesanías, donde se encuentra el mupis con el mapa guiado del recorrido Tierra Viva.",
+        "category": "Plaza & Orientación Turística"
       },
       {
-        "name": "Museo de la Cerámica y Arqueología",
-        "desc": "Espacio que resguarda vasijas trípodes, sellos ceremoniales y herramientas originales utilizadas por los ancestros chorotegas.",
-        "category": "Historia & Arqueología"
+        "name": "Taller Escuela del Maestro Valentín López",
+        "desc": "Espacio de aprendizaje donde se conoce el proceso de transformación de la arcilla, desde su preparación hasta la creación de piezas únicas.",
+        "category": "Taller Escuela & Alfarería"
       },
       {
-        "name": "Mirador de San Juan a la Laguna de Apoyo",
-        "desc": "Punto escénico privilegiado con vistas directas al espejo de agua de la Laguna de Apoyo y al Volcán Mombacho.",
+        "name": "Senderos Místicos (Murales Culturales)",
+        "desc": "Murales de gran interés cultural en calles y callejones que narran la cosmovisión, mitología y tradición alfarera comunitaria.",
+        "category": "Arte Urbano & Muralismo"
+      },
+      {
+        "name": "Taller Urraca del Maestro Alfredo Espinoza",
+        "desc": "Centro de producción y encuentro cultural con demostraciones en vivo y talleres vivenciales para estudiantes y visitantes.",
+        "category": "Taller Vivencial & Producción"
+      },
+      {
+        "name": "Alfarería GUERRERO",
+        "desc": "Taller alfarero tradicional para observar la elaboración, participar en experiencias prácticas de torno y adquirir piezas representativas.",
+        "category": "Alfarería Tradicional"
+      },
+      {
+        "name": "Taller Ecos Precolombinos (Memorial Maestro Gregorio Bracamontes)",
+        "desc": "Espacio que honra la memoria y el legado artístico de uno de los grandes referentes de la cerámica tradicional y precolombina.",
+        "category": "Memorial & Patrimonio"
+      },
+      {
+        "name": "Chicha Buja Doña Loña",
+        "desc": "Rescate de la preparación artesanal de la chicha bruja de maíz fermentado, presentaciones de la danza de los Chinegros y muestra de murales.",
+        "category": "Gastronomía Tradicional & Danza"
+      },
+      {
+        "name": "Mirador “Sendero El Caballito”",
+        "desc": "Punto de gran belleza escénica con sendero ecológico, vistas panorámicas y riqueza ambiental para la contemplación y el descanso.",
         "category": "Naturaleza & Miradores"
       }
     ],
     "circuits": [
       {
-        "name": "Circuito de los Maestros del Torno",
-        "desc": "Experiencia inmersiva en 3 talleres destacados: modelado en torno de pie, grabado con cincel y pintura con tierras de colores.",
-        "duration": "3 horas",
-        "distance": "1.8 km"
+        "name": "Circuito Creativo “Tierra Viva”",
+        "desc": "Recorrido emblemático que celebra la tradición alfarera y la riqueza artesanal de San Juan de Oriente como museo abierto, integrando talleres vivenciales, murales, gastronomía ancestral y miradores naturales.",
+        "duration": "2.5 a 3 horas",
+        "distance": "2.3 km",
+        "sites": [
+          {
+            "name": "Plaza San Juan de los Platos",
+            "sector": "Público",
+            "cost": "Acceso libre y gratuito",
+            "desc": "Punto de partida del circuito con su anfiteatro y tiendas de artesanías, donde se encuentra el mupis con el mapa guiado del recorrido."
+          },
+          {
+            "name": "Taller Escuela del Maestro Valentín López",
+            "sector": "Privado",
+            "cost": "Demostraciones y venta de piezas de autor",
+            "desc": "Los visitantes conocen de cerca el proceso integral de transformación de la arcilla, desde su preparación hasta la creación de piezas únicas que reflejan la identidad cultural comunitaria."
+          },
+          {
+            "name": "Senderos Místicos (Murales de Interés Cultural)",
+            "sector": "Público",
+            "cost": "Acceso libre / Recorrido peatonal",
+            "desc": "Galería abierta de murales urbanos que plasman la memoria histórica, leyendas ancestrales y la cosmovisión del pueblo alfarero."
+          },
+          {
+            "name": "Taller Urraca del Maestro Alfredo Espinoza",
+            "sector": "Privado",
+            "cost": "Talleres vivenciales y demostraciones",
+            "desc": "Centro de producción, aprendizaje y encuentro cultural donde visitantes y estudiantes participan en demostraciones prácticas y talleres vivenciales."
+          },
+          {
+            "name": "Alfarería GUERRERO",
+            "sector": "Privado",
+            "cost": "Experiencias en torno y venta artesanal",
+            "desc": "Espacio vivencial donde se observa el proceso de elaboración, se participa en experiencias de modelado y se adquieren piezas que representan el talento local."
+          },
+          {
+            "name": "Taller Ecos Precolombinos (Memorial Maestro Gregorio Bracamontes)",
+            "sector": "Privado",
+            "cost": "Exposición cultural",
+            "desc": "Espacio que honra la memoria y el legado imperecedero de uno de los más insignes maestros y referentes de la cerámica tradicional de Nicaragua."
+          },
+          {
+            "name": "Chicha Buja Doña Loña",
+            "sector": "Privado",
+            "cost": "Consumo y degustación gastronómica",
+            "desc": "Espacio de sabores tradicionales rescatando la preparación artesanal de la chicha bruja de maíz fermentado, con danzas folclóricas de los Chinegros y exposición de murales."
+          },
+          {
+            "name": "Mirador de Gran Belleza Escénica “Sendero El Caballito”",
+            "sector": "Público",
+            "cost": "Acceso libre / Ecoturismo",
+            "desc": "Experiencia de contacto con la naturaleza y la cultura local mediante un sendero rodeado de paisajes verdes y vistas panorámicas de la cuenca lacustre, integrando la belleza natural con el simbolismo comunitario."
+          }
+        ]
       },
       {
-        "name": "Ruta del Barro Ancestral y Bruñido",
-        "desc": "Demostración de horneado tradicional a leña y técnica de pulido brillante con piedras lisas de río.",
-        "duration": "2 horas",
+        "name": "Ruta del Torno y Barro Ancestral",
+        "desc": "Recorrido complementario enfocado en la técnica de bruñido con piedra de río y horneado tradicional a leña.",
+        "duration": "1.5 horas",
         "distance": "1.2 km"
       }
     ],
     "agenda": [
       {
-        "event": "Fiestas Patronales de San Juan Bautista",
-        "date": "24 de Junio",
-        "desc": "Danza de los Chinegros con espadas de madera y música autóctona."
+        "event": "Fiestas Patronales de San Juan Bautista y Danza de los Chinegros",
+        "date": "23 y 24 de Junio",
+        "desc": "Celebración tradicional con la ancestral Danza de los Chinegros y repartición de Chicha Bruja."
       },
       {
-        "event": "Feria Nacional de la Cerámica",
+        "event": "Feria Nacional de la Cerámica y Concurso de Alfarería",
         "date": "Noviembre",
-        "desc": "Exposición y premiación a las mejores obras alfareras del país."
+        "desc": "Exposición magistral en la Plaza San Juan de los Platos y premiación a las mejores obras de arcilla."
       }
     ],
-    "gastronomy": "Masa de Cazuela tradicional, Tamales pisques con queso seco, Rosquillas artesanales y Café colado de olla con canela."
+    "gastronomy": "Chicha Bruja tradicional de maíz fermentado (Doña Loña), Masa de Cazuela, Tamales pisques con queso seco y Rosquillas artesanales."
   },
   "esteli": {
     "name": "Estelí",
     "slug": "esteli",
-    "badge": "El Diamante de las Segovias",
-    "logo": "/logos/esteli.png",
-    "subtitle": "El Diamante de las Segovias: Tabaco Premium, Murales y Música Norteña.",
-    "description": "Estelí combina el dinamismo de una metrópoli norteña con la belleza de las montañas segovianas. Conocida globalmente como una de las capitales mundiales del tabaco de alta gama, sus calles son un museo al aire libre con cientos de murales artísticos y el sonido inconfundible de las guitarras norteñas.",
+    "badge": "Ciudad Creativa de las Artes, Música Segoviana y Muralismo",
+    "logo": "/logos/logo6.png",
+    "subtitle": "El Diamante de las Segovias: Artes, Muralismo y Música Norteña.",
+    "description": "Estelí combina el dinamismo de una metrópoli norteña con la belleza de las montañas segovianas. Reconocida como capital del muralismo nicaragüense, cuna de las polkas y mazurcas de Don Felipe Urrutia y epicentro mundial del tabaco artesanal de alta gama.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
     "theme": {
       "color": "emerald",
@@ -349,40 +617,77 @@
       "text": "text-emerald-800"
     },
     "specialties": [
+      "Muralismo Urbano & Mosaicos",
+      "Música Segoviana (Polkas & Mazurcas)",
       "Cultura Tabacalera",
-      "Muralismo Urbano",
-      "Música de Polkas y Mazurcas",
-      "Ecoturismo de Reserva"
+      "Artesanías en Tusa & Marmolina"
     ],
     "attractions": [
       {
-        "name": "Fábricas y Cavas de Tabaco Premium",
-        "desc": "Recorridos guiados por las fábricas donde maestros torcedores elaboran a mano los puros más premiados internacionalmente.",
-        "category": "Industria Creativa"
+        "name": "Centro Cultural Felipe Urrutia",
+        "desc": "Complejo teatral y artístico con murales monumentales, galería de artes plásticas y tienda de souvenirs en homenaje al folclore segoviano.",
+        "category": "Artes Escénicas & Música"
       },
       {
-        "name": "Ruta de los Murales Urbanos de Estelí",
-        "desc": "Galería pública con más de 300 murales que relatan la historia, la niñez, la ecología y la identidad cultural del norte.",
-        "category": "Artes Visuales"
+        "name": "Casa de Cultura Leonel Rugama y Escuela Dreams Arts",
+        "desc": "Primer espacio de creatividad de Estelí, con talleres de pintura, danza, teatro, coro municipal y artesanías en tusa.",
+        "category": "Formación Artística"
       },
       {
-        "name": "Reserva Natural Tisey - La Estanzuela",
-        "desc": "Área protegida con la cascada Salto de La Estanzuela y la galería en roca viva esculpida por Don Alberto Gutiérrez.",
-        "category": "Ecoturismo & Naturaleza"
+        "name": "Parque Central 19 de Julio y Catedral del Rosario",
+        "desc": "Espacio cívico con la escultura en marmolina del Diamante de las Segovias, murales históricos y la catedral neoclásica de 1892.",
+        "category": "Patrimonio & Monumentos"
+      },
+      {
+        "name": "Casa de Cultura Ciro Molina",
+        "desc": "Espacio comunitario con exposiciones permanentes y talleres vivenciales de mosaicos y muralismo para todas las edades.",
+        "category": "Arte Comunitario"
       }
     ],
     "circuits": [
+      {
+        "name": "Circuito Creativo Raíces y Rutas de Estelí",
+        "desc": "Recorrido urbano que destaca la belleza, historia, música segoviana y promoción artística-cultural de Estelí, dinamizando la economía local con cafeterías de especialidad, restaurantes típicos y talleres de creadores de arte popular.",
+        "duration": "3.5 horas",
+        "distance": "3.0 km",
+        "sites": [
+          {
+            "name": "Parque Central 19 de Julio",
+            "sector": "Público",
+            "desc": "Corazón de la ciudad decorado con murales temáticos, la Escultura a la Madre Nicaragüense, la escultura «La Gorda» tallada en marmolina que representa al Diamante de las Segovias, y el Mural «Tonaditas Estelianas»."
+          },
+          {
+            "name": "Catedral Nuestra Señora del Rosario",
+            "sector": "Público",
+            "desc": "Asentada sobre los cimientos del primer edificio construido en la ciudad al costado este del parque, erigida entre 1892 y 1990 con estilo arquitectónico neoclásico-moderno."
+          },
+          {
+            "name": "Casa del Gobierno Local (Alcaldía)",
+            "sector": "Público",
+            "desc": "Edificio institucional que exhibe grandes murales conmemorativos de la historia contemporánea y la memoria de la Revolución Popular Sandinista."
+          },
+          {
+            "name": "Centro Cultural Felipe Urrutia",
+            "sector": "Público",
+            "desc": "Complejo cultural con teatro, galería, salas y plazoleta; alberga los murales «Árbol Cósmico», «La Cotidianidad Esteliana», «Madre del Parque» y la sala biográfica audiovisual de Don Felipe Urrutia con tienda de souvenirs."
+          },
+          {
+            "name": "Casa de Cultura Leonel Rugama",
+            "sector": "Público",
+            "desc": "Primer espacio de creatividad fundado en Estelí; ofrece talleres de danza, música, teatro, coro, la Escuela de Artes Plásticas Dreams Arts, muralismo y la exclusiva artesanía en tusa del maestro Juan Carlos Moreno López."
+          },
+          {
+            "name": "Casa de Cultura Ciro Molina",
+            "sector": "Público",
+            "desc": "Centro artístico comunitario con talleres de artes plásticas y muralismo para niños, jóvenes y adultos mayores, galería permanente y taller vivencial de obras rápidas en mosaico."
+          }
+        ]
+      },
       {
         "name": "Circuito del Tabaco y el Humo Sagrado",
         "desc": "Visita a plantaciones de tabaco en el valle de Estelí, curado de hojas y cata sensorial guiada.",
         "duration": "3.5 horas",
         "distance": "5.0 km"
-      },
-      {
-        "name": "Ruta de los Murales y el Café Segoviano",
-        "desc": "Caminata urbana por los murales del centro histórico acompañada de catas en cafeterías de especialidad.",
-        "duration": "2.5 horas",
-        "distance": "3.0 km"
       },
       {
         "name": "Circuito Escultórico del Tisey",
@@ -414,7 +719,7 @@
     "name": "Matagalpa",
     "slug": "matagalpa",
     "badge": "La Perla del Septentrión",
-    "logo": "/logos/matagalpa.png",
+    "logo": "/logos/logo9.png",
     "subtitle": "Tierra del Café Gourmet, Montañas Nubosas y Mazurcas Campesinas.",
     "description": "Rodeada de imponentes macizos montañosos y bosques de niebla, Matagalpa es el epicentro de la caficultura nicaragüense y la cuna de la música norteña de violines de talalate. Su clima fresco, su historia indígena de los flecheros y sus fincas agroturísticas enamoran a cada visitante.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -434,32 +739,84 @@
     ],
     "attractions": [
       {
-        "name": "Museo Nacional del Café",
-        "desc": "Exhibición completa de la historia, variedades, procesos de beneficiado y cultura del grano de oro en Nicaragua.",
-        "category": "Cultura & Café"
+        "name": "Teatro y Museo Municipal Leoncio Sáenz",
+        "desc": "Espacio vital para el intercambio cultural, la danza, el teatro y las artes visuales en honor al gran maestro de la plástica matagalpina.",
+        "category": "Artes Escénicas & Museo"
       },
       {
-        "name": "Reserva Ecológica Selva Negra",
-        "desc": "Hacienda cafetalera centenaria inmersa en bosque de niebla, con senderos ecológicos, avistamiento de quetzales y producción orgánica.",
-        "category": "Naturaleza & Ecoturismo"
+        "name": "Telares Indígenas y Casa de Cultura de El Chile",
+        "desc": "Talleres ancestrales de tejido en telar de cintura y de palanca liderados por maestras tejedoras indígenas a los pies del cerro El Chile.",
+        "category": "Cultura Ancestral"
       },
       {
-        "name": "Catedral San Pedro de Matagalpa",
-        "desc": "Monumento arquitectónico de estilo barroco y ecléctico consagrado en el siglo XIX en el centro de la ciudad.",
-        "category": "Patrimonio Religioso"
+        "name": "Tiangue Indígena de Matagalpa",
+        "desc": "Espacio cultural sobre la Avenida del Río Grande que celebra la identidad, artesanías y gastronomía del pueblo indígena norteño.",
+        "category": "Patrimonio Vivo"
       },
       {
-        "name": "Mirador Cerro El Calvario",
-        "desc": "Parque mirador que ofrece una vista de 360 grados sobre el valle y las montañas de Matagalpa.",
-        "category": "Miradores Urbanos"
+        "name": "Museo del Café y Cafetería Waswalí",
+        "desc": "Complejo interactivo en el Parque de Ferias Waswalí dedicado a la historia, variedades y mística de la caficultura matagalpina.",
+        "category": "Cultura Cafetalera"
+      },
+      {
+        "name": "Catedral San Pedro y Mirador Cerro El Calvario",
+        "desc": "Conjunto patrimonial que une la arquitectura ecléctica de la catedral histórica con la panorámica de 360° desde la cima del cerro.",
+        "category": "Patrimonio & Paisaje"
       }
     ],
     "circuits": [
       {
-        "name": "Circuito de la Ruta del Café de Especialidad",
-        "desc": "Tour por beneficios húmedos y secos, catación con baristas certificados y degustación de chocolates con café.",
-        "duration": "4 horas",
-        "distance": "10.0 km"
+        "name": "Circuito Creativo Raíces Vivas de Matagalpa",
+        "desc": "Recorrido sensorial y cultural por un territorio vivo donde convergen el arte, la historia, la identidad indígena, la tradición cafetalera y la maestría artesanal en fibra de palma, telar, cerámica negra y bambú.",
+        "duration": "4.5 horas",
+        "distance": "8.0 km",
+        "sites": [
+          {
+            "name": "Espacio Artesanal en Fibra de Palma (Silvia Díaz)",
+            "sector": "Privado",
+            "desc": "Taller comunitario en Quebrada Honda donde la reconocida artesana Silvia Díaz comparte el conocimiento heredado de sus antepasados para transformar la fibra de palma en finas artesanías."
+          },
+          {
+            "name": "Tostaduría y Cafetería «Guayacán Coffee»",
+            "sector": "Privado",
+            "desc": "Ubicada en el km 119.5 de la carretera a Sébaco, espacio emblemático para los amantes del «grano de oro» con cata, tostado y maridaje de cafés de altura de estricta altura."
+          },
+          {
+            "name": "Museo del Café y Cafetería Waswalí",
+            "sector": "Público",
+            "desc": "Ubicado en el Parque de Ferias Waswalí sobre la carretera a Sébaco; fusiona la historia de la caficultura, la cultura campesina y la degustación del café matagalpino."
+          },
+          {
+            "name": "Tiangue Indígena Matagalpa",
+            "sector": "Público",
+            "desc": "Ubicado en la emblemática Avenida del Río Grande, espacio cultural y comercial que celebra la cosmovisión, gastronomía y creatividad viva del pueblo indígena de Matagalpa."
+          },
+          {
+            "name": "Taller de Artesanía de Cerámica Negra",
+            "sector": "Privado",
+            "desc": "Taller que preserva el legado precolombino de la cerámica negra bruñida con piedra de río, tradición transmitida desde 1942 por la familia Pineda."
+          },
+          {
+            "name": "Teatro y Museo Municipal Leoncio Sáenz",
+            "sector": "Público",
+            "desc": "Moderna instalación cultural destinada a las artes escénicas, música de cámara, danza contemporánea y exposiciones de artes visuales en memoria del maestro Leoncio Sáenz."
+          },
+          {
+            "name": "Telares Indígenas Comunidad «El Chile»",
+            "sector": "Privado",
+            "desc": "Ubicado a 25.5 km de la ciudad en la falda del cerro El Chile; talleres liderados por maestras tejedoras que preservan el telar de cintura y palanca con tintes naturales."
+          },
+          {
+            "name": "Casa de Cultura y Creatividad María Marcos López Martínez",
+            "sector": "Público",
+            "desc": "Inaugurada en noviembre de 2023 en la comunidad El Chile para preservar la memoria viva comunitaria, en honor a la primera Reina Indígena del Centenario (1962)."
+          },
+          {
+            "name": "Taller de Bambú «La Praga»",
+            "sector": "Privado",
+            "desc": "Ubicado sobre la carretera hacia La Dalia, centro integral de innovación sostenible que abarca el cultivo, diseño y elaboración de muebles y artesanías de bambú."
+          }
+        ]
       },
       {
         "name": "Ruta de los Flecheros y la Montaña",
@@ -497,7 +854,7 @@
     "name": "Bluefields",
     "slug": "bluefields",
     "badge": "Capital Multiétnica del Caribe Sur",
-    "logo": "/logos/bluefields.png",
+    "logo": "/logos/logo1.png",
     "subtitle": "Capital Multicultural del Caribe: Ritmos de Palo de Mayo y Sabores del Mar.",
     "description": "Ubicada en la Bahía de Bluefields, esta ciudad portuaria es el mosaico cultural más diverso de Nicaragua, donde conviven armoniosamente pueblos creoles, miskitos, ramas, garífunas, mayangnas y mestizos. Su energía caribeña se expresa en el Maypole, su música reggae y su gastronomía a base de coco y mariscos frescos.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -517,27 +874,94 @@
     ],
     "attractions": [
       {
+        "name": "Parque Reyes y Monumento a las 6 Etnias",
+        "desc": "Espacio cívico central con árboles centenarios, el Pozo del Rey Mosco, la primera aplanadora histórica y quioscos de dulcería tradicional.",
+        "category": "Patrimonio & Tradición"
+      },
+      {
+        "name": "Casa Museo Afrodescendiente Carl Rigby Moses",
+        "desc": "Santuario cultural en el barrio Punta Fría dedicado a la preservación de la memoria histórica, identidad y resistencia de los pueblos Creole y Garífuna.",
+        "category": "Museo & Memoria"
+      },
+      {
+        "name": "Iglesia Morava Central",
+        "desc": "Emblema arquitectónico caribeño con más de 168 años de legado misionero e historia evangélica Unitas Fratrum.",
+        "category": "Arquitectura Religiosa"
+      },
+      {
+        "name": "Complejo y Casa de Cultura Scarlet Cuadra Waters",
+        "desc": "Espacio multidisciplinario que alberga la Casa de Cultura y Creatividad junto al Museo de la Revolución de la Costa Caribe.",
+        "category": "Cultura & Creatividad"
+      },
+      {
         "name": "Malecón de Bluefields y Bahía Caribeña",
-        "desc": "Paseo costero con vistas a la laguna y embarcaciones que navegan hacia los cayos e islas caribeñas.",
+        "desc": "Paseo costero con vistas panorámicas a la laguna, muelles artesanales y restaurantes de comida marina tradicional.",
         "category": "Costanera & Paisaje"
-      },
-      {
-        "name": "Barrios Históricos Cotton Tree y Beholden",
-        "desc": "Calles con arquitectura tradicional caribeña en madera, casas sobre pilotes pintadas de colores vivos y árboles de coco.",
-        "category": "Patrimonio Arquitectónico"
-      },
-      {
-        "name": "Centro de Investigación y Museo Cultural CIDCA",
-        "desc": "Espacio que custodia la memoria lingüística, historia oral y objetos tradicionales de las etnias del Caribe nicaragüense.",
-        "category": "Museo & Etnografía"
       }
     ],
     "circuits": [
       {
-        "name": "Circuito de la Bahía y Casas Creole",
-        "desc": "Paseo guiado aprendiendo sobre la historia de los piratas, las misiones moravas y la autonomía de la Costa Caribe.",
-        "duration": "3 horas",
-        "distance": "3.5 km"
+        "name": "Circuito Creativo Historia y Cultura en el Paseo de la Autonomía",
+        "desc": "Recorrido emblemático que celebra la riqueza multicultural de la Costa Caribe nicaragüense a lo largo del Paseo de la Autonomía, integrando sitios históricos, arquitectura colonial y vernácula caribeña, centros culturales y espacios comunitarios.",
+        "duration": "3.5 horas",
+        "distance": "3.0 km",
+        "sites": [
+          {
+            "name": "Parque Reyes",
+            "sector": "Público",
+            "desc": "Corazón histórico de Bluefields que alberga el Monumento a las 6 Etnias, frondosos árboles centenarios, el histórico Pozo del Rey Mosco, la primera aplanadora que habilitó las calles de la ciudad y quioscos de dulcería tradicional."
+          },
+          {
+            "name": "Palacio Municipal",
+            "sector": "Público",
+            "desc": "Sede edilicia con galería fotográfica de los alcaldes a lo largo de 123 años de trayectoria municipal y reseña histórica sobre el proceso de autonomía regional."
+          },
+          {
+            "name": "Consejo Regional Autónomo (CRACCS)",
+            "sector": "Público",
+            "desc": "Sede del autogobierno caribeño que exhibe la galería fotográfica de los Padres de la Autonomía, un gran mural representativo de la identidad multiétnica y documentación del proceso autonómico."
+          },
+          {
+            "name": "Catedral Nuestra Señora del Rosario",
+            "sector": "Público",
+            "desc": "Fundada en 1913 en honor al Papa Pío X, es la primera catedral de Bluefields y sede del primer Vicariato Apostólico elevado a Diócesis por el Papa Francisco en 2017, construida en mampostería reforzada."
+          },
+          {
+            "name": "Colegio San José",
+            "sector": "Público",
+            "desc": "Emblemático centro educativo con 83 años de fundación; resalta por la historia de su arquitectura señorial y sus murales alusivos al arte y la vida caribeña."
+          },
+          {
+            "name": "Iglesia Morava Central",
+            "sector": "Público",
+            "desc": "Icono cultural y espiritual de la Costa Caribe con más de 168 años de obra misionera (Unitas Fratrum), cuyos primeros cultos se celebraron bajo un frondoso árbol de fruta de pan."
+          },
+          {
+            "name": "Casa Museo Afrodescendiente Carl Rigby Moses",
+            "sector": "Público",
+            "desc": "Centro cultural situado en el barrio Punta Fría (Cotton Tree), concebido como un santuario vivo para la memoria, poesía, música y resistencia de los pueblos Creole y Garífuna."
+          },
+          {
+            "name": "Complejo Scarlet Cuadra Waters",
+            "sector": "Público",
+            "desc": "Complejo que integra la Casa de Cultura y Creatividad «Scarlet Cuadra Waters» junto a las salas del Museo de la Revolución."
+          },
+          {
+            "name": "Malecón de Bluefields",
+            "sector": "Público",
+            "desc": "Paseo costero y mirador frente a la bahía que dinamiza el encuentro cultural, la música al aire libre y las vistas del litoral caribeño."
+          },
+          {
+            "name": "Casa de la Artista June Beer (Sitio de Interés)",
+            "sector": "Privado",
+            "desc": "Espacio de memoria y homenaje a June Beer, ilustre pintora y escritora pionera de la plástica caribeña afrocaribeña y de la resistencia cultural."
+          },
+          {
+            "name": "Mercado Municipal Teodoro Martínez (Sitio de Interés)",
+            "sector": "Público",
+            "desc": "Epicentro de la vida comercial tradicional, con venta de mariscos recién desembarcados, pan de coco horneado a leña y especias caribeñas."
+          }
+        ]
       },
       {
         "name": "Ruta de la Danza y el Palo de Mayo",
@@ -575,7 +999,7 @@
     "name": "Juigalpa",
     "slug": "juigalpa",
     "badge": "Tierra de Caracoles y Sabanas Chontaleñas",
-    "logo": "/logos/juigalpa.png",
+    "logo": "/logos/logo7.png",
     "subtitle": "Tierra de Gigantes Amerindios, Cultura Taurina y Sabanas Chontaleñas.",
     "description": "Capital departamental de Chontales, Juigalpa se erige sobre un valle custodiado por la mística Cordillera de Amerrisque. Destaca por poseer una de las colecciones de estatuaria lítica precolombina más importantes de América Central, su apasionada cultura ganadera e hípica, y su exquisita tradición quesera.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -596,38 +1020,76 @@
     "attractions": [
       {
         "name": "Museo Arqueológico Gregorio Aguilar Barea",
-        "desc": "Custodia la mayor colección de monolitos antropomorfos y zoomorfos de la cultura Amerrisque, con piezas de hasta 4 metros de altura.",
+        "desc": "Custodia la mayor colección de estatuaria y monolitos precolombinos de la cultura Amerrisque, con salas interactivas y visitas guiadas.",
         "category": "Arqueología Amerindia"
       },
       {
-        "name": "Parque Mirador Palo Solo",
-        "desc": "Balcón natural sobre la ciudad con vistas ininterrumpidas a la serranía de Amerrisque y al Lago de Nicaragua.",
-        "category": "Mirador Panorámico"
+        "name": "Zoológico Thomas Belt y Puma Albino Itzae",
+        "desc": "Pulmón verde de Juigalpa con arboretum municipal y centro de conservación de fauna, hogar del único puma albino del mundo.",
+        "category": "Fauna & Biodiversidad"
       },
       {
-        "name": "Zoológico Nacional Thomas Belt",
-        "desc": "Uno de los centros de conservación y rescate de fauna silvestre más reconocidos de Nicaragua, hogar del famoso puma albino.",
-        "category": "Fauna & Biodiversidad"
+        "name": "Palacio de la Cultura y Museo Comunitario Juigalpan",
+        "desc": "Espacio patrimonial con salas de memoria histórica, Museo de la Revolución y vitrinas de arte popular chontaleño.",
+        "category": "Patrimonio & Historia"
+      },
+      {
+        "name": "Casa de Cultura y Museo Josefa Toledo de Aguerri",
+        "desc": "Complejo formativo artístico en pintura, danza y música, junto a la casa natal de la ilustre maestra y educadora nacional.",
+        "category": "Cultura & Formación"
       }
     ],
     "circuits": [
       {
-        "name": "Circuito Arqueológico Amerrisque",
-        "desc": "Visita al Museo Arqueológico y recorrido por petroglifos precolombinos en las faldas de la cordillera.",
-        "duration": "3.5 horas",
-        "distance": "4.0 km"
+        "name": "Circuito Creativo Esplendor Precolombino y Aprendizaje Ancestral",
+        "desc": "Recorrido integral que busca fortalecer la identidad cultural, rescatar el conocimiento ancestral precolombino y proyectar las artes plásticas, la música filarmónica y la biodiversidad que enorgullecen a Juigalpa.",
+        "duration": "4 horas",
+        "distance": "4.5 km",
+        "sites": [
+          {
+            "name": "Parque Central Josefa Toledo de Aguerri",
+            "sector": "Público",
+            "desc": "Espacio cívico con mosaicos artísticos y monumentos; acoge presentaciones de bandas filarmónicas los fines de semana a partir de las 4:00 pm, shows infantiles y juegos tradicionales."
+          },
+          {
+            "name": "Palacio de la Cultura (Museo Comunitario Juigalpan)",
+            "sector": "Público",
+            "desc": "Alberga el Museo Comunitario Juigalpan y el Museo de la Revolución; ofrece recorridos guiados, postales de la Ciudad Creativa, artesanías locales y el programa lúdico «Jugando Aprendo»."
+          },
+          {
+            "name": "Museo Casa Natal de la Educadora Josefa Toledo de Aguerri",
+            "sector": "Público",
+            "desc": "Espacio de memoria pedagógica con exhibición y venta de libros de la insigne educadora y escritores chontaleños, con obsequio de separatas literarias."
+          },
+          {
+            "name": "Casa de la Cultura y Creatividad Gregorio Aguilar Barea",
+            "sector": "Público",
+            "desc": "Centro de formación artística permanente con venta de pinturas y cursos continuos de artes plásticas, danza folklórica infantil/juvenil y clases de música."
+          },
+          {
+            "name": "Museo Arqueológico Gregorio Aguilar Barea",
+            "sector": "Público",
+            "cost": "C$ 30.00 adultos | C$ 25.00 niños menores de 12 años",
+            "desc": "Custodia la mayor colección de estatuaria lítica de los amerriques con recorridos introductorios de salas, dinámicas lúdicas escolares y visitas guiadas nocturnas para extranjeros."
+          },
+          {
+            "name": "Mirador Sandino",
+            "sector": "Público",
+            "desc": "Punto panorámico urbano que conecta visualmente con la arquitectura de la ciudad y regala vistas abiertas al Río Mayales y las serranías chontaleñas."
+          },
+          {
+            "name": "Zoológico Thomas Belt",
+            "sector": "Público",
+            "cost": "C$ 40.00 adultos | C$ 30.00 niños (Lun-Dom 8:00 am - 5:30 pm)",
+            "desc": "Pulmón verde de Juigalpa y centro educativo-científico con arboretum y la casa del árbol; resguarda al puma albino «Itzae» y organiza domingos familiares y noches de luna."
+          }
+        ]
       },
       {
         "name": "Ruta del Queso y las Fincas Ganaderas",
         "desc": "Experiencia en plantas queseras artesanales aprendiendo la elaboración del queso moralique, quesillo y cuajada chontaleña.",
         "duration": "3 horas",
         "distance": "6.0 km"
-      },
-      {
-        "name": "Sendero Panorámico Palo Solo y la Cruz",
-        "desc": "Caminata urbana hacia los puntos más altos de la ciudad con tertulia poética y gastronómica.",
-        "duration": "2 horas",
-        "distance": "2.5 km"
       }
     ],
     "agenda": [
@@ -648,7 +1110,7 @@
     "name": "Nagarote",
     "slug": "nagarote",
     "badge": "Municipio Azul y Limpio",
-    "logo": "/logos/nagarote.png",
+    "logo": "/logos/logo10.png",
     "subtitle": "Municipio Azul: Cuna del Quesillo Tradicional y Playas del Pacífico.",
     "description": "Reconocido nacionalmente por su limpieza impecable y su urbanismo verde, Nagarote es el hogar legendario del quesillo nicaragüense con crema fresca y cebollitas encurtidas. Su territorio ofrece una transición perfecta entre plazas coloniales arboladas y las mejores olas de surf de Miramar y Puerto Sandino.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",
@@ -726,7 +1188,7 @@
     "name": "Managua",
     "slug": "managua",
     "badge": "Capital Creativa e Innovación",
-    "logo": "/logos/managua.png",
+    "logo": "/logos/logo8.png",
     "subtitle": "Capital Creativa: Paisajismo Lacustre, Museos y Vanguardia Cultural.",
     "description": "Managua, a orillas del Lago Xolotlán, es el gran epicentro político, universitario y artístico del país. Combina la memoria histórica de su centro antiguo, la majestuosidad del Teatro Nacional Rubén Darío y la modernidad de sus paseos costeros con una efervescente cartelera de conciertos y gastronomía cosmopolita.",
     "coverImage": "/banners/circuitos/circuitos-banner.jpg",

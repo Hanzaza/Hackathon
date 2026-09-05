@@ -10,8 +10,12 @@ import { ParallaxComponent } from '@/components/ui/parallax-scrolling';
 export default function HomePage() {
   const router = useRouter();
 
-  const handleMapClick = () => {
-    router.push('/ciudades-creativas');
+  const handleMapClick = (target?: string) => {
+    if (target && !target.startsWith('NI')) {
+      router.push(`/ciudades-creativas/${target}`);
+    } else {
+      router.push('/ciudades-creativas');
+    }
   };
 
   return (

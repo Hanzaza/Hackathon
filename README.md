@@ -390,29 +390,13 @@ ROOTS fue concebido como una **Progressive Web App** nativa:
 <div align="center">
   <table>
     <tr>
-      <td align="center" width="25%">
-        <img src="https://github.com/Hanzaza.png" width="110px;" alt="Jonathan González" style="border-radius:50%; border: 3px solid #00A8A7;"/><br />
-        <sub><b>Jonathan González</b></sub><br />
-        <small>🚀 Full Stack & Architecture Lead</small><br />
-        <a href="https://github.com/Hanzaza"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/identicons/user2.png" width="110px;" alt="Frontend Lead" style="border-radius:50%; border: 3px solid #F4A43B;"/><br />
-        <sub><b>Frontend Engineer</b></sub><br />
-        <small>🎨 UI/UX & Interactive GIS Design</small><br />
-        <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/identicons/user3.png" width="110px;" alt="Backend Lead" style="border-radius:50%; border: 3px solid #3BA455;"/><br />
-        <sub><b>Backend Developer</b></sub><br />
-        <small>⚙️ Cloud, Auth & REST Services</small><br />
-        <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
-      </td>
-      <td align="center" width="25%">
-        <img src="https://github.com/identicons/user4.png" width="110px;" alt="GIS Specialist" style="border-radius:50%; border: 3px solid #00A8A7;"/><br />
-        <sub><b>GIS & Data Specialist</b></sub><br />
-        <small>📍 Cartography & Cultural Data</small><br />
-        <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
+      <td align="center" width="300px" style="padding: 24px;">
+        <img src="https://github.com/Hanzaza.png" width="130px;" alt="Jonathan Pastora" style="border-radius: 50%; border: 4px solid #00A8A7; box-shadow: 0 10px 30px rgba(0, 168, 167, 0.3);"/><br />
+        <br />
+        <sub><b style="font-size: 1.15rem;">Jonathan Pastora</b></sub><br />
+        <small style="color: #00A8A7; font-weight: 600;">🚀 Full Stack Developer & Lead Architect</small><br />
+        <br />
+        <a href="https://github.com/Hanzaza"><img src="https://img.shields.io/badge/GitHub-Hanzaza-black?style=for-the-badge&logo=github" /></a>
       </td>
     </tr>
   </table>

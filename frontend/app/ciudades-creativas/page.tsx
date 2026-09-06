@@ -16,9 +16,9 @@ const MapaOrquestador = dynamic(() => import('@/components/map/MapaContenedor'),
 
 export default function CiudadesCreativasPage() {
   return (
-    <div className="fixed inset-0 lg:static lg:h-[100dvh] w-full h-[100dvh] pt-0 lg:pt-20 overflow-hidden bg-slate-100 flex items-center justify-center overscroll-none touch-none select-none">
-      <div className="w-full h-full p-0 sm:p-3 lg:p-4 flex items-center justify-center">
-        <div className="w-full h-full rounded-none sm:rounded-[2.5rem] bg-white border-0 sm:border border-slate-200/80 shadow-none sm:shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden relative backdrop-blur-xl">
+    <div className="fixed inset-0 lg:static lg:h-[100dvh] w-full h-[100dvh] pt-0 lg:pt-[76px] overflow-hidden bg-slate-100 flex items-center justify-center overscroll-none touch-none select-none">
+      <div className="w-full h-full p-0 sm:p-2 lg:px-4 lg:py-2.5 flex items-center justify-center">
+        <div className="w-full h-full rounded-none sm:rounded-[2rem] lg:rounded-[2.5rem] bg-white border-0 sm:border border-slate-200/80 shadow-none sm:shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden relative backdrop-blur-xl flex flex-col">
           <MapaOrquestador />
         </div>
       </div>

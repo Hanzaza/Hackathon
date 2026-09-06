@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import NicaraguaSVG from '@/components/map/NicaraguaSVG';
 import CityMobileStacking from '@/components/ui/city-mobile-stacking';
-import { ParallaxComponent } from '@/components/ui/parallax-scrolling';
+import CiudadesCreativasHero from '@/components/ui/CiudadesCreativasHero';
 
 export default function HomePage() {
   const router = useRouter();
@@ -19,28 +19,18 @@ export default function HomePage() {
   };
 
   return (
-    // Fondo completamente blanco, texto oscuro con padding inferior amplio para el navbar móvil
-    <main className="min-h-screen bg-white text-slate-800 font-sans pb-32">
+    // Fondo blanco limpio y nítido para la pantalla de inicio
+    <main className="min-h-screen bg-white text-slate-900 font-sans pb-32">
       
-      {/* 1. SECCIÓN HERO PARALLAX */}
-      <ParallaxComponent title="Ciudades Creativas" />
+      {/* 1. SECCIÓN HERO: CIUDADES CREATIVAS */}
+      <CiudadesCreativasHero />
 
-      {/* 2. BARRA DE ESTADÍSTICAS MORADA */}
-      <section className="relative z-30 w-full bg-purple-800 text-white -mt-10 py-12 rounded-t-[3rem] md:rounded-t-[5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.3)]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-purple-700/50">
-          <StatItem icon="💡" value="10" label="Ciudades Creativas" />
-          <StatItem icon="🗺️" value="06" label="Circuitos Habilitados" />
-          <StatItem icon="✨" value="+200" label="Experiencias Únicas" />
-          <StatItem icon="👥" value="+500" label="Emprendedores" />
-        </div>
-      </section>
-
-      {/* 3. SECCIÓN: MAPA NACIONAL (VISTA PREVIA INTERACTIVA CON REDIRECCIÓN) */}
-      <section id="mapa-interactivo" className="max-w-7xl mx-auto px-6 lg:px-8 pt-20 scroll-mt-10">
+      {/* 2. SECCIÓN: MAPA NACIONAL (VISTA PREVIA INTERACTIVA CON REDIRECCIÓN) */}
+      <section id="mapa-interactivo" className="max-w-7xl mx-auto px-6 lg:px-8 pt-16 sm:pt-20 scroll-mt-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100 border border-purple-200/80 text-purple-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-purple-600 animate-ping" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-50 border border-teal-200/80 text-[#007F7E] text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#00A8A7] animate-ping" />
               <span>🗺️ Mapa Cultural & Turístico Interactivo</span>
             </div>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-950 leading-tight tracking-tight">
@@ -53,7 +43,7 @@ export default function HomePage() {
 
           <Link
             href="/ciudades-creativas"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 shrink-0 self-start md:self-auto"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#00A8A7] to-[#007F7E] hover:from-[#00BFBD] hover:to-[#009694] text-white font-black text-xs sm:text-sm shadow-md hover:shadow-lg transition-all active:scale-95 shrink-0 self-start md:self-auto"
           >
             <span>Explorar Mapa Inmersivo</span>
             <span>→</span>
@@ -64,7 +54,8 @@ export default function HomePage() {
         <div className="relative w-full rounded-[2.5rem] bg-white border border-slate-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden p-2 sm:p-6 cursor-pointer">
           <NicaraguaSVG 
             onSelect={handleMapClick}
-            showLegend={true}
+            showLegend={false}
+            showHeader={false}
             showMarkers={true}
           />
         </div>
@@ -74,7 +65,7 @@ export default function HomePage() {
       {/* 4. SECCIÓN: NUESTRAS CIUDADES CREATIVAS (Cuadrícula Estática) */}
       <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-24">
         <div className="mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-200/80 text-indigo-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 shadow-xs">
             <span>✨ Red Nacional de Identidad & Cultura</span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-950 leading-tight tracking-tight">
@@ -107,17 +98,6 @@ export default function HomePage() {
 }
 
 // --- COMPONENTES AUXILIARES ---
-// (Mantuve todos tus componentes exactamente iguales)
-
-function StatItem({ icon, value, label }: { icon: string, value: string, label: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center p-2">
-      <span className="text-3xl mb-2">{icon}</span>
-      <span className="text-4xl font-extrabold mb-1">{value}</span>
-      <span className="text-sm text-purple-200 font-medium tracking-wide">{label}</span>
-    </div>
-  );
-}
 
 function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
   return (
@@ -152,13 +132,13 @@ function CityCard({ name, desc, active, slug, logoSrc }: { name: string, desc: s
   return (
     <Link 
       href={`/ciudades-creativas/${slug}`} 
-      className="flex flex-col p-8 rounded-3xl border-2 bg-white border-slate-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-900/5 cursor-pointer transition-all group"
+      className="flex flex-col p-8 rounded-3xl border-2 bg-white border-slate-100 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-900/5 cursor-pointer transition-all group"
     >
       <CityLogo logoSrc={logoSrc} name={name} />
       <h3 className="text-2xl font-bold text-slate-900 mb-1">{name}</h3>
       <p className="text-sm text-slate-500 mb-6 flex-grow">{desc}</p>
       
-      <span className="text-purple-700 font-semibold text-sm group-hover:text-purple-900 transition-colors flex items-center gap-1">
+      <span className="text-[#00A8A7] font-bold text-sm group-hover:text-[#007F7E] transition-colors flex items-center gap-1">
         Explorar ciudad <span className="group-hover:translate-x-1 transition-transform">→</span>
       </span>
     </Link>

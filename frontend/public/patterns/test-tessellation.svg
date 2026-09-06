@@ -1,0 +1,52 @@
+<svg width="480" height="360" xmlns="http://www.w3.org/2000/svg" style="background: #0F3A2E">
+  <defs>
+    <pattern id="precolombian-tessellation" width="120" height="120" patternUnits="userSpaceOnUse">
+      <!-- ===== DIAMANTE CENTRAL ===== -->
+      <!-- 1. Borde Exterior -->
+      <polygon points="60,0 120,60 60,120 0,60" fill="none" stroke="#00A8A7" stroke-width="3.5" stroke-linejoin="round" />
+      
+      <!-- 2. Segundo anillo concéntrico -->
+      <polygon points="60,10 110,60 60,110 10,60" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linejoin="round" />
+      
+      <!-- 3. Tercer anillo concéntrico con velo -->
+      <polygon points="60,20 100,60 60,100 20,60" fill="#00A8A7" fill-opacity="0.15" stroke="#00A8A7" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- 4. Cuarto anillo concéntrico -->
+      <polygon points="60,30 90,60 60,90 30,60" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- 5. Núcleo central sólido -->
+      <polygon points="60,42 78,60 60,78 42,60" fill="#00A8A7" fill-opacity="0.85" stroke="#00A8A7" stroke-width="1.5" />
+
+      <!-- ===== 4 ESQUINAS (Forman el segundo diamante idéntico en el mosaico) ===== -->
+      <!-- Top-Left -->
+      <path d="M 0,0 L 60,0 L 0,60 Z" fill="none" stroke="#00A8A7" stroke-width="3.5" stroke-linejoin="round" />
+      <path d="M 0,10 L 50,0" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 0,20 L 40,0" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <path d="M 0,30 L 30,0" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <polygon points="0,0 18,0 0,18" fill="#00A8A7" fill-opacity="0.85" />
+
+      <!-- Top-Right -->
+      <path d="M 120,0 L 60,0 L 120,60 Z" fill="none" stroke="#00A8A7" stroke-width="3.5" stroke-linejoin="round" />
+      <path d="M 70,0 L 120,10" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 80,0 L 120,20" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <path d="M 90,0 L 120,30" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <polygon points="120,0 102,0 120,18" fill="#00A8A7" fill-opacity="0.85" />
+
+      <!-- Bottom-Left -->
+      <path d="M 0,120 L 60,120 L 0,60 Z" fill="none" stroke="#00A8A7" stroke-width="3.5" stroke-linejoin="round" />
+      <path d="M 0,110 L 50,120" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 0,100 L 40,120" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <path d="M 0,90 L 30,120" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <polygon points="0,120 18,120 0,102" fill="#00A8A7" fill-opacity="0.85" />
+
+      <!-- Bottom-Right -->
+      <path d="M 120,120 L 60,120 L 120,60 Z" fill="none" stroke="#00A8A7" stroke-width="3.5" stroke-linejoin="round" />
+      <path d="M 70,120 L 120,110" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M 80,120 L 120,100" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <path d="M 90,120 L 120,90" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <polygon points="120,120 102,120 120,102" fill="#00A8A7" fill-opacity="0.85" />
+    </pattern>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#precolombian-tessellation)" />
+</svg>

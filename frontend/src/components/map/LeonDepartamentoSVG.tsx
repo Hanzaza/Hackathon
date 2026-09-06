@@ -152,7 +152,7 @@ export default function LeonDepartamentoSVG({
       </div>
 
       {/* ================= CANVAS DEL MAPA SVG VECTORIAL CENTRADO ================= */}
-      <div className="relative w-full h-full max-w-2xl max-h-[62vh] sm:max-h-[70vh] flex items-center justify-center px-4 pt-12 pb-16 sm:py-6">
+      <div className="relative w-full h-full max-w-2xl max-h-[74vh] sm:max-h-[80vh] flex items-center justify-center px-2 sm:px-6 pt-6 sm:pt-6 pb-24 sm:pb-6">
         <svg
           viewBox="-21 77 2509 3400"
           className="w-full h-full max-h-full drop-shadow-[0_15px_35px_rgba(0,0,0,0.08)] select-none touch-manipulation"
@@ -233,8 +233,8 @@ export default function LeonDepartamentoSVG({
       </div>
 
       {/* ================= BARRA FLOTANTE INFERIOR DE ACCESO A CIRCUITOS ================= */}
-      <div className="absolute bottom-20 sm:bottom-4 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-full max-w-md">
-        <div className="rounded-2xl border border-slate-200/90 bg-white/90 backdrop-blur-2xl p-2 sm:p-2.5 shadow-[0_10px_35px_rgba(0,0,0,0.06)] flex items-center justify-between gap-2">
+      <div className="absolute bottom-32 sm:bottom-5 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-20 w-auto max-w-md">
+        <div className="rounded-2xl border border-slate-200/90 bg-white/95 backdrop-blur-2xl p-2 sm:p-2.5 shadow-[0_12px_35px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2">
           
           <button
             type="button"

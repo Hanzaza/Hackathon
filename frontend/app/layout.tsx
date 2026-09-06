@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 
 import Navigation from "../src/components/ui/Navigation";
@@ -8,14 +8,11 @@ import AuthModal from "../src/components/auth/AuthModal";
 import { AuthProvider } from "../src/context/AuthContext";
 import { UIProvider } from "../src/context/UIContext";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 // Metadatos actualizados para The Stateless
@@ -44,13 +41,13 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${montserrat.variable} font-sans h-full antialiased`}
     >
       <head>
         <link rel="icon" href="/logos/Logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/logos/Logo.png" />
       </head>
-      <body className="min-h-full flex flex-col bg-white text-slate-800">
+      <body className={`${montserrat.className} font-sans min-h-full flex flex-col bg-white text-slate-800`}>
         <AuthProvider>
           <UIProvider>
             {/* Pantalla de carga inicial estilo Splash con Logo grande centrado */}

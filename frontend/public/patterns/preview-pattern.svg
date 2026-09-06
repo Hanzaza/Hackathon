@@ -1,0 +1,39 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg" style="background: #0F3A2E">
+  <defs>
+    <pattern id="precolombian-test" width="120" height="120" patternUnits="userSpaceOnUse">
+      <!-- 1. Diamante exterior grande -->
+      <path d="M60 4 L116 60 L60 116 L4 60 Z" fill="none" stroke="#00A8A7" stroke-width="3" stroke-linejoin="round" />
+      
+      <!-- 2. Segundo diamante concéntrico -->
+      <path d="M60 16 L104 60 L60 104 L16 60 Z" fill="none" stroke="#00A8A7" stroke-width="2.5" stroke-linejoin="round" />
+      
+      <!-- 3. Tercer diamante concéntrico con sombreado suave -->
+      <path d="M60 28 L92 60 L60 92 L28 60 Z" fill="#00A8A7" fill-opacity="0.12" stroke="#00A8A7" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- 4. Cuarto diamante concéntrico -->
+      <path d="M60 40 L80 60 L60 80 L40 60 Z" fill="none" stroke="#00A8A7" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- 5. Núcleo central girado -->
+      <path d="M60 50 L70 60 L60 70 L50 60 Z" fill="#00A8A7" fill-opacity="0.85" stroke="#00A8A7" stroke-width="1.5" />
+      
+      <!-- 6. Cruces y grecas angulares en las 4 esquinas para entrelazado continuo -->
+      <path d="M0 0 L24 24 M120 0 L96 24 M0 120 L24 96 M120 120 L96 96" stroke="#00A8A7" stroke-width="2.5" stroke-linecap="round" />
+      <path d="M0 12 L12 0 M120 12 L108 0 M0 108 L12 120 M120 108 L108 120" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      
+      <!-- 7. Conexiones en los puntos medios de los bordes -->
+      <path d="M0 60 L14 46 M0 60 L14 74 M120 60 L106 46 M120 60 L106 74" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+      <path d="M60 0 L46 14 M60 0 L74 14 M60 120 L46 106 M60 120 L74 106" stroke="#00A8A7" stroke-width="2" stroke-linecap="round" />
+    </pattern>
+    <linearGradient id="fade-mask" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="black" stop-opacity="0" />
+      <stop offset="25%" stop-color="black" stop-opacity="0.25" />
+      <stop offset="55%" stop-color="black" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="black" stop-opacity="1" />
+    </linearGradient>
+    <mask id="pattern-mask">
+      <rect width="100%" height="100%" fill="url(#fade-mask)" />
+    </mask>
+  </defs>
+  
+  <rect width="100%" height="100%" fill="url(#precolombian-test)" mask="url(#pattern-mask)" />
+</svg>

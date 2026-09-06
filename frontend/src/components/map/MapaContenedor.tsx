@@ -6,6 +6,7 @@ import LeonDepartamentoSVG from './LeonDepartamentoSVG';
 import ManaguaDepartamentoSVG from './ManaguaDepartamentoSVG';
 import MapaInmersivo from './MapaInmersivo';
 import { useUI } from '@/context/UIContext';
+import { Sparkles } from 'lucide-react';
 
 export type NivelMapa = 'nacional' | 'departamental' | 'inmersivo';
 
@@ -16,7 +17,7 @@ interface MapaContenedorProps {
 
 export default function MapaContenedor({
   initialNivel = 'nacional',
-  showLegend = true,
+  showLegend = false,
 }: MapaContenedorProps) {
   const { setIsImmersiveMapActive } = useUI();
 
@@ -81,12 +82,40 @@ export default function MapaContenedor({
       
       {/* ================= NIVEL 1: Mapa Nacional SVG ================= */}
       {nivelActual === 'nacional' && (
-        <div className="w-full h-full flex flex-col items-center justify-center animate-fadeIn">
-          <NicaraguaSVG 
-            onSelect={manejarSeleccionNacional} 
-            showLegend={showLegend} 
-            showMarkers={true} 
-          />
+        <div className="w-full h-full flex flex-col items-center justify-center relative animate-fadeIn pt-14 sm:pt-6 lg:pt-0 pb-24 sm:pb-6 lg:pb-0 px-3 sm:px-6 lg:px-0 gap-3 sm:gap-4 lg:gap-0">
+          
+          {/* Título de la Página Principal del Mapa (Solo en vista móvil) */}
+          <div className="lg:hidden w-full flex justify-center z-10 select-none shrink-0 px-3">
+            <div className="relative overflow-hidden inline-flex flex-col items-center justify-center px-7 py-3 sm:px-9 sm:py-4 rounded-2xl sm:rounded-[2rem] bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_12px_35px_rgba(0,168,167,0.09)] text-center transition-all">
+              
+              {/* Línea superior con gradiente de luz ROOTS */}
+              <div 
+                aria-hidden="true" 
+                className="absolute top-0 inset-x-8 h-[2.5px] bg-gradient-to-r from-transparent via-[#00A8A7] to-[#F4A43B] opacity-85" 
+              />
+
+              {/* Título con contraste y gradiente cultural (más grande, sin íconos) */}
+              <h1 className="text-[28px] xs:text-[34px] sm:text-4xl md:text-5xl font-black tracking-tight leading-none flex items-center justify-center gap-2">
+                <span className="text-slate-900">Ciudades</span>
+                <span className="bg-gradient-to-r from-[#00A8A7] via-[#007F7E] to-[#F4A43B] bg-clip-text text-transparent">
+                  Creativas
+                </span>
+              </h1>
+
+              {/* Subtítulo dinámico con acentos de color (sin íconos) */}
+              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1.5">
+                Tocá un <strong className="text-[#007F7E] font-bold">departamento</strong> o <strong className="text-[#D97706] font-bold">ciudad</strong> para explorar
+              </p>
+            </div>
+          </div>
+
+          <div className="w-full h-full flex-1 flex items-center justify-center min-h-0">
+            <NicaraguaSVG 
+              onSelect={manejarSeleccionNacional} 
+              showLegend={showLegend} 
+              showMarkers={true} 
+            />
+          </div>
         </div>
       )}
 

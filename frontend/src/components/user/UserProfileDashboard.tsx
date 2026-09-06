@@ -16,19 +16,23 @@ import {
   Lock,
   Edit3,
   LogOut,
-  QrCode,
   ShieldCheck,
   ChevronRight,
   ExternalLink,
-  Flame,
   Star,
   Check,
-  Camera,
   Heart,
-  Layers,
+  Bookmark,
+  Sun,
+  Moon,
+  Laptop,
   ArrowRight,
   Send,
   AlertCircle,
+  Clock,
+  Trash2,
+  Layers,
+  Filter,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
@@ -37,8 +41,9 @@ import {
   getMunicipalitiesByDepartment,
   getDepartmentByMunicipality,
 } from '@/data/nicaraguaGeo';
+import PrecolombianPattern from '../ui/PrecolombianPattern';
 
-// Categorías culturales para preferencias
+// Categorías culturales oficiales ROOTS
 const CULTURAL_CATEGORIES = [
   'Literatura & Poesía',
   'Artesanías & Cerámica',
@@ -46,22 +51,209 @@ const CULTURAL_CATEGORIES = [
   'Muralismo & Arte Urbano',
   'Gastronomía Tradicional',
   'Café & Cacao de Altura',
-  'Patrimonio Colonial UNESCO',
+  'Patrimonio Colonial',
   'Artesanías en Cuero & Madera',
-  'Música & Danza Tradicional',
+  'Música & Danza Caribeña',
+  'Arquitectura & Tradición',
+];
+
+// Sellos oficiales del Pasaporte Cultural de Ciudades Creativas
+interface CityStamp {
+  name: string;
+  slug: string;
+  badge: string;
+  icon: string;
+  stamped: boolean;
+  date?: string;
+  points: number;
+}
+
+const PASSPORT_STAMPS: CityStamp[] = [
+  { name: 'Masaya', slug: 'masaya', badge: 'Folclore & Artesanía', icon: '🎭', stamped: true, date: '14 Ago 2026', points: 150 },
+  { name: 'León', slug: 'leon', badge: 'Poesía & Literatura', icon: '📜', stamped: true, date: '22 Ago 2026', points: 180 },
+  { name: 'Granada', slug: 'granada', badge: 'Arquitectura & Diseño', icon: '🏛️', stamped: true, date: '01 Sep 2026', points: 200 },
+  { name: 'San Juan de Oriente', slug: 'san-juan-de-oriente', badge: 'Barro Ancestral', icon: '🏺', stamped: true, date: '03 Sep 2026', points: 160 },
+  { name: 'Estelí', slug: 'esteli', badge: 'Muralismo & Guitarras', icon: '🎨', stamped: false, points: 150 },
+  { name: 'Bluefields', slug: 'bluefields', badge: 'Música & Maypole', icon: '🥁', stamped: false, points: 220 },
+  { name: 'Matagalpa', slug: 'matagalpa', badge: 'Café & Montaña', icon: '☕', stamped: false, points: 170 },
+  { name: 'Juigalpa', slug: 'juigalpa', badge: 'Arqueología & Chontales', icon: '🐂', stamped: false, points: 140 },
+  { name: 'Managua', slug: 'managua', badge: 'Epicentro Cultural', icon: '🌆', stamped: false, points: 150 },
+  { name: 'Nagarote', slug: 'nagarote', badge: 'Sabor & Municipio Azul', icon: '🧀', stamped: false, points: 130 },
+];
+
+// Medallas y Logros de Explorador
+interface AchievementItem {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  category: string;
+  unlocked: boolean;
+  progress: number;
+  total: number;
+  pointsReward: number;
+  unlockedDate?: string;
+}
+
+const INITIAL_ACHIEVEMENTS: AchievementItem[] = [
+  {
+    id: 'maestro_alfarero',
+    title: 'Maestro Alfarero',
+    description: 'Visitaste y experimentaste el modelado de barro en San Juan de Oriente.',
+    icon: '🏺',
+    category: 'Artesanía',
+    unlocked: true,
+    progress: 1,
+    total: 1,
+    pointsReward: 150,
+    unlockedDate: '03 Sep 2026',
+  },
+  {
+    id: 'poeta_dariano',
+    title: 'Poeta Dariano',
+    description: 'Completaste el recorrido de la Ruta Poética y Catedralicia en León.',
+    icon: '📜',
+    category: 'Literatura',
+    unlocked: true,
+    progress: 1,
+    total: 1,
+    pointsReward: 180,
+    unlockedDate: '22 Ago 2026',
+  },
+  {
+    id: 'gran_folclorista',
+    title: 'Gran Folclorista',
+    description: 'Participaste en una muestra vivencial de marimba y danza en Masaya.',
+    icon: '🎭',
+    category: 'Folclore',
+    unlocked: true,
+    progress: 1,
+    total: 1,
+    pointsReward: 150,
+    unlockedDate: '14 Ago 2026',
+  },
+  {
+    id: 'guardian_muralismo',
+    title: 'Guardián del Muralismo',
+    description: 'Descubrí 4 de los murales patrimoniales del circuito heroico de Estelí.',
+    icon: '🎨',
+    category: 'Arte Urbano',
+    unlocked: false,
+    progress: 3,
+    total: 4,
+    pointsReward: 160,
+  },
+  {
+    id: 'catador_cafe',
+    title: 'Catador de Altura',
+    description: 'Recorré 3 fincas patrimoniales y museos de café en Matagalpa.',
+    icon: '☕',
+    category: 'Gastronomía',
+    unlocked: false,
+    progress: 1,
+    total: 3,
+    pointsReward: 180,
+  },
+  {
+    id: 'ritmo_caribeno',
+    title: 'Ritmo Caribeño',
+    description: 'Celebrá y conocé la historia multicultural del Palo de Mayo en Bluefields.',
+    icon: '🥁',
+    category: 'Música',
+    unlocked: false,
+    progress: 0,
+    total: 1,
+    pointsReward: 250,
+  },
+  {
+    id: 'explorador_bicentenario',
+    title: 'Explorador Bicentenario',
+    description: 'Completá 5 circuitos en al menos 3 departamentos diferentes.',
+    icon: '🗺️',
+    category: 'Movilidad',
+    unlocked: false,
+    progress: 3,
+    total: 5,
+    pointsReward: 300,
+  },
+  {
+    id: 'embajador_roots',
+    title: 'Embajador de Identidad',
+    description: 'Alcanzá 500 puntos de experiencia cultural en la plataforma ROOTS.',
+    icon: '🌟',
+    category: 'Comunidad',
+    unlocked: true,
+    progress: 690,
+    total: 500,
+    pointsReward: 500,
+    unlockedDate: '01 Sep 2026',
+  },
+];
+
+// Eventos guardados por defecto
+interface SavedEventItem {
+  id: string;
+  title: string;
+  city: string;
+  department: string;
+  date: string;
+  category: string;
+  image: string;
+  points: number;
+}
+
+const DEFAULT_SAVED_EVENTS: SavedEventItem[] = [
+  {
+    id: 'ev-1',
+    title: 'Festival Nacional de Danza y Marimba Folclórica',
+    city: 'Masaya',
+    department: 'Masaya',
+    date: '18 Sep 2026 • 05:00 PM',
+    category: 'Folclore & Marimba',
+    image: 'https://images.unsplash.com/photo-1533174000255-8324508d4b33?w=800&auto=format&fit=crop',
+    points: 150,
+  },
+  {
+    id: 'ev-2',
+    title: 'Feria Ancestral de Cerámica Precolombina y Torno en Vivo',
+    city: 'San Juan de Oriente',
+    department: 'Masaya',
+    date: '25 Sep 2026 • 10:00 AM',
+    category: 'Artesanías & Cerámica',
+    image: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800&auto=format&fit=crop',
+    points: 120,
+  },
+  {
+    id: 'ev-3',
+    title: 'Noche de Poesía Dariana y Música en la Plaza Mayor',
+    city: 'León',
+    department: 'León',
+    date: '02 Oct 2026 • 06:30 PM',
+    category: 'Literatura & Poesía',
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&auto=format&fit=crop',
+    points: 180,
+  },
 ];
 
 export default function UserProfileDashboard() {
   const { user, isAuthenticated, logout, updateProfile, openAuthModal } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'circuits' | 'achievements' | 'entrepreneur' | 'settings'>('overview');
+  
+  // Pestaña activa
+  const [activeTab, setActiveTab] = useState<'overview' | 'achievements' | 'saved_events' | 'circuits' | 'entrepreneur' | 'settings'>('overview');
 
-  // Estados del Formulario de Configuración
+  // Modo Claro / Oscuro
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('light');
+
+  // Logros y Eventos Guardados
+  const [achievements] = useState<AchievementItem[]>(INITIAL_ACHIEVEMENTS);
+  const [savedEvents, setSavedEvents] = useState<SavedEventItem[]>([]);
+
+  // Estados del Formulario de Perfil
   const [formName, setFormName] = useState('');
   const [formLastname, setFormLastname] = useState('');
   const [formDepartment, setFormDepartment] = useState('León');
   const [formCity, setFormCity] = useState('León');
   const [formBio, setFormBio] = useState('');
-  const [formAvatar, setFormAvatar] = useState('');
   const [formFavCategories, setFormFavCategories] = useState<string[]>([]);
   const [formNotifications, setFormNotifications] = useState(true);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -74,12 +266,50 @@ export default function UserProfileDashboard() {
   const [businessCity, setBusinessCity] = useState('León');
   const [businessAddress, setBusinessAddress] = useState('');
   const [businessDescription, setBusinessDescription] = useState('');
-  const [businessMotivation, setBusinessMotivation] = useState('');
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
-  const [existingRequestStatus, setExistingRequestStatus] = useState<string | null>(null);
 
-  // Cargar datos del usuario en los formularios
+  // Inicializar Tema (Light / Dark) y Cargar Eventos Guardados
+  useEffect(() => {
+    // 1. Cargar tema desde localStorage
+    const savedTheme = (localStorage.getItem('roots_theme') as 'light' | 'dark' | 'system') || 'light';
+    setThemeMode(savedTheme);
+    applyTheme(savedTheme);
+
+    // 2. Cargar eventos guardados
+    try {
+      const stored = localStorage.getItem('roots_saved_events');
+      if (stored) {
+        setSavedEvents(JSON.parse(stored));
+      } else {
+        setSavedEvents(DEFAULT_SAVED_EVENTS);
+        localStorage.setItem('roots_saved_events', JSON.stringify(DEFAULT_SAVED_EVENTS));
+      }
+    } catch {
+      setSavedEvents(DEFAULT_SAVED_EVENTS);
+    }
+  }, []);
+
+  // Función para cambiar y persistir Tema
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+    setThemeMode(newTheme);
+    localStorage.setItem('roots_theme', newTheme);
+    applyTheme(newTheme);
+  };
+
+  const applyTheme = (theme: 'light' | 'dark' | 'system') => {
+    const isDark =
+      theme === 'dark' ||
+      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  // Cargar datos de usuario
   useEffect(() => {
     if (user) {
       const userDept = getDepartmentByMunicipality(user.city || 'León');
@@ -90,77 +320,17 @@ export default function UserProfileDashboard() {
       setBusinessDepartment(userDept);
       setBusinessCity(user.city || 'León');
       setFormBio(user.bio || '');
-      setFormAvatar(user.avatar || '');
-      setFormFavCategories(user.favorite_categories || ['Literatura & Poesía', 'Folclore & Marimba']);
+      setFormFavCategories(user.favorite_categories || ['Literatura & Poesía', 'Artesanías & Cerámica']);
       setFormNotifications(user.notifications_enabled ?? true);
-
-      // Verificar si ya tiene una solicitud enviada
-      if (supabase && user.id) {
-        supabase
-          .from('entrepreneur_requests')
-          .select('status, business_name')
-          .eq('user_id', user.id)
-          .maybeSingle()
-          .then(({ data }) => {
-            if (data) {
-              setExistingRequestStatus(data.status);
-              if (data.business_name) setBusinessName(data.business_name);
-            }
-          });
-      }
     }
   }, [user]);
 
-  // Si no está autenticado, mostrar pantalla de bienvenida / login
-  if (!isAuthenticated || !user) {
-    return (
-      <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden font-sans">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(147,51,234,0.18),transparent_70%)] pointer-events-none" />
-        
-        <div className="relative max-w-md w-full bg-slate-900/90 border border-white/10 rounded-[2.5rem] p-8 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6">
-          <div className="w-20 h-20 rounded-3xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center mx-auto text-purple-400 shadow-lg shadow-purple-600/20">
-            <Compass className="w-10 h-10 animate-spin-slow" />
-          </div>
-
-          <div className="space-y-2">
-            <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/30 inline-block">
-              Pasaporte del Explorador
-            </span>
-            <h1 className="text-2xl sm:text-3xl font-black text-white">
-              Tu Panel Personal
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Inicia sesión para acceder a tu pasaporte cultural digital, registrar rutas completadas, ganar medallas de honor y gestionar tu perfil.
-            </p>
-          </div>
-
-          <div className="pt-2 flex flex-col gap-3">
-            <button
-              type="button"
-              onClick={openAuthModal}
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-            >
-              <User className="w-4 h-4" />
-              <span>Ingresar o Crear Cuenta</span>
-            </button>
-
-            <Link
-              href="/ciudades-creativas"
-              className="w-full py-3 px-4 rounded-2xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold text-xs border border-white/10 transition-all text-center"
-            >
-              Explorar el Mapa Sin Cuenta
-            </Link>
-          </div>
-        </div>
-      </main>
-    );
-  }
-
-  // Nivel y Puntos del Usuario
-  const userPoints = user.points ?? 50;
-  const userLevel = user.level ?? 1;
-  const nextLevelPoints = userLevel * 250;
-  const progressPercent = Math.min(100, Math.round((userPoints / nextLevelPoints) * 100));
+  // Manejo de eliminar evento guardado
+  const handleRemoveSavedEvent = (id: string) => {
+    const updated = savedEvents.filter((e) => e.id !== id);
+    setSavedEvents(updated);
+    localStorage.setItem('roots_saved_events', JSON.stringify(updated));
+  };
 
   // Guardar Cambios de Perfil
   const handleSaveProfile = async (e: React.FormEvent) => {
@@ -169,548 +339,973 @@ export default function UserProfileDashboard() {
     setProfileSuccessMsg(false);
 
     try {
-      await updateProfile({
+      const success = await updateProfile({
         name: formName.trim(),
         lastname: formLastname.trim(),
         city: formCity,
         bio: formBio.trim(),
-        avatar: formAvatar.trim() || user.avatar,
         favorite_categories: formFavCategories,
         notifications_enabled: formNotifications,
       });
-      setProfileSuccessMsg(true);
-      setTimeout(() => setProfileSuccessMsg(false), 4000);
+
+      if (success) {
+        setProfileSuccessMsg(true);
+        setTimeout(() => setProfileSuccessMsg(false), 3000);
+      }
     } finally {
       setIsSavingProfile(false);
     }
   };
 
   // Enviar Solicitud de Emprendedor
-  const handleSubmitEntrepreneurRequest = async (e: React.FormEvent) => {
+  const handleSubmitEntrepreneur = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!businessName.trim()) return;
-
     setIsSubmittingRequest(true);
+
     try {
-      if (supabase && user.id) {
-        // Obtener IDs de departamento y municipio si existen
-        const { data: dept } = await supabase
-          .from('departments')
-          .select('id')
-          .ilike('name', `%${businessDepartment}%`)
-          .limit(1)
-          .maybeSingle();
-
-        const { data: mun } = await supabase
-          .from('municipalities')
-          .select('id')
-          .ilike('name', `%${businessCity}%`)
-          .limit(1)
-          .maybeSingle();
-
-        await supabase.from('entrepreneur_requests').insert([
-          {
-            user_id: user.id,
-            department_id: dept?.id || null,
-            municipality_id: mun?.id || null,
-            business_name: businessName.trim(),
-            business_type: businessType,
-            category: businessType,
-            address: businessAddress.trim(),
-            description: businessDescription.trim(),
-            motivation: businessMotivation.trim(),
-            status: 'pending',
-          },
-        ]);
+      if (supabase && user?.id) {
+        await supabase.from('entrepreneur_requests').insert({
+          user_id: user.id,
+          business_name: businessName.trim(),
+          business_type: businessType,
+          department: businessDepartment,
+          city: businessCity,
+          address: businessAddress.trim(),
+          description: businessDescription.trim(),
+          status: 'pending',
+        });
       }
-      setRequestSubmitted(true);
-      setExistingRequestStatus('pending');
-    } catch (err) {
-      console.warn('Error enviando solicitud:', err);
       setRequestSubmitted(true);
     } finally {
       setIsSubmittingRequest(false);
     }
   };
 
-  // Toggle de categoría favorita
-  const toggleCategory = (cat: string) => {
-    if (formFavCategories.includes(cat)) {
-      setFormFavCategories(formFavCategories.filter((c) => c !== cat));
-    } else {
-      setFormFavCategories([...formFavCategories, cat]);
-    }
-  };
-
-  return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 font-sans pt-6 lg:pt-24 pb-36 relative overflow-hidden">
-      
-      {/* Fondo Ambiental Dinámico */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-b from-purple-900/20 via-indigo-900/10 to-transparent blur-3xl pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
-        
-        {/* ========================================================================= */}
-        {/* HERO: PASAPORTE CULTURAL Y TARJETA MAESTRA DEL USUARIO */}
-        {/* ========================================================================= */}
-        <div className="relative rounded-[2.5rem] bg-slate-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-2xl shadow-2xl shadow-black/40 overflow-hidden">
-          
-          {/* Marca de Agua de Pasaporte Cultural */}
-          <div className="absolute -right-8 -bottom-8 opacity-5 pointer-events-none">
-            <Compass className="w-80 h-80 text-white" />
+  // Pantalla para usuarios no autenticados
+  if (!isAuthenticated || !user) {
+    return (
+      <main className="min-h-screen bg-[#0F3A2E] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden select-none">
+        <div className="relative max-w-md w-full bg-black/40 border border-white/15 rounded-[3rem] p-8 sm:p-10 shadow-2xl backdrop-blur-xl text-center space-y-6">
+          <div className="relative w-28 h-28 mx-auto drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+            <Image src="/logos/roots-emblem-white.png" alt="ROOTS" fill sizes="112px" className="object-contain" />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-black tracking-wider uppercase text-white">
+              Pasaporte ROOTS
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              Iniciá sesión para acceder a tus medallas de explorador, circuitos completados, eventos guardados y acreditación comunitaria.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={openAuthModal}
+            className="w-full py-4 rounded-2xl bg-[#00A8A7] hover:bg-[#007F7E] text-slate-950 font-black text-sm shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <User className="w-4 h-4" />
+            <span>Ingresar a Mi Perfil</span>
+          </button>
+        </div>
+
+        <div className="absolute bottom-0 w-full pointer-events-none">
+          <PrecolombianPattern fillColor="#0A261E" strokeColor="#00A8A7" opacity={0.3} height="120px" />
+        </div>
+      </main>
+    );
+  }
+
+  // Conteo de medallas desbloqueadas
+  const unlockedAchievementsCount = achievements.filter((a) => a.unlocked).length;
+  const stampedCitiesCount = PASSPORT_STAMPS.filter((s) => s.stamped).length;
+
+  return (
+    <main className="min-h-screen bg-[#F5EFE6] dark:bg-[#0A1217] text-slate-800 dark:text-slate-100 font-sans pb-36 pt-4 lg:pt-24 transition-colors duration-300">
+      
+      {/* ================= 1. HEADER DE PERFIL OFICIAL ROOTS ================= */}
+      <section className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-8 lg:mb-10">
+        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] overflow-hidden bg-[#0F3A2E] text-white shadow-xl border border-white/10 p-6 sm:p-10 lg:p-12">
+          
+          {/* Halo de luz turquesa ambiental */}
+          <div 
+            aria-hidden="true" 
+            className="pointer-events-none absolute -top-24 right-0 w-96 h-96 bg-[#00A8A7]/20 blur-[100px] rounded-full" 
+          />
+
+          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 lg:gap-10">
             
-            {/* Foto de Perfil + Identidad */}
-            <div className="lg:col-span-8 flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+            {/* Información del Usuario */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 text-center sm:text-left">
               
-              {/* Avatar con Anillo de Nivel */}
+              {/* Avatar con anillo oficial ROOTS */}
               <div className="relative shrink-0">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-4 border-purple-500 shadow-xl shadow-purple-950/50 bg-slate-950 relative">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-4 border-[#00A8A7] shadow-xl bg-slate-900">
                   <Image
-                    src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop'}
+                    src={user.avatar || '/icons/roots/profile-mask.png'}
                     alt={user.name}
                     fill
-                    sizes="112px"
-                    className="object-cover"
+                    sizes="(min-width: 1024px) 128px, 112px"
+                    className="object-contain p-2"
                   />
                 </div>
-                <span className="absolute bottom-0 right-0 px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px] border-2 border-slate-900 shadow-md">
-                  Nivel {userLevel}
+                <span className="absolute bottom-1 right-1 w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-[#3BA455] border-2 border-white flex items-center justify-center text-white text-[11px] lg:text-xs shadow-sm" title="Usuario Verificado">
+                  ✓
                 </span>
               </div>
 
               {/* Textos y Badges */}
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/30 flex items-center gap-1.5">
-                    {user.role === 'admin' ? (
-                      <>
-                        <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Administrador de la Red</span>
-                      </>
-                    ) : user.role === 'entrepreneur' ? (
-                      <>
-                        <Store className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Emprendedor Acreditado</span>
-                      </>
-                    ) : (
-                      <>
-                        <Compass className="w-3.5 h-3.5 text-purple-400" />
-                        <span>Explorador Cultural de Nicaragua</span>
-                      </>
-                    )}
+              <div className="space-y-2 lg:space-y-3">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 lg:gap-2.5">
+                  <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/20 text-[#00A8A7] border border-[#00A8A7]/30 text-[11px] lg:text-xs font-black uppercase tracking-wider">
+                    {user.role === 'admin' ? '🛡️ Administrador' : user.role === 'entrepreneur' ? '🏪 Emprendedor Verificado' : '🧭 Explorador Cultural'}
                   </span>
-
-                  <span className="px-2.5 py-0.5 rounded-full bg-white/5 text-slate-400 text-[10px] font-medium border border-white/5 flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-emerald-400" />
-                    {user.city || 'León'}, Nicaragua
+                  <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#F4A43B]/20 text-[#F4A43B] border border-[#F4A43B]/30 text-[11px] lg:text-xs font-bold">
+                    Nivel {user.level || 3} • Aventurero
                   </span>
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
                   {user.name} {user.lastname}
                 </h1>
 
-                {user.bio ? (
-                  <p className="text-xs text-slate-300 max-w-xl line-clamp-2 leading-relaxed">
-                    &quot;{user.bio}&quot;
-                  </p>
-                ) : (
-                  <p className="text-xs text-slate-400 max-w-xl">
-                    Explorando la riqueza artística, las tradiciones vivas y la memoria ancestral de los municipios creativos.
+                <p className="text-xs sm:text-sm lg:text-base text-slate-300 flex items-center justify-center sm:justify-start gap-1.5 font-medium">
+                  <MapPin className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#00A8A7]" />
+                  <span>{user.city || 'León'}, Nicaragua</span>
+                  <span className="text-white/40">•</span>
+                  <span>{user.email}</span>
+                </p>
+
+                {user.bio && (
+                  <p className="text-xs sm:text-sm text-slate-200/90 max-w-xl leading-relaxed pt-1">
+                    "{user.bio}"
                   </p>
                 )}
-
-                {/* Barra de Progreso y Puntos */}
-                <div className="pt-2 max-w-md">
-                  <div className="flex items-center justify-between text-[11px] font-bold mb-1">
-                    <span className="text-purple-300 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      {userPoints} Puntos Acumulados
-                    </span>
-                    <span className="text-slate-400">
-                      Siguiente nivel: {nextLevelPoints} pts
-                    </span>
-                  </div>
-                  <div className="w-full h-2 rounded-full bg-slate-950 border border-white/10 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 transition-all duration-1000"
-                      style={{ width: `${progressPercent}%` }}
-                    />
-                  </div>
-                </div>
               </div>
 
             </div>
 
-            {/* Tarjeta de Pasaporte Digital con QR */}
-            <div className="lg:col-span-4 p-5 rounded-3xl bg-slate-950/80 border border-purple-500/20 flex flex-col justify-between space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-[9px] uppercase font-black tracking-widest text-slate-500 block">
-                    Pasaporte Digital
-                  </span>
-                  <span className="text-xs font-black text-white">NIC-EXP-{(user.id || '0000').slice(0, 8).toUpperCase()}</span>
-                </div>
-                <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
-                  <QrCode className="w-5 h-5" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2 text-center text-xs py-1">
-                <div className="p-2 rounded-xl bg-white/5">
-                  <span className="text-[9px] text-slate-400 block uppercase font-bold">Rutas</span>
-                  <span className="font-black text-white text-base">3</span>
-                </div>
-                <div className="p-2 rounded-xl bg-white/5">
-                  <span className="text-[9px] text-slate-400 block uppercase font-bold">Medallas</span>
-                  <span className="font-black text-amber-400 text-base">4 🏅</span>
-                </div>
-              </div>
-
-              <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-400">
-                <span className="flex items-center gap-1 text-emerald-400 font-bold">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Verificado
+            {/* Puntos y Acciones Rápidas */}
+            <div className="flex flex-row md:flex-col items-center md:items-end gap-3 lg:gap-4 w-full md:w-auto justify-center shrink-0">
+              
+              {/* Tarjeta de Puntos ROOTS */}
+              <div className="px-5 py-3 sm:px-6 sm:py-3.5 lg:px-8 lg:py-4.5 rounded-2xl lg:rounded-3xl bg-white/10 border border-white/15 backdrop-blur-md text-center md:text-right shadow-sm">
+                <span className="text-[10px] lg:text-xs font-extrabold uppercase tracking-widest text-[#00A8A7] block">
+                  Puntos Acumulados
                 </span>
-                <span>Válido en toda la Red</span>
+                <div className="flex items-center justify-center md:justify-end gap-2 mt-0.5">
+                  <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-[#F4D44D]" />
+                  <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">{user.points || 690}</span>
+                  <span className="text-xs lg:text-sm text-slate-300 font-bold">pts</span>
+                </div>
               </div>
+
+              {/* Botón Cerrar Sesión */}
+              <button
+                type="button"
+                onClick={logout}
+                className="px-4 py-2.5 lg:px-5 lg:py-3 rounded-xl lg:rounded-2xl bg-white/5 hover:bg-rose-600/30 text-white/80 hover:text-white border border-white/10 text-xs lg:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+              >
+                <LogOut className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                <span>Cerrar Sesión</span>
+              </button>
+
             </div>
 
           </div>
 
-          {/* Barra de Navegación por Pestañas */}
-          <div className="flex items-center gap-2 mt-8 pt-6 border-t border-white/10 overflow-x-auto no-scrollbar pb-1">
-            {[
-              { key: 'overview', label: 'Pasaporte & Resumen', icon: Compass },
-              { key: 'circuits', label: 'Mis Circuitos (3)', icon: Layers },
-              { key: 'achievements', label: 'Medallas & Logros (4)', icon: Award },
-              { key: 'entrepreneur', label: user.role === 'entrepreneur' ? 'Mi Emprendimiento' : 'Ser Emprendedor', icon: Store },
-              { key: 'settings', label: 'Ajustes de Perfil', icon: Settings },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setActiveTab(tab.key as any)}
-                  className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
-                    isActive
-                      ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30 scale-100'
-                      : 'bg-slate-950/60 text-slate-400 hover:text-white border border-white/5'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
+          {/* Estadísticas Resumidas */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mt-8 lg:mt-10 pt-6 lg:pt-8 border-t border-white/10 text-center">
+            <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#00A8A7]">{stampedCitiesCount}/10</span>
+              <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Sellos de Ciudades</span>
+            </div>
+            <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4A43B]">{unlockedAchievementsCount}/{achievements.length}</span>
+              <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Medallas Desbloqueadas</span>
+            </div>
+            <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#3BA455]">{savedEvents.length}</span>
+              <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Eventos Guardados</span>
+            </div>
+            <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
+              <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4D44D]">4 Circuitos</span>
+              <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Rutas Exploradas</span>
+            </div>
+          </div>
+
+          {/* Patrón inferior decorativo */}
+          <div className="absolute bottom-0 inset-x-0 pointer-events-none opacity-25">
+            <PrecolombianPattern variant="diamonds" className="w-full h-8 text-[#00A8A7]" />
           </div>
 
         </div>
+      </section>
 
-        {/* ========================================================================= */}
-        {/* PESTAÑA 1: PASAPORTE & RESUMEN */}
-        {/* ========================================================================= */}
+      {/* ================= 2. PESTAÑAS DE NAVEGACIÓN DEL PERFIL ================= */}
+      <section className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8 mb-8 lg:mb-10">
+        <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3.5 overflow-x-auto pb-2 scrollbar-hide">
+          
+          <button
+            type="button"
+            onClick={() => setActiveTab('overview')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'overview'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Compass className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#00A8A7]" />
+            <span>Pasaporte Cultural</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('achievements')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'achievements'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Award className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#F4A43B]" />
+            <span>Logros & Medallas ({unlockedAchievementsCount})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('saved_events')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'saved_events'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Bookmark className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#00A8A7]" />
+            <span>Eventos Guardados ({savedEvents.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('circuits')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'circuits'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Layers className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#3BA455]" />
+            <span>Mis Circuitos</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('entrepreneur')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'entrepreneur'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Store className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#F4D44D]" />
+            <span>Emprendimiento</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('settings')}
+            className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+              activeTab === 'settings'
+                ? 'bg-[#0F3A2E] text-white shadow-md'
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
+            }`}
+          >
+            <Settings className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-slate-400" />
+            <span>Ajustes & Tema</span>
+          </button>
+
+        </div>
+      </section>
+
+      {/* ================= 3. CONTENIDO PRINCIPAL SEGÚN PESTAÑA ================= */}
+      <div className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* ================= TAB 1: RESUMEN / PASAPORTE CULTURAL ================= */}
         {activeTab === 'overview' && (
-          <div className="space-y-6 animate-fadeIn">
+          <div className="space-y-8 lg:space-y-10 animate-fadeIn">
             
-            {/* Grid de Métricas Principales */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { label: 'Puntos Roots', value: `${userPoints} pts`, icon: Sparkles, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-                { label: 'Rango de Viaje', value: `Nivel ${userLevel}`, icon: Compass, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-                { label: 'Ciudades Visitadas', value: '4 / 9', icon: MapPin, color: 'text-indigo-400', bg: 'bg-indigo-500/10' },
-                { label: 'Insignias de Honor', value: '4 Desbloqueadas', icon: Award, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-              ].map((stat, i) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={i} className="p-5 rounded-3xl bg-slate-900/80 border border-white/10 backdrop-blur-xl">
-                    <div className={`w-10 h-10 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-3`}>
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
-                      {stat.label}
-                    </span>
-                    <span className="text-xl font-black text-white mt-0.5 block">{stat.value}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Accesos Rápidos Destacados */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              
-              {/* Banner Circuito Recomendado */}
-              <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-950/60 to-slate-900 border border-purple-500/30 flex flex-col justify-between space-y-4">
+            {/* Tarjeta del Pasaporte Cultural con Sellos */}
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
                 <div>
-                  <span className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/30 inline-block mb-3">
-                    Próxima Parada Recomendada
-                  </span>
-                  <h3 className="text-xl font-black text-white">Circuito Dariano Colonial en León</h3>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Completa la visita a la Catedral de la Asunción y el Museo Archivo Rubén Darío para ganar +200 pts Roots.
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/10 text-[#007F7E] dark:text-[#00A8A7] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Sellos de Ciudades Creativas</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white">
+                    Pasaporte de Explorador Cultural
+                  </h2>
+                  <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                    Visitá los atractivos y circuitos geolocalizados de cada municipio para coleccionar todos los sellos oficiales.
                   </p>
                 </div>
 
-                <Link
-                  href="/ciudades-creativas"
-                  className="py-3 px-5 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30"
-                >
-                  <Compass className="w-4 h-4" />
-                  <span>Abrir en el Mapa Inmersivo 3D →</span>
-                </Link>
+                <span className="px-4 py-2 lg:px-5 lg:py-2.5 rounded-2xl bg-[#F5EFE6] dark:bg-slate-800 text-[#0F3A2E] dark:text-[#00A8A7] font-black text-xs lg:text-sm shrink-0 self-start sm:self-auto shadow-xs">
+                  {stampedCitiesCount} de 10 Sellos Conseguidos
+                </span>
               </div>
 
-              {/* Banner Emprendimiento Creativo */}
-              <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/30 flex flex-col justify-between space-y-4">
-                <div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30 inline-block mb-3">
-                    Impulso Local
-                  </span>
-                  <h3 className="text-xl font-black text-white">¿Creas artesanías, gastronomía o arte?</h3>
-                  <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Acredita tu taller o negocio en la Red de Ciudades Creativas para figurar en las rutas turísticas oficiales.
-                  </p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('entrepreneur')}
-                  className="py-3 px-5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 cursor-pointer"
-                >
-                  <Store className="w-4 h-4" />
-                  <span>Solicitar Acreditación de Emprendedor →</span>
-                </button>
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* PESTAÑA 2: MIS CIRCUITOS & RUTAS */}
-        {/* ========================================================================= */}
-        {activeTab === 'circuits' && (
-          <div className="space-y-5 animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-black text-white">Circuitos Registrados en tu Pasaporte</h3>
-              <Link href="/circuitos" className="text-xs font-bold text-purple-400 hover:underline">
-                Explorar todos los circuitos →
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {[
-                {
-                  title: 'Circuito Dariano Colonial',
-                  city: 'León',
-                  progress: '75%',
-                  stops: '3/4 paradas',
-                  image: 'https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=600&auto=format&fit=crop',
-                  status: 'En Progreso',
-                },
-                {
-                  title: 'Ruta del Barro y Cerámica Precolombina',
-                  city: 'San Juan de Oriente',
-                  progress: '100%',
-                  stops: '4/4 paradas',
-                  image: 'https://images.unsplash.com/photo-1610719875571-0618059ffbd2?w=600&auto=format&fit=crop',
-                  status: 'Completada 🏆',
-                },
-                {
-                  title: 'Circuito del Muralismo Segoviano',
-                  city: 'Estelí',
-                  progress: '30%',
-                  stops: '1/3 paradas',
-                  image: 'https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=600&auto=format&fit=crop',
-                  status: 'En Progreso',
-                },
-              ].map((c, i) => (
-                <div key={i} className="rounded-3xl bg-slate-900/80 border border-white/10 overflow-hidden flex flex-col justify-between">
-                  <div className="relative h-36 w-full">
-                    <Image src={c.image} alt={c.title} fill sizes="400px" className="object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-                    <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-black bg-black/80 text-purple-300 border border-white/10">
-                      {c.city}
-                    </span>
-                    <span className="absolute top-3 right-3 px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                      {c.status}
-                    </span>
-                  </div>
-
-                  <div className="p-4 space-y-3">
-                    <h4 className="font-black text-white text-sm">{c.title}</h4>
-                    
+              {/* Rejilla de Sellos de las 10 Ciudades */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4 lg:gap-5">
+                {PASSPORT_STAMPS.map((stamp) => (
+                  <div
+                    key={stamp.slug}
+                    className={`relative p-4 sm:p-5 lg:p-6 rounded-3xl lg:rounded-[2rem] border text-center transition-all flex flex-col items-center justify-between min-h-[145px] sm:min-h-[160px] lg:min-h-[190px] hover:-translate-y-1 hover:shadow-md cursor-default ${
+                      stamp.stamped
+                        ? 'bg-[#0F3A2E]/5 dark:bg-[#00A8A7]/10 border-[#00A8A7]/40 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200/60 dark:border-white/5 opacity-60'
+                    }`}
+                  >
+                    <div className="text-3xl sm:text-4xl lg:text-5xl mb-1.5 lg:mb-2 drop-shadow-xs">{stamp.icon}</div>
                     <div>
-                      <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1">
-                        <span>Progreso: {c.stops}</span>
-                        <span className="text-white">{c.progress}</span>
-                      </div>
-                      <div className="w-full h-1.5 rounded-full bg-slate-950 overflow-hidden">
-                        <div className="h-full bg-purple-500 rounded-full" style={{ width: c.progress }} />
-                      </div>
+                      <h4 className="text-xs sm:text-sm lg:text-base font-black text-slate-900 dark:text-white">{stamp.name}</h4>
+                      <p className="text-[10px] sm:text-xs lg:text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">{stamp.badge}</p>
                     </div>
 
-                    <Link
-                      href="/ciudades-creativas"
-                      className="w-full py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-white/10"
+                    <div className="mt-2.5 lg:mt-3.5 w-full pt-2 lg:pt-3 border-t border-slate-200/60 dark:border-white/10">
+                      {stamp.stamped ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs lg:text-xs font-black text-[#007F7E] dark:text-[#00A8A7]">
+                          <CheckCircle2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                          <span>Sellado</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] sm:text-xs lg:text-xs font-bold text-slate-400">
+                          Por explorar
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Accesos directos a Eventos Guardados y Próximos Circuitos */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              
+              {/* Eventos Guardados Recientes */}
+              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-8 lg:p-10 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <Bookmark className="w-4 h-4 lg:w-5 lg:h-5 text-[#00A8A7]" />
+                      <span>Eventos Guardados ({savedEvents.length})</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('saved_events')}
+                      className="text-xs lg:text-sm font-bold text-[#007F7E] dark:text-[#00A8A7] hover:underline"
                     >
-                      <Compass className="w-3.5 h-3.5 text-purple-400" />
-                      <span>Ver Ruta en Mapa 3D</span>
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* PESTAÑA 3: MEDALLAS & LOGROS CULTURALES */}
-        {/* ========================================================================= */}
-        {activeTab === 'achievements' && (
-          <div className="space-y-5 animate-fadeIn">
-            <h3 className="text-lg font-black text-white">Insignias & Logros de Gamificación</h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                { title: 'Guardián Dariano', desc: 'Visita los 4 sitios emblemáticos de Rubén Darío en León.', points: '+200 pts', icon: '🏛️', unlocked: true },
-                { title: 'Maestro del Torno Ancestral', desc: 'Presencia una demostración de cerámica en San Juan de Oriente.', points: '+150 pts', icon: '🏺', unlocked: true },
-                { title: 'Oído Folclórico', desc: 'Asiste a un concierto de marimba de arco en Masaya.', points: '+150 pts', icon: '🎶', unlocked: true },
-                { title: 'Paso Firme por Tisey', desc: 'Explora los murales urbanos de Estelí.', points: '+100 pts', icon: '🎨', unlocked: true },
-                { title: 'Cata de Grano de Oro', desc: 'Degusta un café de especialidad en Matagalpa.', points: '+180 pts', icon: '☕', unlocked: false },
-                { title: 'Palo de Mayo Creol', desc: 'Descubre las danzas ancestrales de Bluefields.', points: '+250 pts', icon: '🌴', unlocked: false },
-                { title: 'Sultana de la Poesía', desc: 'Recorre el centro colonial de Granada.', points: '+150 pts', icon: '⛵', unlocked: false },
-                { title: 'Escultor Chontaleño', desc: 'Visita el Museo Arqueológico de Juigalpa.', points: '+200 pts', icon: '🗿', unlocked: false },
-              ].map((ach, i) => (
-                <div
-                  key={i}
-                  className={`p-5 rounded-3xl border transition-all flex flex-col justify-between space-y-3 ${
-                    ach.unlocked
-                      ? 'bg-slate-900/90 border-amber-500/30 shadow-lg shadow-amber-950/20'
-                      : 'bg-slate-950/60 border-white/5 opacity-60'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <span className="text-3xl">{ach.icon}</span>
-                    <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-                        ach.unlocked
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                          : 'bg-slate-800 text-slate-500'
-                      }`}
-                    >
-                      {ach.unlocked ? 'Desbloqueada' : 'Bloqueada'}
-                    </span>
+                      Ver todos →
+                    </button>
                   </div>
 
-                  <div>
-                    <h4 className="font-bold text-white text-sm">{ach.title}</h4>
-                    <p className="text-[11px] text-slate-400 mt-1 leading-relaxed">{ach.desc}</p>
+                  <div className="space-y-3.5">
+                    {savedEvents.slice(0, 2).map((ev) => (
+                      <div key={ev.id} className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between gap-3 sm:gap-4 border border-slate-100 dark:border-white/5">
+                        <div className="flex items-center gap-3.5">
+                          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden relative shrink-0 shadow-xs">
+                            <Image src={ev.image} alt={ev.title} fill sizes="56px" className="object-cover" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 dark:text-white line-clamp-1">{ev.title}</h4>
+                            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                              <MapPin className="w-3.5 h-3.5 text-[#00A8A7]" />
+                              <span>{ev.city}</span> • <span>{ev.date.split('•')[0]}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-xs lg:text-sm font-black text-[#F4A43B] shrink-0">+{ev.points} pts</span>
+                      </div>
+                    ))}
                   </div>
-
-                  <span className="text-xs font-black text-amber-400">{ach.points}</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* ========================================================================= */}
-        {/* PESTAÑA 4: ACREDITACIÓN DE EMPRENDEDOR LOCAL */}
-        {/* ========================================================================= */}
-        {activeTab === 'entrepreneur' && (
-          <div className="max-w-2xl mx-auto rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-xl space-y-6 animate-fadeIn">
-            
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-                <Store className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-white">Acreditación de Emprendimiento</h3>
-                <p className="text-xs text-slate-400">
-                  Forma parte del catálogo turístico oficial y aparece en los circuitos de las Ciudades Creativas.
-                </p>
-              </div>
-            </div>
-
-            {existingRequestStatus === 'pending' || requestSubmitted ? (
-              <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs space-y-2">
-                <div className="flex items-center gap-2 font-black text-white text-sm">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>¡Solicitud Enviada con Éxito!</span>
-                </div>
-                <p className="leading-relaxed">
-                  Tu solicitud para <strong>{businessName || 'tu emprendimiento'}</strong> se encuentra en estado <strong>Pendiente de Revisión</strong> por el equipo de coordinación municipal. Te notificaremos una vez sea aprobada.
-                </p>
-              </div>
-            ) : user.role === 'entrepreneur' ? (
-              <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-xs space-y-2">
-                <div className="flex items-center gap-2 font-black text-white text-sm">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>¡Cuenta de Emprendedor Activa!</span>
-                </div>
-                <p className="leading-relaxed">
-                  Tu negocio está acreditado en la Red Nacional de Ciudades Creativas. Puedes gestionar tus eventos y productos desde la sección de emprendedores.
-                </p>
                 <Link
-                  href="/emprendedores"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-300 hover:underline pt-2"
+                  href="/agenda"
+                  className="mt-6 w-full py-3.5 lg:py-4 rounded-xl lg:rounded-2xl bg-[#F5EFE6] dark:bg-slate-800 text-[#0F3A2E] dark:text-white text-center text-xs lg:text-sm font-black hover:bg-[#0F3A2E] hover:text-white transition-all shadow-xs"
                 >
-                  <span>Ir al Portal de Emprendedores →</span>
+                  Explorar Agenda Cultural Completa
                 </Link>
               </div>
-            ) : (
-              <form onSubmit={handleSubmitEntrepreneurRequest} className="space-y-4 text-xs">
+
+              {/* Próximas Medallas por Desbloquear */}
+              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-8 lg:p-10 shadow-sm flex flex-col justify-between">
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Nombre Comercial del Negocio o Taller *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={businessName}
-                    onChange={(e) => setBusinessName(e.target.value)}
-                    placeholder="Ej. Taller Ancestral de Cerámica Doña Rosa"
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
-                  />
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <Award className="w-4 h-4 lg:w-5 lg:h-5 text-[#F4A43B]" />
+                      <span>Siguiente Reto Cultural</span>
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('achievements')}
+                      className="text-xs lg:text-sm font-bold text-[#F4A43B] hover:underline"
+                    >
+                      Ver medallas →
+                    </button>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    {achievements.filter((a) => !a.unlocked).slice(0, 2).map((ach) => (
+                      <div key={ach.id} className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between gap-3 sm:gap-4 border border-slate-100 dark:border-white/5">
+                        <div className="flex items-center gap-3.5">
+                          <span className="text-2xl sm:text-3xl">{ach.icon}</span>
+                          <div>
+                            <h4 className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 dark:text-white">{ach.title}</h4>
+                            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{ach.category}</p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-xs sm:text-sm font-black text-[#0F3A2E] dark:text-[#00A8A7]">{ach.progress}/{ach.total}</span>
+                          <span className="block text-[10px] sm:text-xs text-slate-400">Progreso</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                      Categoría
-                    </label>
-                    <select
-                      value={businessType}
-                      onChange={(e) => setBusinessType(e.target.value)}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                <Link
+                  href="/circuitos"
+                  className="mt-6 w-full py-3.5 lg:py-4 rounded-xl lg:rounded-2xl bg-[#0F3A2E] text-white text-center text-xs lg:text-sm font-black hover:bg-[#0A261E] transition-all shadow-xs"
+                >
+                  Recorrer Circuitos para Ganar Puntos
+                </Link>
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 2: LOGROS & MEDALLAS CULTURALES ================= */}
+        {activeTab === 'achievements' && (
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+            
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#F4A43B]/15 text-[#F4A43B] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                    <Award className="w-3.5 h-3.5" />
+                    <span>Medallero Nacional</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
+                    Medallas y Logros de Identidad
+                  </h2>
+                  <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                    Desbloqueá reconocimientos exclusivos participando en las tradiciones y rutas de Nicaragua.
+                  </p>
+                </div>
+
+                <div className="px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl bg-[#0F3A2E] text-white text-center self-start sm:self-auto shadow-sm">
+                  <span className="text-[10px] lg:text-xs uppercase font-bold text-[#00A8A7] block tracking-wider">Desbloqueadas</span>
+                  <span className="text-xl sm:text-2xl lg:text-3xl font-black">{unlockedAchievementsCount} de {achievements.length}</span>
+                </div>
+              </div>
+
+              {/* Lista Completa de Logros */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                {achievements.map((ach) => (
+                  <div
+                    key={ach.id}
+                    className={`p-5 sm:p-6 lg:p-7 rounded-3xl border transition-all flex items-start gap-4 lg:gap-5 ${
+                      ach.unlocked
+                        ? 'bg-gradient-to-br from-white to-[#00A8A7]/5 dark:from-slate-900 dark:to-slate-800 border-[#00A8A7]/30 shadow-xs'
+                        : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-white/5 opacity-75'
+                    }`}
+                  >
+                    <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-2xl flex items-center justify-center text-3xl lg:text-4xl shrink-0 shadow-sm ${
+                      ach.unlocked ? 'bg-[#00A8A7]/20 border border-[#00A8A7]/40' : 'bg-slate-200 dark:bg-slate-700 grayscale'
+                    }`}>
+                      {ach.icon}
+                    </div>
+
+                    <div className="flex-1 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] lg:text-xs font-black uppercase tracking-wider text-[#007F7E] dark:text-[#00A8A7]">
+                          {ach.category}
+                        </span>
+                        <span className="text-xs lg:text-sm font-black text-[#F4A43B]">
+                          +{ach.pointsReward} pts
+                        </span>
+                      </div>
+
+                      <h3 className="text-sm sm:text-base lg:text-lg font-black text-slate-900 dark:text-white">
+                        {ach.title}
+                      </h3>
+
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                        {ach.description}
+                      </p>
+
+                      <div className="pt-2">
+                        {ach.unlocked ? (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#3BA455]/15 text-[#3BA455] text-[10px] lg:text-xs font-black">
+                            <CheckCircle2 className="w-3 h-3 lg:w-3.5 lg:h-3.5" />
+                            <span>Desbloqueado • {ach.unlockedDate}</span>
+                          </span>
+                        ) : (
+                          <div className="space-y-1.5">
+                            <div className="w-full bg-slate-200 dark:bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                              <div
+                                className="bg-[#F4A43B] h-full rounded-full transition-all"
+                                style={{ width: `${(ach.progress / ach.total) * 100}%` }}
+                              />
+                            </div>
+                            <span className="text-[10px] lg:text-xs font-bold text-slate-500 dark:text-slate-400">
+                              Progreso: {ach.progress} de {ach.total}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 3: EVENTOS GUARDADOS ================= */}
+        {activeTab === 'saved_events' && (
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+            
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/15 text-[#007F7E] dark:text-[#00A8A7] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                    <Bookmark className="w-3.5 h-3.5" />
+                    <span>Tu Agenda Personal</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
+                    Eventos y Ferias Guardadas
+                  </h2>
+                  <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                    Tené a mano tus celebraciones y talleres favoritos para no perderte ninguna experiencia cultural.
+                  </p>
+                </div>
+
+                <Link
+                  href="/agenda"
+                  className="px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl bg-[#0F3A2E] text-white text-xs lg:text-sm font-black hover:bg-[#0A261E] transition-all flex items-center gap-2 self-start sm:self-auto shadow-sm"
+                >
+                  <Calendar className="w-4 h-4 text-[#00A8A7]" />
+                  <span>Explorar Más en la Agenda</span>
+                </Link>
+              </div>
+
+              {/* Lista de Eventos Guardados */}
+              {savedEvents.length === 0 ? (
+                <div className="py-16 text-center max-w-sm mx-auto space-y-4">
+                  <div className="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400">
+                    <Bookmark className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">No tenés eventos guardados todavía</h3>
+                  <p className="text-xs sm:text-sm text-slate-500">Explorá las ferias, talleres y festivales de las Ciudades Creativas y guardá tus favoritos aquí.</p>
+                  <Link href="/agenda" className="inline-block px-6 py-3 rounded-xl bg-[#00A8A7] text-slate-950 font-black text-xs sm:text-sm shadow-sm">
+                    Ver Agenda Cultural
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+                  {savedEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      className="group rounded-3xl border border-slate-200 dark:border-white/10 overflow-hidden bg-white dark:bg-slate-800/60 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
                     >
-                      <option value="artesania">🏺 Artesanal / Cerámica</option>
-                      <option value="gastronomia">🍲 Gastronomía / Café</option>
-                      <option value="hospedaje">🏡 Posada Cultural</option>
-                      <option value="galeria">🎨 Galería / Souvenirs</option>
-                      <option value="tours">🧭 Guía / Recorridos</option>
-                    </select>
+                      <div className="relative h-48 lg:h-52 w-full">
+                        <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, 400px" className="object-cover" />
+                        <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/95 dark:bg-black/80 backdrop-blur-md text-[10px] lg:text-xs font-black uppercase text-[#007F7E] dark:text-[#00A8A7]">
+                          {event.category}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSavedEvent(event.id)}
+                          className="absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-black/80 text-rose-500 hover:text-rose-700 shadow-sm cursor-pointer"
+                          title="Eliminar de guardados"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="p-4 sm:p-5 lg:p-6 space-y-2.5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center gap-1.5 text-xs lg:text-sm text-[#007F7E] dark:text-[#00A8A7] font-semibold mb-1">
+                            <MapPin className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
+                            <span>{event.city}, {event.department}</span>
+                          </div>
+                          <h4 className="text-sm sm:text-base lg:text-lg font-black text-slate-900 dark:text-white line-clamp-2 leading-snug">
+                            {event.title}
+                          </h4>
+                          <p className="text-xs lg:text-sm text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5 text-slate-400" />
+                            <span>{event.date}</span>
+                          </p>
+                        </div>
+
+                        <div className="pt-3.5 border-t border-slate-100 dark:border-white/10 flex items-center justify-between">
+                          <span className="text-xs lg:text-sm font-black text-[#F4A43B]">+{event.points} pts</span>
+                          <Link href="/agenda" className="text-xs lg:text-sm font-bold text-[#0F3A2E] dark:text-[#00A8A7] hover:underline flex items-center gap-1">
+                            <span>Ver detalles</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 4: MIS CIRCUITOS EXPLORADOS ================= */}
+        {activeTab === 'circuits' && (
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+            
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#3BA455]/15 text-[#3BA455] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                    <Compass className="w-3.5 h-3.5" />
+                    <span>Rutas Turísticas Vivas</span>
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
+                    Circuitos y Rutas de Viaje
+                  </h2>
+                  <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                    Historial de recorridos geolocalizados y rutas patrimoniales registradas en tu pasaporte.
+                  </p>
+                </div>
+
+                <Link
+                  href="/circuitos"
+                  className="px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl bg-[#0F3A2E] text-white text-xs lg:text-sm font-black hover:bg-[#0A261E] transition-all shadow-sm"
+                >
+                  Descubrir Nuevas Rutas
+                </Link>
+              </div>
+
+              {/* Grid de Circuitos */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                
+                <div className="p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-[#3BA455]/20 text-[#3BA455] text-[10px] lg:text-xs font-black uppercase">Completado</span>
+                    <span className="text-xs lg:text-sm font-black text-[#F4A43B]">+200 pts</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white">Ruta Colonial y de los Templos de Granada</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Recorrido por la Catedral, Convento San Francisco y Malecón del Gran Lago.</p>
+                  <div className="pt-2 flex items-center justify-between text-xs lg:text-sm text-slate-500">
+                    <span>📍 Granada • 3.5 km</span>
+                    <span className="font-bold text-[#007F7E] dark:text-[#00A8A7]">Sello Obtenido ✓</span>
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-[#3BA455]/20 text-[#3BA455] text-[10px] lg:text-xs font-black uppercase">Completado</span>
+                    <span className="text-xs lg:text-sm font-black text-[#F4A43B]">+180 pts</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white">Circuito Dariano y Murales Históricos de León</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Visita al Museo Archivo Rubén Darío, Insigne Basílica y barrio de Sutiaba.</p>
+                  <div className="pt-2 flex items-center justify-between text-xs lg:text-sm text-slate-500">
+                    <span>📍 León • 4.2 km</span>
+                    <span className="font-bold text-[#007F7E] dark:text-[#00A8A7]">Sello Obtenido ✓</span>
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-[#F4A43B]/20 text-[#F4A43B] text-[10px] lg:text-xs font-black uppercase">En Progreso (65%)</span>
+                    <span className="text-xs lg:text-sm font-black text-[#F4A43B]">+160 pts</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white">Ruta de los Talleres del Barro Ancestral</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Conexión directa con artesanos y maestros del torno en San Juan de Oriente.</p>
+                  <div className="pt-2 flex items-center justify-between text-xs lg:text-sm text-slate-500">
+                    <span>📍 San Juan de Oriente</span>
+                    <Link href="/circuitos" className="font-bold text-[#0F3A2E] dark:text-[#00A8A7] hover:underline">Continuar ruta →</Link>
+                  </div>
+                </div>
+
+                <div className="p-5 sm:p-6 lg:p-7 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-3.5">
+                  <div className="flex items-center justify-between">
+                    <span className="px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] lg:text-xs font-black uppercase">Por Iniciar</span>
+                    <span className="text-xs lg:text-sm font-black text-[#F4A43B]">+220 pts</span>
+                  </div>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-black text-slate-900 dark:text-white">Circuito Multicultural y Bahía de Bluefields</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">Inmersión en las danzas, historia garífuna, creole y música caribeña.</p>
+                  <div className="pt-2 flex items-center justify-between text-xs lg:text-sm text-slate-500">
+                    <span>📍 Bluefields</span>
+                    <Link href="/circuitos" className="font-bold text-[#0F3A2E] dark:text-[#00A8A7] hover:underline">Iniciar ruta →</Link>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 5: ACREDITACIÓN DE EMPRENDIMIENTO ================= */}
+        {activeTab === 'entrepreneur' && (
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+            
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+              <div className="max-w-3xl">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#F4D44D]/20 text-[#8B5E3C] dark:text-[#F4D44D] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                  <Store className="w-3.5 h-3.5" />
+                  <span>Red Nacional de Negocios Creativos</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
+                  Acreditación de Emprendedor Cultural
+                </h2>
+                <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                  Si poseés un taller artesanal, restaurante tradicional, galería o espacio de experiencias, podés solicitar tu acreditación oficial de la Red de Ciudades Creativas.
+                </p>
+              </div>
+
+              {requestSubmitted ? (
+                <div className="mt-8 lg:mt-10 p-6 lg:p-8 rounded-3xl bg-[#00A8A7]/15 border border-[#00A8A7]/30 text-[#0F3A2E] dark:text-white text-center max-w-lg mx-auto space-y-3.5 shadow-xs">
+                  <CheckCircle2 className="w-12 h-12 lg:w-14 lg:h-14 mx-auto text-[#00A8A7]" />
+                  <h3 className="text-lg lg:text-xl font-black">¡Solicitud Enviada con Éxito!</h3>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+                    El equipo municipal y de curaduría de Ciudades Creativas evaluará los datos de tu taller o negocio para incluirte en el mapa oficial.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitEntrepreneur} className="mt-8 lg:mt-10 space-y-5 max-w-2xl">
+                  <div>
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Nombre del Taller / Negocio
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                      placeholder="Ej. Taller de Cerámica Los Chorotegas"
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
+                    <div>
+                      <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                        Categoría
+                      </label>
+                      <select
+                        value={businessType}
+                        onChange={(e) => setBusinessType(e.target.value)}
+                        className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                      >
+                        <option value="artesania">Artesanía & Cerámica</option>
+                        <option value="gastronomia">Gastronomía Tradicional</option>
+                        <option value="danza">Música & Danza</option>
+                        <option value="turismo">Tours & Experiencias</option>
+                        <option value="cafe">Café & Fincas</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                        Municipio
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={businessCity}
+                        onChange={(e) => setBusinessCity(e.target.value)}
+                        placeholder="Ej. San Juan de Oriente"
+                        className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                      />
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Breve Descripción de tu Actividad
+                    </label>
+                    <textarea
+                      rows={3}
+                      required
+                      value={businessDescription}
+                      onChange={(e) => setBusinessDescription(e.target.value)}
+                      placeholder="Contanos sobre tu arte, productos y qué hace único a tu taller..."
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmittingRequest}
+                    className="w-full py-3.5 lg:py-4 rounded-2xl bg-[#0F3A2E] hover:bg-[#0A261E] text-white font-black text-sm lg:text-base shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  >
+                    <Send className="w-4 h-4 text-[#00A8A7]" />
+                    <span>{isSubmittingRequest ? 'Enviando postulación...' : 'Enviar Solicitud de Acreditación'}</span>
+                  </button>
+                </form>
+              )}
+
+            </div>
+
+          </div>
+        )}
+
+        {/* ================= TAB 6: AJUSTES & MODO CLARO / OSCURO ================= */}
+        {activeTab === 'settings' && (
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+            
+            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm space-y-8 lg:space-y-10">
+              
+              {/* Encabezado */}
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/15 text-[#007F7E] dark:text-[#00A8A7] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>Personalización del Pasaporte</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
+                  Ajustes y Preferencias de Cuenta
+                </h2>
+                <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
+                  Configurá el aspecto visual, información personal e intereses culturales.
+                </p>
+              </div>
+
+              {/* 1. SELECTOR DE MODO CLARO / OSCURO (LIGHT / DARK MODE) */}
+              <div className="p-6 lg:p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">Tema Visual de la Aplicación</h3>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Elegí la apariencia visual para explorar la plataforma.</p>
+                  </div>
+                  <span className="text-xs sm:text-sm font-bold text-[#007F7E] dark:text-[#00A8A7] uppercase tracking-wider">
+                    {themeMode === 'light' ? 'Modo Claro' : themeMode === 'dark' ? 'Modo Oscuro' : 'Automático'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3.5 lg:gap-5">
+                  
+                  {/* Opción Claro */}
+                  <button
+                    type="button"
+                    onClick={() => handleThemeChange('light')}
+                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
+                      themeMode === 'light'
+                        ? 'bg-white border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
+                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                      <Sun className="w-5 h-5 lg:w-6 lg:h-6" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Modo Claro</span>
+                    <span className="text-[10px] sm:text-xs text-slate-500">Luminoso & Nítido</span>
+                  </button>
+
+                  {/* Opción Oscuro */}
+                  <button
+                    type="button"
+                    onClick={() => handleThemeChange('dark')}
+                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
+                      themeMode === 'dark'
+                        ? 'bg-slate-900 border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
+                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#0F3A2E] text-[#00A8A7] flex items-center justify-center">
+                      <Moon className="w-5 h-5 lg:w-6 lg:h-6" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Modo Oscuro</span>
+                    <span className="text-[10px] sm:text-xs text-slate-500">Inmersivo & Elegante</span>
+                  </button>
+
+                  {/* Opción Sistema */}
+                  <button
+                    type="button"
+                    onClick={() => handleThemeChange('system')}
+                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
+                      themeMode === 'system'
+                        ? 'bg-white dark:bg-slate-900 border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
+                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
+                    }`}
+                  >
+                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center">
+                      <Laptop className="w-5 h-5 lg:w-6 lg:h-6" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Sistema</span>
+                    <span className="text-[10px] sm:text-xs text-slate-500">Sincronizado</span>
+                  </button>
+
+                </div>
+              </div>
+
+              {/* 2. FORMULARIO DE DATOS DEL PERFIL */}
+              <form onSubmit={handleSaveProfile} className="space-y-6 lg:space-y-8">
+                
+                {profileSuccessMsg && (
+                  <div className="p-4 rounded-2xl bg-[#3BA455]/15 border border-[#3BA455]/30 text-[#3BA455] text-xs sm:text-sm font-bold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>¡Tus cambios de perfil se guardaron correctamente!</span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <div>
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Nombre
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Apellido
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formLastname}
+                      onChange={(e) => setFormLastname(e.target.value)}
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                  <div>
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                       Departamento
                     </label>
                     <select
-                      value={businessDepartment}
+                      value={formDepartment}
                       onChange={(e) => {
                         const newDept = e.target.value;
-                        setBusinessDepartment(newDept);
-                        const firstMun = getMunicipalitiesByDepartment(newDept)[0] || 'León';
-                        setBusinessCity(firstMun);
+                        setFormDepartment(newDept);
+                        const muns = getMunicipalitiesByDepartment(newDept);
+                        setFormCity(muns[0] || 'León');
                       }}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
                     >
                       {NICARAGUA_GEO_DATA.map((d) => (
                         <option key={d.id} value={d.name}>{d.name}</option>
@@ -719,15 +1314,15 @@ export default function UserProfileDashboard() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                      Municipio / Ciudad
+                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                      Municipio
                     </label>
                     <select
-                      value={businessCity}
-                      onChange={(e) => setBusinessCity(e.target.value)}
-                      className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
+                      value={formCity}
+                      onChange={(e) => setFormCity(e.target.value)}
+                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
                     >
-                      {getMunicipalitiesByDepartment(businessDepartment).map((m) => (
+                      {getMunicipalitiesByDepartment(formDepartment).map((m) => (
                         <option key={m} value={m}>{m}</option>
                       ))}
                     </select>
@@ -735,230 +1330,82 @@ export default function UserProfileDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Dirección Física / Ubicación
-                  </label>
-                  <input
-                    type="text"
-                    value={businessAddress}
-                    onChange={(e) => setBusinessAddress(e.target.value)}
-                    placeholder="Ej. De la Iglesia San Juan 2c al sur, San Juan de Oriente"
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-emerald-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Descripción del Emprendimiento & Experiencias para Turistas
+                  <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                    Biografía / Qué te apasiona de la cultura nicaragüense
                   </label>
                   <textarea
                     rows={3}
-                    value={businessDescription}
-                    onChange={(e) => setBusinessDescription(e.target.value)}
-                    placeholder="Describe los productos, historia familiar, talleres vivenciales o demostraciones que ofreces..."
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-emerald-500 leading-relaxed"
+                    value={formBio}
+                    onChange={(e) => setFormBio(e.target.value)}
+                    placeholder="Contanos qué tradiciones, ciudades o artesanías te inspiran..."
+                    className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
                   />
                 </div>
 
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmittingRequest}
-                    className="w-full py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    <Send className="w-4 h-4" />
-                    <span>{isSubmittingRequest ? 'Enviando Solicitud...' : 'Enviar Solicitud de Acreditación'}</span>
-                  </button>
-                </div>
-              </form>
-            )}
-
-          </div>
-        )}
-
-        {/* ========================================================================= */}
-        {/* PESTAÑA 5: AJUSTES DE PERFIL */}
-        {/* ========================================================================= */}
-        {activeTab === 'settings' && (
-          <div className="max-w-2xl mx-auto rounded-3xl bg-slate-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-xl space-y-6 animate-fadeIn">
-            
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div>
-                <h3 className="text-xl font-black text-white">Editar Perfil</h3>
-                <p className="text-xs text-slate-400">Actualiza tus datos y preferencias culturales.</p>
-              </div>
-
-              <button
-                type="button"
-                onClick={logout}
-                className="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span>Cerrar Sesión</span>
-              </button>
-            </div>
-
-            {profileSuccessMsg && (
-              <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center gap-2 animate-fadeIn">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>¡Perfil actualizado con éxito en la base de datos!</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 3. PREFERENCIAS CULTURALES */}
                 <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Nombre *
+                  <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
+                    Tus Categorías Culturales Favoritas
                   </label>
+                  <div className="flex flex-wrap gap-2.5">
+                    {CULTURAL_CATEGORIES.map((cat) => {
+                      const isSelected = formFavCategories.includes(cat);
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => {
+                            if (isSelected) {
+                              setFormFavCategories(formFavCategories.filter((c) => c !== cat));
+                            } else {
+                              setFormFavCategories([...formFavCategories, cat]);
+                            }
+                          }}
+                          className={`px-4 py-2 rounded-full text-xs lg:text-sm font-bold transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#0F3A2E] text-white border border-[#00A8A7]'
+                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/5 hover:border-slate-300'
+                          }`}
+                        >
+                          {isSelected && '✓ '}
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 4. NOTIFICACIONES */}
+                <div className="p-5 lg:p-6 rounded-2xl lg:rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex items-center justify-between">
+                  <div>
+                    <h4 className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 dark:text-white">Notificaciones de Nuevos Eventos y Rutas</h4>
+                    <p className="text-[11px] sm:text-xs lg:text-sm text-slate-500 mt-0.5">Recibí alertas sobre ferias, festividades y circuitos habilitados en tus ciudades favoritas.</p>
+                  </div>
                   <input
-                    type="text"
-                    required
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
+                    type="checkbox"
+                    checked={formNotifications}
+                    onChange={(e) => setFormNotifications(e.target.checked)}
+                    className="w-5 h-5 lg:w-6 lg:h-6 accent-[#00A8A7] rounded cursor-pointer"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Apellido
-                  </label>
-                  <input
-                    type="text"
-                    value={formLastname}
-                    onChange={(e) => setFormLastname(e.target.value)}
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Departamento de Residencia
-                  </label>
-                  <select
-                    value={formDepartment}
-                    onChange={(e) => {
-                      const newDept = e.target.value;
-                      setFormDepartment(newDept);
-                      const firstMun = getMunicipalitiesByDepartment(newDept)[0] || 'León';
-                      setFormCity(firstMun);
-                    }}
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
-                  >
-                    {NICARAGUA_GEO_DATA.map((d) => (
-                      <option key={d.id} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                    Municipio / Ciudad de Residencia
-                  </label>
-                  <select
-                    value={formCity}
-                    onChange={(e) => setFormCity(e.target.value)}
-                    className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
-                  >
-                    {getMunicipalitiesByDepartment(formDepartment).map((m) => (
-                      <option key={m} value={m}>{m}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                  Correo Electrónico (Solo Lectura)
-                </label>
-                <input
-                  type="email"
-                  disabled
-                  value={user.email}
-                  className="w-full bg-slate-950/50 border border-white/5 rounded-xl px-3 py-2.5 text-slate-500 cursor-not-allowed"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                  URL de Imagen de Perfil (Avatar)
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    value={formAvatar}
-                    onChange={(e) => setFormAvatar(e.target.value)}
-                    placeholder="https://images.unsplash.com/..."
-                    className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500"
-                  />
-                  {formAvatar && (
-                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-slate-950 border border-white/20 shrink-0">
-                      <Image src={formAvatar} alt="Preview" width={40} height={40} className="w-full h-full object-cover" />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                  Biografía de Viajero / Explorador
-                </label>
-                <textarea
-                  rows={2}
-                  value={formBio}
-                  onChange={(e) => setFormBio(e.target.value)}
-                  placeholder="Escribe unas líneas sobre tus intereses culturales y viajes..."
-                  className="w-full bg-slate-950 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-purple-500 leading-relaxed"
-                />
-              </div>
-
-              {/* Categorías Favoritas */}
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">
-                  Temas y Vocaciones Favoritas
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {CULTURAL_CATEGORIES.map((cat) => {
-                    const isSelected = formFavCategories.includes(cat);
-                    return (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => toggleCategory(cat)}
-                        className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
-                          isSelected
-                            ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
-                            : 'bg-slate-950 text-slate-400 hover:text-white border border-white/10'
-                        }`}
-                      >
-                        {isSelected && <Check className="w-3 h-3" />}
-                        <span>{cat}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-white/10 flex justify-end">
                 <button
                   type="submit"
                   disabled={isSavingProfile}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/30 transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2"
+                  className="py-3.5 px-8 lg:py-4 lg:px-10 rounded-2xl bg-[#0F3A2E] hover:bg-[#0A261E] text-white font-black text-xs sm:text-sm lg:text-base shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
                 >
-                  <Check className="w-4 h-4" />
-                  <span>{isSavingProfile ? 'Guardando...' : 'Guardar Cambios'}</span>
+                  <span>{isSavingProfile ? 'Guardando...' : 'Guardar Todos los Cambios'}</span>
                 </button>
-              </div>
 
-            </form>
+              </form>
+
+            </div>
 
           </div>
         )}
 
       </div>
+
     </main>
   );
 }

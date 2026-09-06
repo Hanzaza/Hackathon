@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 @import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -6,11 +7,38 @@
   --foreground: #1e293b; /* slate-800 para que el texto sea legible y elegante */
 }
 
+.dark {
+  --background: #091217;
+  --foreground: #f8fafc;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-mono: monospace;
+
+  /* Paleta Oficial ROOTS - Colores que nos conectan */
+  --color-roots-turquesa: #00A8A7;
+  --color-roots-turquesa-oscuro: #007F7E;
+  --color-roots-azul-profundo: #0F3A4A;
+  --color-roots-naranja: #F4A43B;
+  --color-roots-amarillo: #F4D44D;
+  --color-roots-magenta: #C23B6E;
+  --color-roots-verde-hojas: #3BA455;
+  --color-roots-verde-oscuro: #0F3A2E;
+  --color-roots-arena: #D9B28C;
+  --color-roots-cafe: #8B5E3C;
+  --color-roots-rosa-claro: #F7A9C4;
+  --color-roots-lila: #8A6BC9;
+  --color-roots-azul-cielo: #78CDE8;
+  --color-roots-verde-menta: #A7D7A8;
+  --color-roots-coral: #FF6B6B;
+  --color-roots-negro: #1A1A1A;
+  --color-roots-gris: #6B6B6B;
+  --color-roots-gris-claro: #D9D9D9;
+  --color-roots-blanco: #FFFFFF;
+  --color-roots-beige-claro: #F5EFE6;
 }
 
 /* El mapa necesita estas dimensiones base para no colapsar */
@@ -29,8 +57,8 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  /* Tailwind ya inyecta Geist, pero dejamos un fallback seguro */
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  /* Inyección de Montserrat como tipografía global de toda la plataforma */
+  font-family: var(--font-montserrat), "Montserrat", var(--font-sans), sans-serif;
 }
 
 /* Soporte de Safe Area para PWA en iOS y Android */
@@ -70,94 +98,15 @@ body {
   scrollbar-width: none;  /* Firefox */
 }
 
-/* ================= Parallax Scrolling Styles ================= */
-.parallax {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  background-color: #0b0f19;
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
 }
 
-.parallax__header {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 600px;
-}
-
-.parallax__visuals {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-}
-
-.parallax__layers {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.parallax__layer-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  will-change: transform;
-}
-
-.parallax__layer-title {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 3;
-  pointer-events: none;
-  will-change: transform;
-  padding: 0 1rem;
-}
-
-.parallax__title {
-  font-size: clamp(2.75rem, 9vw, 7rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  color: #ffffff;
-  text-align: center;
-  line-height: 1.05;
-  text-shadow: 0 4px 35px rgba(0, 0, 0, 0.75);
-}
-
-.parallax__fade {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 220px;
-  background: linear-gradient(to bottom, transparent, #ffffff);
-  pointer-events: none;
-  z-index: 10;
-}
-
-.parallax__content {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 1.5rem;
-  color: #ffffff;
-}
-
-.osmo-icon-svg {
-  width: 48px;
-  height: 48px;
-  opacity: 0.8;
+.animate-float {
+  animation: float 4s ease-in-out infinite;
 }

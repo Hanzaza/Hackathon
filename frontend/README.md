@@ -1,75 +1,124 @@
-# Roots - Movilidad Sostenible y Ciudades Creativas
+# 🌿 ROOTS • Frontend Progressive Web App (PWA)
 
-Este proyecto es una Progressive Web App (PWA) multiplataforma desarrollada con Next.js, diseñada para cerrar la brecha entre la rica oferta comercial y cultural de las Ciudades Creativas de Nicaragua y los canales digitales del turismo moderno. Utiliza Supabase para la gestión de datos y Prisma como ORM para la base de datos, proporcionando una solución robusta y escalable.
+Aplicación web progresiva multiplataforma desarrollada con **Next.js 16 (Turbopack, App Router)**, **React 19** y **Tailwind CSS v4** para la **Red Nacional de Ciudades Creativas de Nicaragua**.
 
-## Problema que busca resolver
+---
 
-Actualmente, existe una significativa desconexión tecnológica entre la oferta comercial y cultural de las Ciudades Creativas de Nicaragua y los canales digitales utilizados por el turismo moderno. Esta brecha en la digitalización de la información limita el crecimiento económico local, ya que los turistas carecen de herramientas interactivas para planificar sus recorridos, y los emprendedores locales (MiPymes, artesanos) no tienen sistemas eficientes que les otorguen visibilidad y los vinculen proactivamente con oportunidades comerciales y eventos afines a su rubro.
+## 🚀 Tecnologías Principales
 
-## Solución Propuesta: "Roots"
+- **Framework Web**: [Next.js 16.3.3](https://nextjs.org/) con compilador de alto rendimiento **Turbopack**.
+- **Biblioteca UI**: [React 19.2.4](https://react.dev/).
+- **Estilos & Diseño**: [Tailwind CSS v4.0](https://tailwindcss.com/) con tokens de diseño adaptativos (Modo Claro / Modo Oscuro).
+- **Motor Cartográfico**: [MapLibre GL 5.24](https://maplibre.org/) para renderizado 2D/3D con aceleración WebGL y cálculo espacial con [@turf/turf](https://turfjs.org/).
+- **PWA**: [@ducanh2912/next-pwa](https://www.npmjs.com/package/@ducanh2912/next-pwa) con soporte de Service Worker, instalación en iOS y Android, y modo offline.
+- **Autenticación & Base de Datos**: [@supabase/supabase-js](https://supabase.com/docs) y `@supabase/ssr` para autenticación por roles (RBAC) y persistencia.
+- **Animaciones & Interactividad**: [Framer Motion 12](https://www.framer.com/motion/), [GSAP 3.15](https://gsap.com/) y [Lenis Smooth Scroll](https://lenis.darkroom.engineering/).
+- **Iconografía**: [Lucide React](https://lucide.dev/) y [React Icons](https://react-icons.github.io/react-icons/).
 
-"Roots" centraliza la oferta turística y exalta los orígenes, tradiciones y la cultura nicaragüense a través de dos pilares tecnológicos principales:
+---
 
-1.  **Mapa Inmersivo Interactivo:** Permite a los usuarios navegar espacialmente por las rutas y denominaciones de cada ciudad creativa, geolocalizando puntos de interés, emprendimientos y eventos.
-2.  **Sistema de Perfiles y Notificaciones Inteligentes:** Alerta de manera exclusiva a los emprendedores sobre ferias, talleres y exposiciones donde su negocio tiene potencial de participación y venta, optimizando su visibilidad y oportunidades comerciales.
+## 📁 Estructura del Frontend (`frontend/`)
 
-## Principales Beneficiarios
-
-El impacto de "Roots" se extiende a dos segmentos clave:
-
-*   **Turistas (nacionales e internacionales):** Acceden a un ecosistema digital inmersivo para explorar visualmente todas las denominaciones, conocer las rutas creativas, geolocalizar puntos de interés y planificar su visita en función de la agenda operativa de cada ciudad.
-*   **Sector Comercial (MiPymes, artesanos y emprendedores):** Obtienen una plataforma de alta visibilidad para exponer sus productos ante un mercado global. El sistema de notificaciones exclusivas les permite aprovechar oportunidades de negocio perfiladas específicamente para su tipo de actividad, fortaleciendo su participación en el ecosistema cultural y económico.
-
-## Relación con la Ciudad Creativa o el Territorio
-
-"Roots" funciona como una infraestructura digital escalable para toda la Red Nacional de Ciudades Creativas de Nicaragua. Iniciando el desarrollo desde León, la plataforma busca estandarizar la promoción de los 10 territorios, preservando y digitalizando sus "raíces" culturales. La PWA integra circuitos, denominaciones y actividades económicas específicas de cada zona en un ecosistema tecnológico unificado, impulsando la economía naranja del país mediante herramientas de geolocalización inmersiva y vinculación comercial estratégica.
-
-## Tecnología
-
-El proyecto está construido con:
-*   **Next.js:** Framework de React para el desarrollo de aplicaciones web full-stack.
-*   **Supabase:** Plataforma de código abierto para bases de datos y autenticación, actuando como backend.
-*   **Prisma:** ORM (Object-Relational Mapper) para la interacción con la base de datos, proporcionando una capa de abstracción para un desarrollo más eficiente.
-
-## Instalación
-
-Sigue estos pasos para configurar el proyecto localmente:
-
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/Hanzaza/Hackathon.git
-    cd stateless-mobility
-    ```
-
-2.  **Instalar dependencias:**
-    ```bash
-    npm install
-    # o si usas yarn
-    # yarn install
-    # o si usas pnpm
-    # pnpm install
-    ```
-
-3.  **Configurar variables de entorno:**
-    Crea un archivo `.env.local` en la raíz del proyecto basándote en `supabase-env.example`. Necesitarás las credenciales de Supabase (URL y clave API).
-
-4.  **Configurar la base de datos (Opcional):**
-    Si necesitas inicializar o migrar la base de datos, puedes usar Prisma:
-    ```bash
-    npx prisma migrate dev --name init
-    npx prisma db seed
-    ```
-
-## Ejecución
-
-Para iniciar la aplicación en modo de desarrollo:
-
-```bash
-npm run dev
-# o
-# yarn dev
-# o
-# pnpm dev
+```text
+frontend/
+├── app/                               # Rutas oficiales bajo Next.js App Router
+│   ├── layout.tsx                     # Layout global: ThemeProvider, AuthContext, Navbar, Footer
+│   ├── globals.css                    # Directivas Tailwind v4, fuentes y animaciones
+│   ├── page.tsx                       # Página Principal: Mapa Interactivo 2D/3D
+│   ├── perfil/page.tsx                # Perfil del Usuario & Pasaporte Cultural
+│   ├── agenda/page.tsx                # Calendario y Cartelera de Eventos Culturales
+│   ├── circuitos/page.tsx             # Catálogo y detalle de Circuitos Creativos
+│   ├── emprendedores/page.tsx         # Directorio de MiPymes y Talleres Artesanales
+│   ├── ciudades-creativas/            # Rutas dinámicas por municipio (/ciudades-creativas/[slug])
+│   ├── admin/page.tsx                 # Panel de Administración de la Red
+│   └── login/page.tsx                 # Formulario de Acceso y Registro
+│
+├── src/
+│   ├── components/
+│   │   ├── auth/                      # AuthModal.tsx (Modal de inicio de sesión y registro)
+│   │   ├── map/                       # MapaContenedor.tsx, CircuitoSelectorModal.tsx
+│   │   ├── ui/                        # Navigation.tsx, SplashScreen.tsx, PrecolombianPattern.tsx
+│   │   └── user/                      # UserProfileDashboard.tsx (Pasaporte, Medallas, Configuración)
+│   │
+│   ├── context/                       # AuthContext.tsx (Estado global de sesión y perfil)
+│   ├── data/                          # nicaraguaGeo.ts (Datos geoespaciales y departamentos)
+│   ├── lib/                           # supabase.ts (Cliente cliente/servidor de Supabase)
+│   └── services/                      # apiClient.ts (Conector HTTP con la API Express)
+│
+├── public/                            # Recursos estáticos
+│   ├── logos/                         # Logotipos oficiales de ROOTS y de las 10 Ciudades Creativas
+│   ├── patterns/                      # Conceptos y assets de patrones precolombinos en SVG
+│   └── manifest.json                  # Manifiesto de PWA para instalación móvil
+│
+├── next.config.ts                     # Configuración de Next.js y PWA
+└── package.json                       # Dependencias y scripts del frontend
 ```
 
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+---
+
+## 🎨 Identidad Visual y Paleta Cromática
+
+La aplicación implementa una paleta de colores culturalmente representativa de Nicaragua:
+
+| Color | Hex | Significado y Aplicación |
+| :--- | :--- | :--- |
+| **Verde Selva** | `#0F3A2E` | Fondos principales, cabeceras institucionales y botones primarios |
+| **Turquesa Caribe** | `#00A8A7` | Acentos de marca, anillos de avatar, halo de mapa y enlaces activos |
+| **Maíz & Ocre** | `#F4A43B` | Medallas de gamificación, puntos acumulados y badges de nivel |
+| **Dorado Solar** | `#F4D44D` | Circuitos destacados, íconos de destello y reconocimientos |
+| **Verde Esperanza** | `#3BA455` | Indicadores de verificación, estado activo y sellos conseguidos |
+| **Arena Suave** | `#F5EFE6` | Fondo principal en Modo Claro para óptima legibilidad |
+| **Noche Volcánica** | `#0A1217` | Fondo principal inmersivo en Modo Oscuro |
+
+---
+
+## 📱 Vistas Principales Desarrolladas
+
+### 1. Mapa Interactivo 2D/3D (`/`)
+- Interfaz inmersiva de borde a borde optimizada para pantallas grandes y teléfonos móviles.
+- Inclinación 3D (pitch) con controles de zoom, rotación y selector de capas (Satelital, Topográfica, Rutas y Puntos).
+- Selector modal para desplegar itinerarios culturales como la *Ruta Dariana*, *Ruta de Barro Ancestral* o *Ruta del Café*.
+
+### 2. Dashboard de Perfil & Pasaporte Cultural (`/perfil`)
+- Contenedor panorámico desktop de `1400px` (`w-[min(94vw,1400px)]`) alineado a la barra de navegación.
+- **Colección de 10 Sellos de Ciudades Creativas**: León, Masaya, Granada, San Juan de Oriente, Estelí, Bluefields, Matagalpa, Juigalpa, Managua y Nagarote.
+- **Sistema de Puntos y Medallas**: Progreso visual de logros (*Maestro Alfarero*, *Poeta Dariano*, *Embajador de Identidad*, etc.).
+- **Selector de Temas**: Cambio instantáneo entre **Modo Claro**, **Modo Oscuro** y sincronización automática con el sistema operativo.
+- **6 Pestañas Integradas**: Pasaporte, Medallas, Eventos Guardados, Mis Circuitos, Emprendimiento y Ajustes.
+
+### 3. Directorio de Emprendedores (`/emprendedores`)
+- Catálogo de negocios locales, artesanos y gastronomía tradicional clasificados por rubro y municipio.
+- Formulario de solicitud de acreditación para obtener la insignia oficial de *Emprendedor Verificado*.
+
+### 4. Agenda Cultural (`/agenda`)
+- Cartelera de festividades tradicionales, ferias y festivales con búsqueda en tiempo real y opción de guardado.
+
+### 5. Panel Administrativo (`/admin`)
+- Panel de control protegido para supervisores de la Red Nacional de Ciudades Creativas.
+
+---
+
+## ⚙️ Configuración y Ejecución Local
+
+### 1. Variables de Entorno (`frontend/.env.local`)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu-anon-key-de-supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key-de-supabase
+```
+
+### 2. Comandos Disponibles
+```bash
+# Iniciar servidor de desarrollo en http://localhost:3000
+npm run dev
+
+# Compilar para producción con Turbopack
+npm run build
+
+# Iniciar servidor en modo producción
+npm run start
+
+# Ejecutar análisis estático de código (ESLint)
+npm run lint
+```

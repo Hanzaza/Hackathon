@@ -1,135 +1,387 @@
 <div align="center">
 
-  <img src="./frontend/public/logos/Logo.png" alt="Roots Logo" width="120" height="120" style="border-radius: 50%; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" />
+  <img src="./frontend/public/logos/preview-lockup-dark.png" alt="ROOTS • Red Nacional de Ciudades Creativas" width="340" style="margin-bottom: 12px;" />
 
   # 🌿 ROOTS
-  ### **Plataforma Digital de Movilidad y Turismo Cultural para la Red Nacional de Ciudades Creativas de Nicaragua**
+  ### **Plataforma Digital de Turismo Inmersivo, Movilidad Cultural y Pasaporte de Gamificación Territorial**
+  #### *Red Nacional de Ciudades Creativas de Nicaragua*
 
-  [![Next.js](https://img.shields.io/badge/Next.js-16.3.3-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+  [![Next.js](https://img.shields.io/badge/Next.js-16.3.3_(Turbopack)-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
   [![React](https://img.shields.io/badge/React-19.2.4-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  [![Express.js](https://img.shields.io/badge/Express.js-4.21-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-  [![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
-  [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
-  [![MapLibre GL](https://img.shields.io/badge/MapLibre_GL-5.24-2C3E50?style=for-the-badge&logo=maplibre&logoColor=white)](https://maplibre.org/)
-  [![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+  [![MapLibre GL](https://img.shields.io/badge/MapLibre_GL-5.24_(2D/3D)-2C3E50?style=for-the-badge&logo=maplibre&logoColor=white)](https://maplibre.org/)
+  [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL_%2B_PostGIS-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
+  [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas_GeoJSON-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+  [![Express.js](https://img.shields.io/badge/Express.js-4.21_(REST_API)-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+  [![PWA](https://img.shields.io/badge/PWA-Installable_(iOS/Android)-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
 
   <p align="center">
-    <a href="#el-reto">El Reto</a> •
-    <a href="#nuestra-solución">Nuestra Solución</a> •
-    <a href="#características-principales">Características</a> •
-    <a href="#arquitectura-y-tecnologías">Arquitectura</a> •
-    <a href="#equipo-de-desarrollo">Equipo</a> •
-    <a href="#guía-de-instalación">Instalación</a> •
-    <a href="#despliegue">Despliegue</a>
+    <a href="#-el-reto-y-contexto-nacional">Contexto Nacional</a> •
+    <a href="#-ciudades-creativas-oficiales">Ciudades Creativas</a> •
+    <a href="#-características-y-módulos-clave">Módulos del Sistema</a> •
+    <a href="#-pasaporte-cultural-y-gamificación">Pasaporte Cultural</a> •
+    <a href="#-arquitectura-técnica">Arquitectura</a> •
+    <a href="#-instalación-y-ejecución">Instalación</a> •
+    <a href="#-endpoints-de-la-api">API REST</a> •
+    <a href="#-equipo-de-desarrollo">Equipo</a>
   </p>
 
 </div>
 
 ---
 
-## 🎯 El Reto
+## 🎯 El Reto y Contexto Nacional
 
-En Nicaragua, la **Red Nacional de Ciudades Creativas** (León, Managua, Granada, Masaya, Estelí, San Juan de Oriente, Matagalpa, Juigalpa, Bluefields, Nagarote) alberga un invaluable patrimonio cultural, gastronómico, artesanal y arquitectónico.
+En Nicaragua, la **Comisión Nacional de Economía Creativa** impulsa la **Red Nacional de Ciudades Creativas**, un modelo territorial que reconoce municipios con extraordinaria herencia cultural, artesanal, literaria, gastronómica y arquitectónica.
 
-Sin embargo, existe una **marcada desconexión tecnológica** entre esta rica oferta y los canales digitales del turismo moderno:
-- 🗺️ **Falta de herramientas espaciales interactivas:** Los visitantes no disponen de mapas dinámicos en 2D/3D con circuitos geolocalizados, puntos de interés cultural e información verificada.
-- 🛍️ **Visibilidad limitada para MiPymes y artesanos:** Los creadores locales carecen de canales digitales accesibles para exponer sus productos y articularse proactivamente con ferias y eventos.
-- 📅 **Dispersión de agendas culturales:** La información de eventos y festividades tradicionales se encuentra fragmentada y sin sincronización en tiempo real.
+A pesar de esta riqueza única, el turismo y la economía naranja enfrentaban barreras críticas:
+1. 🗺️ **Desconexión cartográfica y dispersión:** No existía una herramienta digital unificada en 2D/3D que consolidara los circuitos geolocalizados, puntos de interés patrimonial e itinerarios oficiales.
+2. 🏷️ **Falta de visibilidad para MiPymes y artesanos:** Maestros ceramistas, talleres de cuero, marimberos y cooperativas de café carecían de vitrinas digitales georreferenciadas con certificación oficial.
+3. 🎮 **Ausencia de incentivos para el visitante:** El turista nacional y extranjero realizaba visitas aisladas sin un sistema de incentivos o recompensas por recorrer y validar su paso por los diferentes municipios.
+4. 📱 **Experiencias móviles deficientes:** La información histórica y agendas de eventos tradicionales se encontraban en formatos estáticos no optimizados para dispositivos táctiles ni funcionamiento offline.
 
 ---
 
-## 💡 Nuestra Solución: *Roots*
+## 💡 La Solución: *ROOTS*
 
-**Roots** es un ecosistema digital desacoplado (PWA + API REST) que transforma la manera en que locales y turistas exploran las Ciudades Creativas de Nicaragua, articulando la identidad territorial con la economía naranja.
+**ROOTS** es un ecosistema digital desacoplado de última generación (**Progressive Web App + API REST Geoespacial**) que conecta a turistas, artesanos, emprendedores y gestores culturales en una experiencia inmersiva, dinámica y gamificada.
 
 ```mermaid
 graph TD
-    A[Turistas & Visitantes] -->|Exploran en PWA| B[Roots Frontend: Next.js 16]
-    C[Emprendedores & MiPymes] -->|Exponen su catálogo| B
-    B -->|API Client HTTP| D[Roots Backend: Express + TS]
-    D -->|Consultas Espaciales| E[(Supabase / PostgreSQL PostGIS)]
-    D -->|GeoJSON & Catálogo| F[(MongoDB Atlas)]
-    B -->|MapLibre GL & 3D Pitch| G[Mapas Interactivos]
+    subgraph "Clientes Multiplataforma (PWA)"
+        A[Turista / Explorador] -->|Navega en 2D/3D & Colecciona Sellos| Web[ROOTS App: Next.js 16 + Tailwind v4]
+        B[Emprendedor / Artesano] -->|Gestiona Catálogo & Postulación| Web
+        C[Administrador Cultural] -->|Valida Sellos, Eventos y Rutas| Web
+    end
+
+    subgraph "Servicios & Lógica de Negocio"
+        Web -->|MapLibre GL + Turf.js| Map[Motor Cartográfico 2D/3D Vectorial]
+        Web -->|Cliente HTTP Seguro| API[Roots API Server: Express + TypeScript]
+        Web -->|Supabase Auth / SSR Client| Auth[Auth JWT & RBAC]
+    end
+
+    subgraph "Capa de Datos Híbrida & Alta Disponibilidad"
+        API -->|Consultas Espaciales & Relacionales| PG[(Supabase PostgreSQL + PostGIS)]
+        API -->|Capas GeoJSON & Infraestructura| Mongo[(MongoDB Atlas)]
+        Auth -->|Perfiles, Sellos, Medallas| PG
+    end
 ```
 
 ---
 
-## ✨ Características Principales
+## 🏛️ Ciudades Creativas Oficiales Integradas
 
-<table>
-  <tr>
-    <td width="50%">
-      <h3>🗺️ 1. Mapa Inmersivo & Circuitos SVG</h3>
-      <ul>
-        <li>Navegación espacial por departamento con micro-mapas SVG vectoriales interactivos.</li>
-        <li>Vistas en 2D/3D con MapLibre GL, inclinación de cámara, selector de estilos y control de capas.</li>
-        <li>Carrusel deslizante con snap táctil para los Circuitos Creativos (Dariano, Sutiabeño, etc.).</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>📅 2. Agenda Cultural Inteligente</h3>
-      <ul>
-        <li>Búsqueda instantánea y filtros dinámicos por ciudad y categoría (Música, Tradición, Arte).</li>
-        <li>Fichas detalladas de eventos con fecha, hora, ubicación y tags visuales.</li>
-        <li>Sincronización para planificación de itinerarios turísticos en tiempo real.</li>
-      </ul>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3>🛍️ 3. Ecosistema de Emprendedores</h3>
-      <ul>
-        <li>Directorio geolocalizado de artesanos, gastronomía típica y emprendimientos creativos.</li>
-        <li>Carruseles de galerías con imágenes optimizadas y descarga directa de la Guía del Emprendedor.</li>
-      </ul>
-    </td>
-    <td width="50%">
-      <h3>📱 4. Experiencia PWA Multiplataforma</h3>
-      <ul>
-        <li>Instalable en dispositivos móviles (iOS y Android) y escritorio.</li>
-        <li>Navegación táctil ergonómica con barra de navegación nativa y safe areas.</li>
-        <li>Animaciones cinemáticas suaves con GSAP ScrollTrigger y Lenis Smooth Scroll.</li>
-      </ul>
-    </td>
-  </tr>
-</table>
+ROOTS digitaliza de manera integral los **10 municipios** declarados como Ciudades Creativas de Nicaragua, cada uno con su vocación identitaria oficial, iconografía cultural y circuitos georreferenciados:
+
+| Ciudad | Escudo / Logo | Vocación Cultural Oficial | Atractivos & Circuitos Destacados |
+| :--- | :---: | :--- | :--- |
+| **León** | <img src="./frontend/public/logos/leon.png" width="48" height="48" /> | *Literatura & Poesía* | Ruta Dariana, Real e Insigne Basílica Catedral, Muralismo Histórico |
+| **Granada** | <img src="./frontend/public/logos/granada.png" width="48" height="48" /> | *Arquitectura & Diseño* | Arquitectura Colonial, Isletas de Granada, Calle La Calzada |
+| **Masaya** | <img src="./frontend/public/logos/masaya.png" width="48" height="48" /> | *Folclore & Artesanía* | Mercado de Artesanías, Cuna del Folclore, Danza de Marimbas, Monimbó |
+| **San Juan de Oriente** | <img src="./frontend/public/logos/san-juan-de-oriente.png" width="48" height="48" /> | *Barro Ancestral* | Cerámica Precolombina, Talleres Familiares en Torno, Tradición de Barro |
+| **Estelí** | <img src="./frontend/public/logos/esteli.png" width="48" height="48" /> | *Muralismo & Música* | Galería Abierta de Murales, Taller de Guitarras, Reserva Miraflor |
+| **Bluefields** | <img src="./frontend/public/logos/bluefields.png" width="48" height="48" /> | *Música & Danza Caribeña* | Tradición del Palo de Mayo (Maypole), Cultura Creole y Miskita, Gastronomía Rondón |
+| **Matagalpa** | <img src="./frontend/public/logos/matagalpa.png" width="48" height="48" /> | *Café & Montaña* | Ruta del Café de Altura, Senderos Ecológicos, Chocolate Artesanal |
+| **Juigalpa** | <img src="./frontend/public/logos/juigalpa.png" width="48" height="48" /> | *Arqueología & Chontales* | Museo Arqueológico Gregorio Aguilar Barea, Esculturas Amerindias, Ganadería |
+| **Managua** | <img src="./frontend/public/logos/managua.png" width="48" height="48" /> | *Epicentro Cultural* | Teatro Nacional Rubén Darío, Puerto Salvador Allende, Centros Culturales |
+| **Nagarote** | <img src="./frontend/public/logos/nagarote.png" width="48" height="48" /> | *Municipio Azul & Sabor* | Cuna del Quesillo Tradicional, Paseo de la Paz, Lago Xolotlán |
 
 ---
 
-## 🏗️ Arquitectura y Tecnologías
+## ✨ Características y Módulos Clave
 
-El proyecto sigue las mejores prácticas de la industria, estructurado como un **Monorepo desacoplado** con separación estricta entre Frontend y Backend:
+### 🗺️ 1. Mapa Inmersivo & Cartografía 2D/3D
+- **Viewport Maximizado en Desktop y Mobile:** Diseño inmersivo de borde a borde con controles flotantes *glassmorphism*.
+- **MapLibre GL con Inclinación de Cámara (3D Pitch):** Navegación espacial fluida entre vistas aéreas ortogonales y perspectivas 3D tridimensionales.
+- **Selector de Capas Espaciales:** Alterna en tiempo real entre estilos Satelital, Topográfico, Cultural y Rutas Creativas.
+- **Modal de Circuitos Creativos:** Tarjetas interactivas con cálculo de distancias, tiempo estimado, tracks georreferenciados y puntos clave.
+- **Micro-Títulos Responsivos:** Banner visual con estilo translúcido adaptativo para dispositivos móviles y cabecera despejada en escritorio.
+
+### 📜 2. Pasaporte de Explorador Cultural (Gamificación)
+- **10 Sellos Oficiales de Ciudades:** Cada municipio cuenta con su propio sello virtual (🎭 Masaya, 📜 León, 🏛️ Granada, 🏺 San Juan de Oriente, etc.).
+- **Puntos de Experiencia ROOTS:** Sistema de puntaje por visita confirmada y circuito completado (acumulable para canjes y reconocimientos).
+- **Medallas y Logros de Explorador:** Sistema de hitos desbloqueables:
+  - 🏺 *Maestro Alfarero*: Modelado de barro ancestral en San Juan de Oriente.
+  - 📜 *Poeta Dariano*: Recorrido de la Ruta Poética y Catedralicia en León.
+  - 🌟 *Embajador de Identidad*: Acumulación de más de 500 puntos de experiencia.
+  - 🥁 *Ritmo Caribeño*: Exploración cultural del Palo de Mayo en Bluefields.
+  - 🗺️ *Explorador Bicentenario*: 5 circuitos en 3 departamentos diferentes.
+
+### 👤 3. Perfil de Usuario Espacioso y Rediseñado (`/perfil`)
+- **Diseño Desktop Panorámico (`1400px`):** Se eliminó la congestión visual expandiendo la interfaz al ancho exacto de la barra superior de navegación.
+- **Header con Jerarquía:** Avatar oficial ampliado con anillo de verificación identitario (`lg:w-32 lg:h-32`), insignias de nivel de aventurero y tarjeta destacada de puntos acumulados.
+- **6 Pestañas de Gestión Integrales:**
+  1. **Pasaporte Cultural:** Tablero de sellos conseguidos y por explorar con puntuación y fechas de expedición.
+  2. **Logros & Medallas:** Galería de medallas con barras de progreso en tiempo real y recompensas.
+  3. **Eventos Guardados:** Marcadores geolocalizados de ferias y festividades guardadas.
+  4. **Mis Circuitos:** Historial de rutas turísticas exploradas y guardadas.
+  5. **Emprendimiento:** Panel para solicitar acreditación como negocio/artesano local.
+  6. **Ajustes & Tema:** Selector visual interactivo para **Modo Claro**, **Modo Oscuro** y **Sincronización con el Sistema**, junto con selector geográfico por departamento y municipio.
+
+### 🛍️ 4. Directorio y Acreditación de Emprendedores (`/emprendedores`)
+- Vitrina comercial categorizada por rubro: *Artesanías en Barro*, *Café & Cacao*, *Cuero & Calzado*, *Gastronomía Tradicional*, *Música & Danza*.
+- Ficha comercial con ubicación en mapa, contacto directo, galería de productos y distintivo de *Emprendimiento Verificado*.
+
+### 📅 5. Agenda Cultural Inteligente (`/agenda`)
+- Calendario consolidado de ferias del maíz, bailes de negras, topes de santos, festivales de poesía y exposiciones de arte contemporáneo.
+- Filtros instantáneos por ciudad, fecha y categoría cultural con opción de guardado directo al perfil del explorador.
+
+### 🎨 6. Identidad Visual & Patrones Precolombinos Procedurales
+- **Paleta de Color Identitaria:**
+  - 🌲 **Verde Selva Profundo** (`#0F3A2E`): Representa la biodiversidad y reservas naturales de Nicaragua.
+  - 🌊 **Turquesa Caribe** (`#00A8A7`): Evoca los mares, lagos y fuentes de agua del país.
+  - 🌾 **Ocre & Maíz Dorado** (`#F4A43B`, `#F4D44D`): Símbolo de la raíz precolombina y el grano sagrado.
+  - 🍃 **Verde Esperanza** (`#3BA455`): Acento para estados activos y verificaciones.
+- **Arte Precolombino SVG:** Generador de patrones geométricos procedurales (mandalas y teselaciones) renderizados en código SVG puro (`PrecolombianPattern.tsx`).
+- **Splash Screen Cinematográfica:** Animación de bienvenida que revela el logotipo ROOTS con transiciones elegantes de entrada.
+
+### 🔐 7. Seguridad y Control de Acceso por Roles (RBAC)
+- **Supabase Auth + JWT + Bcrypt:** Registro seguro, recuperación y sesiones persistentes con cookies HTTP/SSR.
+- **3 Roles de Usuario:**
+  - `explorer`: Turista y usuario estándar con pasaporte cultural.
+  - `entrepreneur`: MiPyme o artesano local con permisos para gestionar catálogo de productos.
+  - `admin`: Administrador territorial con acceso al panel de control `/admin` para gestionar eventos, ciudades y aprobar sellos.
+
+---
+
+## 🏗️ Arquitectura Técnica
+
+El proyecto está configurado como un **Monorepo desacoplado** utilizando *npm workspaces*:
 
 ```text
 Hackathon/
-├── frontend/                  # Next.js 16 (App Router) + Tailwind CSS v4
-│   ├── app/                   # Enrutamiento y vistas (Home, Mapa, Circuitos, Agenda)
+├── frontend/                          # Next.js 16.3 (Turbopack, App Router)
+│   ├── app/                           # Rutas públicas y protegidas
+│   │   ├── layout.tsx                 # Root layout, fuentes, ThemeProvider & AuthContext
+│   │   ├── page.tsx                   # Página principal: Mapa Inmersivo 2D/3D
+│   │   ├── perfil/page.tsx            # Dashboard de Perfil y Pasaporte Cultural
+│   │   ├── agenda/page.tsx            # Agenda y Cartelera de Festividades
+│   │   ├── circuitos/page.tsx         # Catálogo de Circuitos Creativos
+│   │   ├── emprendedores/page.tsx     # Directorio de MiPymes y Artesanos
+│   │   ├── ciudades-creativas/        # Páginas dinámicas por municipio (/ciudades-creativas/[slug])
+│   │   ├── admin/page.tsx             # Panel de Administración de la Red
+│   │   └── login/page.tsx             # Vista de Autenticación y Registro
+│   │
 │   ├── src/
-│   │   ├── components/        # Componentes UI reutilizables y mapas SVG
-│   │   └── services/          # Cliente HTTP centralizado (apiClient.ts)
-│   └── public/                # Assets gráficos, logos y datos GeoJSON
+│   │   ├── components/
+│   │   │   ├── auth/                  # AuthModal.tsx (Login/Registro multi-rol)
+│   │   │   ├── map/                   # MapaContenedor.tsx, CircuitoSelectorModal.tsx
+│   │   │   ├── ui/                    # Navigation.tsx, SplashScreen.tsx, PrecolombianPattern.tsx
+│   │   │   └── user/                  # UserProfileDashboard.tsx (Pasaporte, Gamificación, Ajustes)
+│   │   ├── context/                   # AuthContext.tsx (Manejo de estado global del usuario)
+│   │   ├── data/                      # nicaraguaGeo.ts (Datos cartográficos de 17 departamentos)
+│   │   └── lib/                       # supabase.ts (Cliente Supabase SSR/Browser)
+│   │
+│   └── public/                        # Logotipos oficiales, patrones SVG y Manifest PWA
 │
-├── backend/                   # Node.js + Express + TypeScript API Server
+├── backend/                           # Node.js + Express + TypeScript API REST
 │   ├── src/
-│   │   ├── controllers/       # LocationsController, MapDataController, HealthController
-│   │   ├── routes/            # Endpoints REST (/api/locations, /api/map-data, /health)
-│   │   ├── services/          # Conectores Supabase (PostGIS) y MongoDB Atlas
-│   │   └── middleware/        # Manejador global de errores y CORS
-│   └── prisma/                # Esquemas y scripts de migración/seed
+│   │   ├── config/                    # Conexiones a Supabase y MongoDB Atlas
+│   │   ├── controllers/               # Controladores de Ubicaciones, Rutas y Auth
+│   │   ├── routes/                    # Definición de rutas REST (/api/locations, /api/map-data)
+│   │   └── middleware/                # Validadores de Token JWT, CORS y Manejador de Errores
+│   │
+│   └── scripts/                       # Scripts de migración, seeding y pruebas automáticas
 │
-└── package.json               # Monorepo con npm workspaces y scripts unificados
+├── supabase-master-migration.sql       # Esquema SQL consolidado para Supabase PostgreSQL
+└── package.json                       # Scripts unificados del Monorepo
 ```
 
-### 🛠️ Stack Tecnológico
+---
 
-| Capa | Tecnologías |
-| :--- | :--- |
-| **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS v4, MapLibre GL, GSAP, Framer Motion, Lenis Scroll, Lucide Icons, Next-PWA |
-| **Backend** | Node.js, Express.js, TypeScript, TSX, CORS, Dotenv |
-| **Bases de Datos** | Supabase (PostgreSQL + PostGIS), MongoDB Atlas, Prisma ORM |
-| **Tooling & Calidad** | ESLint 9, JSCPD (detección de duplicación), Node Metrics Engine |
+## 🛠️ Stack Tecnológico
+
+| Capa | Tecnologías | Propósito |
+| :--- | :--- | :--- |
+| **Frontend Framework** | **Next.js 16.3.3 (Turbopack)** | Server Components, App Router, Static Site Generation (SSG) |
+| **UI Library** | **React 19.2.4** | Interfaz reactiva y hooks de última generación |
+| **Estilos & Diseño** | **Tailwind CSS v4.0** | Sistema de diseño tokenizado, variables CSS dinámicas y Dark Mode |
+| **Cartografía Digital** | **MapLibre GL 5.24 + Turf.js** | Renderizado vectorial WebGL 2D/3D con inclinación y capas |
+| **Animaciones & Motion** | **GSAP 3.15 + Framer Motion 12 + Lenis** | Transiciones cinemáticas, smooth scroll y microinteracciones |
+| **Iconografía** | **Lucide React + React Icons** | Sistema iconográfico unificado y ligero |
+| **PWA Engine** | **@ducanh2912/next-pwa** | Service Workers, caché offline, soporte PWA en iOS y Android |
+| **Backend Framework** | **Express.js 4.21** | API REST de alto rendimiento sobre Node.js |
+| **Lenguaje Base** | **TypeScript 5.7** | Tipado estático de extremo a extremo |
+| **Base de Datos Relacional** | **Supabase (PostgreSQL + PostGIS)** | Perfiles, sellos, logros, eventos y consultas geoespaciales |
+| **Base de Datos NoSQL** | **MongoDB Atlas** | Almacenamiento flexible de polígonos GeoJSON y rutas turísticas |
+| **Seguridad** | **JWT + Bcrypt.js** | Encriptación de contraseñas y tokens firmados de sesión |
+
+---
+
+## 📊 Modelo de Datos (PostgreSQL en Supabase)
+
+El sistema utiliza un esquema relacional normalizado con extensiones geoespaciales:
+
+```mermaid
+erDiagram
+    PROFILES ||--o{ USER_ACHIEVEMENTS : desbloquea
+    PROFILES ||--o{ SAVED_EVENTS : guarda
+    PROFILES ||--o{ CITY_STAMPS : colecciona
+    PROFILES ||--o| ENTREPRENEURS : administra
+    
+    PROFILES {
+        uuid id PK
+        string email
+        string name
+        string lastname
+        string role "explorer | entrepreneur | admin"
+        int points "Puntos ROOTS"
+        int level "Nivel de Aventurero"
+        string city
+        string department
+        string avatar
+    }
+
+    CITY_STAMPS {
+        uuid id PK
+        uuid user_id FK
+        string city_slug
+        boolean stamped
+        timestamp stamped_at
+        int points_reward
+    }
+
+    ACHIEVEMENTS {
+        string id PK
+        string title
+        string description
+        string icon
+        string category
+        int points_reward
+    }
+
+    USER_ACHIEVEMENTS {
+        uuid id PK
+        uuid user_id FK
+        string achievement_id FK
+        int progress
+        int total
+        boolean unlocked
+        timestamp unlocked_at
+    }
+
+    SAVED_EVENTS {
+        uuid id PK
+        uuid user_id FK
+        string event_id
+        string event_title
+        string city
+        timestamp created_at
+    }
+
+    ENTREPRENEURS {
+        uuid id PK
+        uuid user_id FK
+        string business_name
+        string category
+        string city
+        string status "pending | approved | rejected"
+        geometry location
+    }
+```
+
+---
+
+## 🚀 Instalación y Ejecución
+
+### Prerrequisitos
+- **Node.js**: v18.0.0 o superior (Recomendado v20+ LTS)
+- **npm** (v9+) o **pnpm**
+
+### 1. Clonar el Repositorio
+```bash
+git clone https://github.com/Hanzaza/Hackathon.git
+cd Hackathon
+```
+
+### 2. Instalar Dependencias del Monorepo
+```bash
+# Instala las dependencias de raíz, frontend y backend simultáneamente
+npm install
+```
+
+### 3. Configurar Variables de Entorno
+
+#### Backend (`backend/.env`):
+```env
+PORT=4000
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:3000
+
+# Conexión a Supabase
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu-anon-key-de-supabase
+SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
+
+# Conexión a MongoDB Atlas
+MONGODB_URI=mongodb+srv://usuario:password@cluster.mongodb.net/roots_db
+MONGODB_DB_NAME=roots_db
+
+# Seguridad JWT
+JWT_SECRET=tu_secreto_para_firmar_tokens_super_seguro
+```
+
+#### Frontend (`frontend/.env.local`):
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu-anon-key-de-supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu-anon-key-de-supabase
+```
+
+### 4. Inicializar la Base de Datos (Supabase)
+Ejecuta el script SQL consolidado [`supabase-master-migration.sql`](file:///c:/Users/jonat/OneDrive/Escritorio/Hackathon/supabase-master-migration.sql) en el **SQL Editor** de tu panel de Supabase para crear automáticamente todas las tablas, índices espaciales, funciones y políticas de seguridad (RLS).
+
+### 5. Ejecutar la Aplicación
+
+Puedes ejecutar toda la plataforma con un solo comando desde la raíz:
+
+```bash
+# Inicia Frontend (puerto 3000) y Backend (puerto 4000) en simultáneo
+npm run dev:all
+```
+
+O si deseas correr los servicios individualmente:
+
+```bash
+npm run dev:frontend   # Inicia solo Next.js en http://localhost:3000
+npm run dev:backend    # Inicia solo la API Express en http://localhost:4000
+```
+
+### 6. Compilación de Producción
+```bash
+# Construye frontend y backend
+npm run build
+
+# O solo frontend con Turbopack
+npm run build:frontend
+```
+
+---
+
+## 🌐 Endpoints de la API REST
+
+| Método | Endpoint | Acceso | Descripción |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/health` | Público | Verificación de salud y estado operativo del servidor |
+| `GET` | `/api/locations` | Público | Colección GeoJSON de infraestructura y atractivos turísticos |
+| `GET` | `/api/map-data` | Público | Polígonos de Departamentos y Municipios Creativos |
+| `POST` | `/api/auth/register` | Público | Registro de nuevos usuarios con asignación de rol |
+| `POST` | `/api/auth/login` | Público | Autenticación y expedición de Token JWT |
+| `GET` | `/api/circuits` | Público | Listado de Circuitos Creativos georreferenciados |
+| `GET` | `/api/events` | Público | Agenda cultural y eventos programados |
+| `POST` | `/api/passport/stamp` | Protegido | Registro y validación de sello cultural para el usuario |
+| `POST` | `/api/entrepreneurs/apply` | Protegido | Envío de solicitud de acreditación de negocio local |
+
+---
+
+## 📱 Capacidades PWA y Soporte Móvil
+
+ROOTS fue concebido como una **Progressive Web App** nativa:
+- 📲 **Instalación Directa:** Añadible a la pantalla de inicio en iOS (Safari -> Compartir -> Añadir a inicio) y Android (Prompt automático de instalación).
+- ⚡ **Navegación Táctil Ergonómica:** Barra de navegación fija con respeto a *Safe Area Insets* de dispositivos con notch o isla dinámica.
+- 🔄 **Caché Offline:** Los circuitos y sellos visitados recientemente se conservan localmente mediante Service Worker.
 
 ---
 
@@ -139,107 +391,43 @@ Hackathon/
   <table>
     <tr>
       <td align="center" width="25%">
-        <img src="https://github.com/identicons/user1.png" width="100px;" alt="Jonathan González" style="border-radius:50%;"/><br />
+        <img src="https://github.com/Hanzaza.png" width="110px;" alt="Jonathan González" style="border-radius:50%; border: 3px solid #00A8A7;"/><br />
         <sub><b>Jonathan González</b></sub><br />
         <small>🚀 Full Stack & Architecture Lead</small><br />
         <a href="https://github.com/Hanzaza"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
       </td>
       <td align="center" width="25%">
-        <img src="https://github.com/identicons/user2.png" width="100px;" alt="Team Member 2" style="border-radius:50%;"/><br />
-        <sub><b>Frontend Developer</b></sub><br />
-        <small>🎨 UI/UX & Interactive Design</small><br />
+        <img src="https://github.com/identicons/user2.png" width="110px;" alt="Frontend Lead" style="border-radius:50%; border: 3px solid #F4A43B;"/><br />
+        <sub><b>Frontend Engineer</b></sub><br />
+        <small>🎨 UI/UX & Interactive GIS Design</small><br />
         <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
       </td>
       <td align="center" width="25%">
-        <img src="https://github.com/identicons/user3.png" width="100px;" alt="Team Member 3" style="border-radius:50%;"/><br />
+        <img src="https://github.com/identicons/user3.png" width="110px;" alt="Backend Lead" style="border-radius:50%; border: 3px solid #3BA455;"/><br />
         <sub><b>Backend Developer</b></sub><br />
-        <small>⚙️ Cloud & API Services</small><br />
+        <small>⚙️ Cloud, Auth & REST Services</small><br />
         <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
       </td>
       <td align="center" width="25%">
-        <img src="https://github.com/identicons/user4.png" width="100px;" alt="Team Member 4" style="border-radius:50%;"/><br />
+        <img src="https://github.com/identicons/user4.png" width="110px;" alt="GIS Specialist" style="border-radius:50%; border: 3px solid #00A8A7;"/><br />
         <sub><b>GIS & Data Specialist</b></sub><br />
-        <small>📍 Spatial Data & Cartography</small><br />
+        <small>📍 Cartography & Cultural Data</small><br />
         <a href="#"><img src="https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github" /></a>
       </td>
     </tr>
   </table>
 </div>
 
-> 💡 *Nota: Puedes personalizar las fotos, nombres, roles y enlaces a perfiles de GitHub/LinkedIn del equipo editando esta sección en el README.*
-
 ---
 
-## 🚀 Guía de Instalación y Ejecución
+## ⚖️ Licencia
 
-### Prerrequisitos
-- **Node.js**: v18.0.0 o superior (Recomendado Node 20 LTS o 22)
-- **npm** (v9+) o **pnpm** / **yarn**
-
-### 1. Clonar el repositorio
-```bash
-git clone https://github.com/Hanzaza/Hackathon.git
-cd Hackathon
-```
-
-### 2. Configurar Variables de Entorno
-
-**En el Backend (`backend/.env`):**
-```env
-PORT=4000
-NODE_ENV=development
-CORS_ORIGIN=http://localhost:3000
-
-# Supabase
-SUPABASE_URL=https://tu-proyecto.supabase.co
-SUPABASE_ANON_KEY=tu-supabase-anon-key
-
-# MongoDB
-MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/stateless_db
-MONGODB_DB_NAME=stateless_db
-```
-
-**En el Frontend (`frontend/.env.local`):**
-```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
-NEXT_PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu-supabase-anon-key
-```
-
-### 3. Instalar Dependencias y Ejecutar
-
-Desde la **raíz del proyecto**, puedes ejecutar todo con un solo comando:
-
-```bash
-# Iniciar Frontend (puerto 3000) y Backend (puerto 4000) en paralelo
-npm run dev:all
-
-# O iniciar individualmente:
-npm run dev:frontend    # Solo Interfaz Web en http://localhost:3000
-npm run dev:backend     # Solo API Server en http://localhost:4000
-```
-
----
-
-## 🌐 Endpoints Principales de la API
-
-| Método | Endpoint | Descripción |
-| :--- | :--- | :--- |
-| `GET` | `/health` | Healthcheck y estado de disponibilidad del servidor |
-| `GET` | `/api/locations` | GeoJSON de infraestructura y puntos georreferenciados (MongoDB) |
-| `GET` | `/api/map-data` | GeoJSON de Departamentos y Municipios Creativos (Supabase) |
-
----
-
-## 🚢 Despliegue en Producción
-
-Gracias a la arquitectura desacoplada, cada parte puede desplegarse de manera independiente:
-
-- **Frontend:** Desplegable en [Vercel](https://vercel.com/), [Netlify](https://www.netlify.com/) o [Cloudflare Pages] vinculando la carpeta `frontend/`.
-- **Backend:** Desplegable en [Render](https://render.com/), [Railway](https://railway.app/), [Fly.io](https://fly.io/) o contenedores Docker vinculando la carpeta `backend/`.
-
----
+Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más información.
 
 <div align="center">
-  <sub>Desarrollado con ❤️ para el Hackathon de Ciudades Creativas de Nicaragua • 2026</sub>
+  <br />
+  <img src="./frontend/public/logos/Logo.png" width="48" height="48" alt="Logo" />
+  <br />
+  <sub><b>ROOTS</b> • Conectando las Raíces Creativas de Nicaragua con el Futuro Digital</sub><br />
+  <sub>Desarrollado con pasión para el Hackathon de Ciudades Creativas • 2026</sub>
 </div>

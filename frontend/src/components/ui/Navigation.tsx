@@ -132,9 +132,15 @@ export default function Navigation() {
                       />
                     </div>
                     <span className="truncate max-w-[100px]">{user.name}</span>
-                    <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
-                      {user.points} pts
-                    </span>
+                    {user.role === 'admin' ? (
+                      <span className="text-[10px] bg-purple-200/80 text-purple-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
+                        Admin
+                      </span>
+                    ) : (
+                      <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
+                        {user.points} pts
+                      </span>
+                    )}
                   </Link>
                 </div>
               ) : (

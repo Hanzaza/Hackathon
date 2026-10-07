@@ -162,6 +162,8 @@ export interface AchievementItem {
   icon: string;
   points_reward: number;
   required_count: number;
+  route_id?: string | null;
+  route_name?: string | null;
 }
 
 export interface ReportItem {
@@ -174,6 +176,17 @@ export interface ReportItem {
   reason: string;
   status: 'pending' | 'resolved' | 'dismissed';
   created_at: string;
+}
+
+async function getAdminFallbackData() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const res = await fetch('/api/admin/data');
+    if (res.ok) return await res.json();
+  } catch {
+    // Fallback silencioso
+  }
+  return null;
 }
 
 export const adminService = {
@@ -237,6 +250,13 @@ export const adminService = {
       console.error('Error fetching admin stats from Supabase:', err);
     }
 
+    if (totalDepartments === 0 && totalCities === 0) {
+      const fb = await getAdminFallbackData();
+      if (fb?.stats) {
+        return fb.stats;
+      }
+    }
+
     return {
       totalUsers,
       totalEntrepreneurs,
@@ -275,7 +295,7 @@ export const adminService = {
           `)
           .order('name', { ascending: true });
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map((d: any) => ({
             id: d.id,
             name: d.name,
@@ -295,6 +315,25 @@ export const adminService = {
     } catch (err) {
       console.error('Error fetching departments from Supabase:', err);
     }
+
+    const fb = await getAdminFallbackData();
+    if (fb?.departments && fb.departments.length > 0) {
+      return fb.departments.map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        slug: d.slug,
+        code: d.code,
+        description: d.description,
+        hero_image: d.hero_image,
+        is_creative_region: !!d.is_creative_region,
+        manager_id: d.manager_id,
+        manager_name: d.users ? `${d.users.name} ${d.users.lastname}` : undefined,
+        manager_email: d.users?.email,
+        status: d.status || 'active',
+        created_at: d.created_at,
+      }));
+    }
+
     return [];
   },
 
@@ -369,7 +408,7 @@ export const adminService = {
           `)
           .order('name', { ascending: true });
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map((m: any) => ({
             id: m.id,
             department_id: m.department_id,
@@ -392,6 +431,28 @@ export const adminService = {
     } catch (err) {
       console.error('Error fetching cities from Supabase:', err);
     }
+
+    const fb = await getAdminFallbackData();
+    if (fb?.cities && fb.cities.length > 0) {
+      return fb.cities.map((m: any) => ({
+        id: m.id,
+        department_id: m.department_id,
+        department_name: m.departments?.name || 'Nicaragua',
+        name: m.name,
+        slug: m.slug,
+        subtitle: m.subtitle,
+        description: m.description,
+        is_creative: !!m.is_creative,
+        municipality_type: m.municipality_type || 'tradicional',
+        hero_desktop: m.hero_image,
+        logo_url: m.logo_url,
+        lat: m.lat ? parseFloat(m.lat) : 12.4350,
+        lng: m.lng ? parseFloat(m.lng) : -86.8782,
+        status: m.status || 'active',
+        created_at: m.created_at,
+      }));
+    }
+
     return [];
   },
 
@@ -606,11 +667,11 @@ export const adminService = {
           `)
           .order('name', { ascending: true });
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map((r: any) => ({
             id: r.id,
             municipality_id: r.municipality_id,
-            municipality_name: r.municipalities?.name || 'León',
+            municipality_name: r.municipalities?.name || '',
             name: r.name,
             slug: r.slug,
             description: r.description || '',
@@ -631,10 +692,48 @@ export const adminService = {
     } catch (err) {
       console.error('Error fetching routes from Supabase:', err);
     }
+
+    const fb = await getAdminFallbackData();
+    if (fb?.routes && fb.routes.length > 0) {
+      return fb.routes.map((r: any) => ({
+        id: r.id,
+        municipality_id: r.municipality_id,
+        municipality_name: r.municipalities?.name || '',
+        name: r.name,
+        slug: r.slug,
+        description: r.description || '',
+        theme: r.theme,
+        difficulty: r.difficulty || 'Fácil',
+        estimated_duration: r.estimated_duration || 120,
+        points_award: r.points_award || 200,
+        badge_name: r.badge_name || 'Explorador Creativo',
+        badge_icon: r.badge_icon || 'Award',
+        cover_image: r.cover_image,
+        route_color: r.route_color || '#9333ea',
+        status: r.status || 'published',
+        is_visible_in_map: !!r.is_visible_in_map,
+        created_at: r.created_at,
+      }));
+    }
+
     return [];
   },
 
   async createRoute(data: Partial<CreativeRouteItem>): Promise<boolean> {
+    try {
+      const res = await fetch('/api/admin/routes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return !!json.success;
+      }
+    } catch {
+      // Fallback a cliente directo Supabase
+    }
+
     try {
       if (supabase) {
         let munId = data.municipality_id;
@@ -675,10 +774,51 @@ export const adminService = {
 
   async updateRoute(id: string, updates: Partial<CreativeRouteItem>): Promise<boolean> {
     try {
+      const res = await fetch('/api/admin/routes', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...updates }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        return !!json.success;
+      }
+    } catch {
+      // Fallback a cliente directo Supabase
+    }
+
+    try {
       if (supabase) {
+        // Sanitizar payload para que NUNCA envíe municipality_name a la tabla creative_routes
+        let munId = updates.municipality_id;
+        if (!munId && updates.municipality_name) {
+          const { data: mun } = await supabase
+            .from('municipalities')
+            .select('id')
+            .ilike('name', `%${updates.municipality_name}%`)
+            .limit(1)
+            .maybeSingle();
+          if (mun) munId = mun.id;
+        }
+
+        const cleanPayload: Record<string, any> = {};
+        if (updates.name !== undefined) cleanPayload.name = updates.name;
+        if (updates.description !== undefined) cleanPayload.description = updates.description;
+        if (updates.theme !== undefined) cleanPayload.theme = updates.theme;
+        if (updates.difficulty !== undefined) cleanPayload.difficulty = updates.difficulty;
+        if (updates.estimated_duration !== undefined) cleanPayload.estimated_duration = updates.estimated_duration;
+        if (updates.points_award !== undefined) cleanPayload.points_award = updates.points_award;
+        if (updates.badge_name !== undefined) cleanPayload.badge_name = updates.badge_name;
+        if (updates.badge_icon !== undefined) cleanPayload.badge_icon = updates.badge_icon;
+        if (updates.cover_image !== undefined) cleanPayload.cover_image = updates.cover_image;
+        if (updates.route_color !== undefined) cleanPayload.route_color = updates.route_color;
+        if (updates.status !== undefined) cleanPayload.status = updates.status;
+        if (updates.is_visible_in_map !== undefined) cleanPayload.is_visible_in_map = updates.is_visible_in_map;
+        if (munId) cleanPayload.municipality_id = munId;
+
         const { error } = await supabase
           .from('creative_routes')
-          .update(updates)
+          .update(cleanPayload)
           .eq('id', id);
         return !error;
       }
@@ -689,6 +829,15 @@ export const adminService = {
   },
 
   async deleteRoute(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/admin/routes?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback
+    }
+
     try {
       if (supabase) {
         const { error } = await supabase.from('creative_routes').delete().eq('id', id);
@@ -738,7 +887,7 @@ export const adminService = {
         }
 
         const { data, error } = await query;
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map((p: any) => ({
             id: p.id,
             route_id: p.route_id,
@@ -767,6 +916,38 @@ export const adminService = {
     } catch (err) {
       console.error('Error fetching route places from Supabase:', err);
     }
+
+    const fb = await getAdminFallbackData();
+    if (fb?.places && fb.places.length > 0) {
+      let filtered = fb.places;
+      if (routeId) {
+        filtered = filtered.filter((p: any) => p.route_id === routeId);
+      }
+      return filtered.map((p: any) => ({
+        id: p.id,
+        route_id: p.route_id,
+        route_name: p.creative_routes?.name,
+        municipality_id: p.municipality_id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        category: p.category || 'Patrimonio Cultural',
+        icon_name: p.icon_name || 'MapPin',
+        image: p.image_url,
+        gallery: p.gallery || [],
+        audio_guide_url: p.audio_guide_url,
+        vr_360_url: p.vr_360_url,
+        is_primary_route_point: p.is_primary_route_point ?? true,
+        walk_time: p.walk_time || 'A pie',
+        rating: '4.9 ★',
+        lat: p.lat ? parseFloat(p.lat) : 12.4350,
+        lng: p.lng ? parseFloat(p.lng) : -86.8782,
+        points_reward: p.points_reward || 50,
+        is_active: p.status === 'active',
+        order_num: p.order_num || 1,
+      }));
+    }
+
     return [];
   },
 
@@ -1039,7 +1220,7 @@ export const adminService = {
           `)
           .order('start_date', { ascending: true });
 
-        if (!error && data) {
+        if (!error && data && data.length > 0) {
           return data.map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -1059,6 +1240,25 @@ export const adminService = {
     } catch (err) {
       console.error('Error fetching events from Supabase:', err);
     }
+
+    const fb = await getAdminFallbackData();
+    if (fb?.events && fb.events.length > 0) {
+      return fb.events.map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        description: e.description || '',
+        start_date: e.start_date,
+        end_date: e.end_date,
+        location_name: e.location_name || 'Nicaragua',
+        city: e.municipalities?.name || 'León',
+        department: e.departments?.name || 'León',
+        category: e.category || 'Tradición & Folclore',
+        status: e.status || 'published',
+        image: e.image_url,
+        points_reward: e.points_reward || 100,
+      }));
+    }
+
     return [];
   },
 
@@ -1179,7 +1379,11 @@ export const adminService = {
   async adjustUserPoints(userId: string, deltaPoints: number): Promise<boolean> {
     try {
       if (supabase) {
-        const { data: u } = await supabase.from('users').select('points').eq('id', userId).single();
+        const { data: u } = await supabase.from('users').select('points, role').eq('id', userId).single();
+        if (u?.role === 'admin') {
+          // El rol admin no posee gamificación ni acumula puntos
+          return true;
+        }
         const currentPoints = u?.points || 0;
         const newPoints = Math.max(0, currentPoints + deltaPoints);
         const { error } = await supabase
@@ -1197,6 +1401,29 @@ export const adminService = {
   // 9. Logros de Gamificación
   async getAchievements(): Promise<AchievementItem[]> {
     try {
+      const res = await fetch('/api/admin/achievements');
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json)) {
+          return json.map((a: any) => ({
+            id: a.id,
+            name: a.name,
+            slug: a.slug,
+            description: a.description || '',
+            achievement_type: a.achievement_type || 'ruta',
+            icon: a.icon || '🏆',
+            points_reward: a.points_reward || 100,
+            required_count: a.required_count || 1,
+            route_id: a.route_id || null,
+            route_name: a.route_name || null,
+          }));
+        }
+      }
+    } catch {
+      // Fallback a cliente Supabase
+    }
+
+    try {
       if (supabase) {
         const { data, error } = await supabase
           .from('achievements')
@@ -1213,6 +1440,8 @@ export const adminService = {
             icon: a.icon || '🏆',
             points_reward: a.points_reward || 100,
             required_count: a.required_count || 1,
+            route_id: a.route_id || null,
+            route_name: a.route_name || null,
           }));
         }
       }
@@ -1224,8 +1453,19 @@ export const adminService = {
 
   async createAchievement(data: Partial<AchievementItem>): Promise<boolean> {
     try {
+      const res = await fetch('/api/admin/achievements', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback a cliente Supabase
+    }
+
+    try {
       if (supabase) {
-        const { error } = await supabase.from('achievements').insert([{
+        const payload: Record<string, any> = {
           name: data.name,
           slug: data.slug || data.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
           description: data.description,
@@ -1233,11 +1473,61 @@ export const adminService = {
           icon: data.icon || '🏆',
           points_reward: data.points_reward || 100,
           required_count: data.required_count || 1,
-        }]);
+        };
+        if (data.route_id) payload.route_id = data.route_id;
+
+        const { error } = await supabase.from('achievements').insert([payload]);
         return !error;
       }
     } catch (err) {
       console.error('Error creating achievement in Supabase:', err);
+    }
+    return false;
+  },
+
+  async updateAchievement(id: string, updates: Partial<AchievementItem>): Promise<boolean> {
+    try {
+      const res = await fetch('/api/admin/achievements', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...updates }),
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback a cliente Supabase
+    }
+
+    try {
+      if (supabase) {
+        const { error } = await supabase
+          .from('achievements')
+          .update(updates)
+          .eq('id', id);
+        return !error;
+      }
+    } catch (err) {
+      console.error('Error updating achievement in Supabase:', err);
+    }
+    return false;
+  },
+
+  async deleteAchievement(id: string): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/admin/achievements?id=${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) return true;
+    } catch {
+      // Fallback a cliente Supabase
+    }
+
+    try {
+      if (supabase) {
+        const { error } = await supabase.from('achievements').delete().eq('id', id);
+        return !error;
+      }
+    } catch (err) {
+      console.error('Error deleting achievement from Supabase:', err);
     }
     return false;
   },
@@ -1301,7 +1591,16 @@ export const adminService = {
   async confirmEventAttendance(userId: string, eventId: string, pointsReward: number = 100): Promise<{ success: boolean; message: string; pointsEarned: number }> {
     try {
       if (supabase && userId) {
-        // Otorgar puntos al usuario
+        const { data: u } = await supabase.from('users').select('role').eq('id', userId).single();
+        if (u?.role === 'admin') {
+          return {
+            success: true,
+            message: 'Asistencia registrada con éxito (Rol Administrador: exento de gamificación).',
+            pointsEarned: 0,
+          };
+        }
+
+        // Otorgar puntos al usuario explorador
         await this.adjustUserPoints(userId, pointsReward);
         return {
           success: true,

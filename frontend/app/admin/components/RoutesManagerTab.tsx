@@ -32,8 +32,10 @@ interface RoutesManagerTabProps {
 export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, cities = [], onRefresh }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRoute, setEditingRoute] = useState<CreativeRouteItem | null>(null);
+  const [isSavingRoute, setIsSavingRoute] = useState(false);
   const [formData, setFormData] = useState<{
     name: string;
+    municipality_id?: string;
     municipality_name: string;
     theme: string;
     description: string;
@@ -46,6 +48,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
     is_visible_in_map: boolean;
   }>({
     name: '',
+    municipality_id: undefined,
     municipality_name: 'León',
     theme: 'Cultura & Tradición',
     description: '',
@@ -119,6 +122,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
     setEditingRoute(null);
     setFormData({
       name: '',
+      municipality_id: undefined,
       municipality_name: 'León',
       theme: 'Cultura & Tradición',
       description: '',
@@ -137,6 +141,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
     setEditingRoute(route);
     setFormData({
       name: route.name,
+      municipality_id: route.municipality_id,
       municipality_name: route.municipality_name || 'León',
       theme: route.theme || 'Cultura & Tradición',
       description: route.description || '',
@@ -153,16 +158,33 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
 
   const handleSaveRoute = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim()) return;
-
-    if (editingRoute) {
-      await adminService.updateRoute(editingRoute.id, formData);
-    } else {
-      await adminService.createRoute(formData);
+    if (!formData.name.trim()) {
+      alert('El nombre del circuito es obligatorio.');
+      return;
     }
 
-    setIsModalOpen(false);
-    onRefresh();
+    setIsSavingRoute(true);
+    try {
+      let success = false;
+      if (editingRoute) {
+        success = await adminService.updateRoute(editingRoute.id, formData);
+      } else {
+        success = await adminService.createRoute(formData);
+      }
+
+      if (success) {
+        setIsModalOpen(false);
+        setEditingRoute(null);
+        onRefresh();
+      } else {
+        alert('No se pudo guardar los cambios del circuito. Por favor verifica los datos e intenta de nuevo.');
+      }
+    } catch (err) {
+      console.error('Error saving route:', err);
+      alert('Ocurrió un error inesperado al guardar el circuito.');
+    } finally {
+      setIsSavingRoute(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -1076,9 +1098,19 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-md shadow-purple-600/30 transition-all cursor-pointer"
+                  disabled={isSavingRoute}
+                  className={`px-6 py-2.5 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs shadow-md shadow-purple-600/30 transition-all flex items-center gap-2 ${
+                    isSavingRoute ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
+                  }`}
                 >
-                  {editingRoute ? 'Actualizar Circuito' : 'Guardar Circuito'}
+                  {isSavingRoute && (
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  )}
+                  <span>
+                    {isSavingRoute
+                      ? (editingRoute ? 'Actualizando...' : 'Guardando...')
+                      : (editingRoute ? 'Actualizar Circuito' : 'Guardar Circuito')}
+                  </span>
                 </button>
               </div>
 

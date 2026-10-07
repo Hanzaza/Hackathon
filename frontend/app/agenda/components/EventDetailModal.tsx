@@ -15,6 +15,7 @@ import {
   Award,
   CalendarPlus,
   Compass,
+  ShieldCheck,
 } from 'lucide-react';
 import { AdminEventItem, adminService } from '@/services/adminService';
 import { useAuth } from '@/context/AuthContext';
@@ -31,6 +32,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
   onAttendanceConfirmed,
 }) => {
   const { user, isAuthenticated, openAuthModal } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -135,10 +137,12 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             <span className="px-3 py-1 rounded-full text-xs font-black bg-purple-700 text-white backdrop-blur-md shadow-sm">
               {event.category}
             </span>
-            <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 flex items-center gap-1 shadow-sm">
-              <Sparkles className="w-3 h-3 text-slate-950" />
-              <span>+{event.points_reward || 100} pts</span>
-            </span>
+            {!isAdmin && (
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-400 text-slate-950 flex items-center gap-1 shadow-sm">
+                <Sparkles className="w-3 h-3 text-slate-950" />
+                <span>+{event.points_reward || 100} pts</span>
+              </span>
+            )}
           </div>
 
           {/* Título sobre la Imagen */}
@@ -197,22 +201,38 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             </p>
           </div>
 
-          {/* Banner de Gamificación */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border border-purple-200 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
-                <Award className="w-5 h-5 text-amber-300" />
+          {/* Banner de Gamificación / Estado de Administrador */}
+          {!isAdmin ? (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border border-purple-200 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shrink-0 shadow-sm">
+                  <Award className="w-5 h-5 text-amber-300" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900">
+                    Recompensa para Exploradores
+                  </h4>
+                  <p className="text-[11px] text-slate-600">
+                    Confirma tu asistencia y suma <strong>+{event.points_reward || 100} puntos</strong> a tu perfil para desbloquear insignias y reconocimientos oficiales.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-2xl bg-slate-100 border border-slate-200 flex items-center gap-3 text-slate-700">
+              <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shrink-0">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-black text-slate-900">
-                  Recompensa para Exploradores
+                  Modo Administrador
                 </h4>
                 <p className="text-[11px] text-slate-600">
-                  Confirma tu asistencia y suma <strong>+{event.points_reward || 100} puntos</strong> a tu perfil para desbloquear insignias y reconocimientos oficiales.
+                  Registro de asistencia oficial. Tu rol de administrador está exento de puntos y medallas.
                 </p>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Acciones de Calendario y Compartir */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -270,12 +290,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
             {confirmed ? (
               <>
                 <Check className="w-4 h-4" />
-                <span>¡Asistencia Confirmada (+{event.points_reward || 100} pts)!</span>
+                <span>{isAdmin ? '¡Asistencia Registrada!' : `¡Asistencia Confirmada (+${event.points_reward || 100} pts)!`}</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4 text-amber-300" />
-                <span>{isSubmitting ? 'Registrando...' : `Confirmar Asistencia (+${event.points_reward || 100} pts)`}</span>
+                <span>
+                  {isSubmitting
+                    ? 'Registrando...'
+                    : isAdmin
+                    ? 'Registrar Asistencia'
+                    : `Confirmar Asistencia (+${event.points_reward || 100} pts)`}
+                </span>
               </>
             )}
           </button>

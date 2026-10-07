@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { X, MapPin, Compass, Clock, Construction, ChevronLeft, ChevronRight, Lock, MapPinOff } from 'lucide-react';
 
@@ -21,6 +21,7 @@ export interface MunicipioSelection {
   slug?: string;
   isEnabled?: boolean;
   circuits: CircuitoInfo[];
+  pointsCount?: number;
 }
 
 interface CircuitoSelectorModalProps {
@@ -37,6 +38,28 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
   defaultSlug = 'leon',
 }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [pointsCountByCity, setPointsCountByCity] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    fetch('/api/locations')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.features)) {
+          const counts: Record<string, number> = {};
+          data.features.forEach((f: any) => {
+            const p = f.properties;
+            const slug = (p?.city_slug || '').toLowerCase().trim();
+            const name = (p?.city_name || '').toLowerCase().trim();
+            const munId = (p?.municipality_id || '').toLowerCase().trim();
+            if (slug) counts[slug] = (counts[slug] || 0) + 1;
+            if (name) counts[name] = (counts[name] || 0) + 1;
+            if (munId) counts[munId] = (counts[munId] || 0) + 1;
+          });
+          setPointsCountByCity(counts);
+        }
+      })
+      .catch((err) => console.error('Error fetching locations count in modal:', err));
+  }, []);
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
@@ -50,12 +73,24 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
   if (!currentSelection) return null;
 
   const isEnabled = currentSelection.isEnabled !== false;
-  const targetSlug = currentSelection.slug || defaultSlug;
+  const targetSlug = (currentSelection.slug || defaultSlug || '').toLowerCase().trim();
+  const targetName = (currentSelection.name || '').toLowerCase().trim();
+  const targetId = (currentSelection.id || '').toLowerCase().trim();
+
+  const cityPointsCount =
+    currentSelection.pointsCount !== undefined
+      ? currentSelection.pointsCount
+      : pointsCountByCity[targetSlug] ??
+        pointsCountByCity[targetName] ??
+        pointsCountByCity[targetId] ??
+        0;
+
   const hasCircuits = currentSelection.circuits && currentSelection.circuits.length > 0;
+  const hasPoints = cityPointsCount > 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl rounded-[2.5rem] bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_25px_70px_rgba(0,0,0,0.2)] p-5 sm:p-7 flex flex-col items-center overflow-hidden">
+      <div className="relative w-full max-w-lg sm:max-w-xl md:max-w-2xl max-h-[92dvh] overflow-y-auto rounded-[2rem] sm:rounded-[2.5rem] bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_25px_70px_rgba(0,0,0,0.2)] p-4 sm:p-7 flex flex-col items-center custom-scrollbar">
         
         {/* Botón cerrar modal */}
         <button
@@ -78,7 +113,9 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
               ? 'Municipio No Habilitado' 
               : hasCircuits 
                 ? 'Elige tu Recorrido Cultural' 
-                : 'Rutas en Construcción'}
+                : hasPoints
+                  ? 'Puntos Culturales Disponibles'
+                  : 'Ciudad en Construcción'}
           </h3>
           <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
             {!isEnabled
@@ -87,7 +124,9 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
                 ? (currentSelection.circuits.length === 1 
                     ? 'Explora el circuito cultural habilitado para esta ciudad' 
                     : 'Desliza hacia los lados para explorar las rutas disponibles')
-                : `Descubre los atractivos culturales e hitos de ${currentSelection.name}`}
+                : hasPoints
+                  ? `Conoce los ${cityPointsCount} puntos de interés registrados en ${currentSelection.name}`
+                  : `Próximamente disponible para explorar`}
           </p>
         </div>
 
@@ -119,8 +158,8 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
               Volver al Mapa Departamental
             </button>
           </div>
-        ) : !hasCircuits ? (
-          /* ================= ESTADO 1: NO HAY CIRCUITOS / EN CONSTRUCCIÓN ================= */
+        ) : !hasCircuits && !hasPoints ? (
+          /* ================= ESTADO 1: CIUDAD EN CONSTRUCCIÓN (SIN RUTAS NI PUNTOS) ================= */
           <div className="w-full my-2 p-6 sm:p-8 rounded-[2rem] bg-gradient-to-br from-[#061410] via-[#0A261E] to-[#0F3A2E] text-white border border-[#00A8A7]/30 shadow-xl flex flex-col items-center text-center relative overflow-hidden">
             {/* Fondo decorativo con glow */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-[#00A8A7]/20 rounded-full blur-3xl pointer-events-none" />
@@ -129,7 +168,7 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
             {/* Badge de estado en construcción */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1A1105]/95 border border-[#F4A43B]/80 text-[#F4D44D] text-xs font-extrabold shadow-lg backdrop-blur-md mb-4">
               <Construction className="w-4 h-4 text-[#F4A43B] shrink-0 animate-pulse" />
-              <span>Próximamente Disponible</span>
+              <span>Aún en Construcción</span>
             </div>
 
             {/* Ícono central */}
@@ -138,15 +177,53 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
             </div>
 
             <h4 className="text-xl sm:text-2xl font-black text-white leading-tight mb-2">
+              Ciudad en Construcción
+            </h4>
+
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md mb-3">
+              Por el momento no hay rutas creativas ni puntos registrados para explorar en <strong className="text-white">{currentSelection.name}</strong>.
+            </p>
+
+            <p className="text-xs sm:text-sm text-amber-200/90 font-medium max-w-md mb-6">
+              Aún está en construcción y pronto estarán disponibles todos sus recorridos culturales y puntos de interés.
+            </p>
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="py-3 px-6 rounded-2xl bg-gradient-to-r from-[#00A8A7] to-[#007F7E] hover:from-[#00BFBD] hover:to-[#009694] text-white font-bold text-xs sm:text-sm transition-all cursor-pointer shadow-md shadow-[#00A8A7]/30 active:scale-95"
+            >
+              Volver al Mapa
+            </button>
+          </div>
+        ) : !hasCircuits && hasPoints ? (
+          /* ================= ESTADO 2: SIN RUTAS PERO CON PUNTOS REGISTRADOS ================= */
+          <div className="w-full my-2 p-6 sm:p-8 rounded-[2rem] bg-gradient-to-br from-[#061410] via-[#0A261E] to-[#0F3A2E] text-white border border-[#00A8A7]/30 shadow-xl flex flex-col items-center text-center relative overflow-hidden">
+            {/* Fondo decorativo con glow */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-[#00A8A7]/20 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#F4A43B]/15 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Badge de puntos disponibles */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0A261E]/90 border border-[#00A8A7]/60 text-[#A7D7A8] text-xs font-extrabold shadow-lg backdrop-blur-md mb-4">
+              <Compass className="w-4 h-4 text-[#00A8A7] shrink-0" />
+              <span>{cityPointsCount} {cityPointsCount === 1 ? 'Punto Registrado' : 'Puntos Registrados'}</span>
+            </div>
+
+            {/* Ícono central */}
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-[#00A8A7]/20 border border-[#00A8A7]/40 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(0,168,167,0.3)]">
+              <MapPin className="w-8 h-8 sm:w-10 sm:h-10 text-[#F4A43B]" />
+            </div>
+
+            <h4 className="text-xl sm:text-2xl font-black text-white leading-tight mb-2">
               Circuitos en Proceso de Diseño
             </h4>
 
             <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md mb-3">
-              Por el momento no hay rutas creativas registradas para <strong className="text-white">{currentSelection.name}</strong>. Nuestro equipo territorial y cultural está diseñando los recorridos temáticos que estarán listos muy pronto.
+              Por el momento no hay rutas temáticas completas para <strong className="text-white">{currentSelection.name}</strong>, pero nuestro equipo cultural ya registró lugares para visitar.
             </p>
 
             <p className="text-xs text-amber-200/90 font-medium max-w-md mb-6">
-              ¡Pero ya podés ingresar a conocer los demás puntos de interés, monumentos, talleres artesanales y gastronomía de esta ciudad!
+              ¡Ya podés ingresar a conocer los atractivos, talleres artesanales y gastronomía de esta ciudad!
             </p>
 
             {/* Botón de Acción Principal para Conocer los Puntos de la Ciudad */}
@@ -159,7 +236,7 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
               className="w-full max-w-sm py-3.5 px-6 rounded-2xl bg-gradient-to-r from-[#00A8A7] via-[#009694] to-[#007F7E] hover:from-[#00BFBD] hover:to-[#00A8A7] text-white font-black text-xs sm:text-sm shadow-[0_10px_30px_rgba(0,168,167,0.45)] active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer border border-white/25"
             >
               <MapPin className="w-4 h-4 text-[#F4D44D] shrink-0" />
-              <span>Conocer los demás puntos de {currentSelection.name} →</span>
+              <span>Conocer los puntos de {currentSelection.name} ({cityPointsCount}) →</span>
             </button>
           </div>
         ) : (
@@ -184,7 +261,7 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
                 {/* Imagen Vertical de Fondo Completo (Full-Bleed) */}
                 <div className="absolute inset-0 z-0">
                   <Image
-                    src={circuito.image || '/mapa_circuitos_creativos_cards/leon/circuito_dariano.png'}
+                    src={circuito.image || '/banners/circuitos/circuitos-banner.jpg'}
                     alt={circuito.name}
                     fill
                     sizes="(max-width: 640px) 280px, 340px"
@@ -247,7 +324,7 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
                         <MapPin className="w-4 h-4 shrink-0 text-[#F4D44D]" />
                         <span>Explorar en el Mapa →</span>
                       </button>
-                    ) : (
+                    ) : hasPoints ? (
                       <button
                         type="button"
                         onClick={() => {
@@ -258,6 +335,15 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
                       >
                         <MapPin className="w-3.5 h-3.5 text-[#F4A43B] shrink-0" />
                         <span>Conocer los puntos de la ciudad →</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="w-full py-3.5 px-4 rounded-2xl bg-[#0A261E]/95 hover:bg-[#0F3A2E] border border-slate-700 text-slate-300 font-extrabold text-xs flex items-center justify-center gap-2 backdrop-blur-md transition-all cursor-pointer shadow-md"
+                      >
+                        <Construction className="w-3.5 h-3.5 text-[#F4A43B] shrink-0" />
+                        <span>Próximamente disponible</span>
                       </button>
                     )}
                   </div>
@@ -299,8 +385,8 @@ export const CircuitoSelectorModal: React.FC<CircuitoSelectorModalProps> = ({
             </div>
           )}
 
-          {/* Solo mostrar la opción de explorar otros puntos si el territorio está HABILITADO */}
-          {isEnabled && (
+          {/* Solo mostrar la opción de explorar otros puntos si el territorio está HABILITADO y TIENE PUNTOS REGISTRADOS */}
+          {isEnabled && hasPoints && (
             <button
               type="button"
               onClick={() => {

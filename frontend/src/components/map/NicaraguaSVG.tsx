@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { Sparkles, MapPin, Compass, Layers, CheckCircle2, ChevronRight } from "lucide-react";
+import { adminService, CreativeRouteItem } from "@/services/adminService";
 
 interface NicaraguaSVGProps {
   onSelect?: (idDepartamento: string) => void;
@@ -36,7 +37,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Capital de la Poesía & Patrimonio UNESCO",
     specialty: "Literatura & Arte Mural",
     hasCircuit: true,
-    circuitsCount: 2,
+    circuitsCount: 1,
     coords: [224, 508],
     badgeColor: "from-purple-600 to-indigo-600",
     logo: "/logos/logo4.png",
@@ -50,7 +51,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Municipio Azul y Cuna del Quesillo",
     specialty: "Gastronomía Tradicional",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [256, 542],
     badgeColor: "from-blue-600 to-cyan-600",
     logo: "/logos/logo10.png",
@@ -61,10 +62,10 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     slug: "managua",
     deptId: "NIMN",
     icon: "🏙️",
-    tagline: "Capital Multicultural y de las Artes",
-    specialty: "Arte Contemporáneo & Patrimonio",
+    tagline: "Capital Creativa y de las Artes Lacustres",
+    specialty: "Circuito Creativo Xolotlán & Biodiversidad",
     hasCircuit: true,
-    circuitsCount: 2,
+    circuitsCount: 1,
     coords: [298, 574],
     badgeColor: "from-purple-600 to-pink-600",
     logo: "/logos/logo8.png",
@@ -77,8 +78,8 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     icon: "🎭",
     tagline: "Capital del Folclore Nacional",
     specialty: "Danza, Teatro & Artesanías",
-    hasCircuit: true,
-    circuitsCount: 1,
+    hasCircuit: false,
+    circuitsCount: 0,
     coords: [332, 608],
     badgeColor: "from-amber-600 to-orange-600",
     logo: "/logos/logo2.png",
@@ -106,7 +107,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "La Gran Sultana & Arquitectura Colonial",
     specialty: "Diseño Colonial & Poesía",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [368, 642],
     badgeColor: "from-rose-600 to-red-600",
     logo: "/logos/logo5.png",
@@ -120,7 +121,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Diamante de las Segovias & Muralismo",
     specialty: "Murales & Música Segoviana",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [288, 396],
     badgeColor: "from-emerald-600 to-teal-600",
     logo: "/logos/logo6.png",
@@ -134,7 +135,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Perla del Septentrión & Caficultura",
     specialty: "Café de Altura & Memoria Indígena",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [438, 442],
     badgeColor: "from-amber-700 to-yellow-800",
     logo: "/logos/logo9.png",
@@ -148,7 +149,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Corazón Ganadero & Arqueología",
     specialty: "Cultura Taurina & Arqueología",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [496, 606],
     badgeColor: "from-indigo-600 to-blue-700",
     logo: "/logos/logo7.png",
@@ -162,7 +163,7 @@ export const CREATIVE_CITIES: CreativeCityPin[] = [
     tagline: "Cuna de la Diversidad & Maypole",
     specialty: "Multiculturalismo & Danza Caribeña",
     hasCircuit: false,
-    circuitsCount: 1,
+    circuitsCount: 0,
     coords: [704, 608],
     badgeColor: "from-cyan-600 to-blue-600",
     logo: "/logos/logo1.png",
@@ -197,7 +198,7 @@ const DEPARTAMENTOS: DepartamentoData[] = [
     isCreative: true,
     hasCircuit: true,
     slug: "managua",
-    subtitle: "Circuito Histórico y de las Lagunas",
+    subtitle: "Ruta Natural del Circuito Creativo Xolotlán",
     center: [302, 582],
     d: "M231.5 611.9l4.6-3.3 0.6-0.7 0.8-1.4 0.1-0.5 0-0.5-0.2-0.6-0.2-0.4-0.9-1.1-1.2-2.6-0.3-1-0.1-0.5 0-0.6 0.2-0.4 0.3-0.4 0.5-0.3 0.6-0.3 1.3-0.3 2.8-1 0.5-0.1 0.5-0.1 0.4 0 0.4 0.1 2.6 1 2.6 0.5 0.5 0 1.1-0.5 6.9-5.3 3.5-4.2 2.4-5.2-0.3-3.3-1.2-1.4-0.9-0.6-0.7-0.6-0.5-1.1-0.3-1.3 0-13.3 0.3-2.9 2.6-3.6 12.2-12.4 17.9-17.7 0.7-0.9 0.3-0.5-0.3-0.7-0.1-0.7 0-1.1-0.1-0.5-0.3-0.4-1-0.9-0.1-0.1-1.7-2.5-0.2-0.5-0.4-0.9-0.1-0.5 0.2-0.9 1.1-3.3 0.3-1.2 0-0.9-0.1-0.5 0-0.7 0.3-1.9 0-0.7 0.2-0.9 0.5-1.1 1.5-2.1 2.7-2.5 7.2-4.5 31.1 6.9 3.3 1.1 2.7 2.5 2.8 3.2 2 1.6 1.8 1.2 11.3 4.4 3 0.6-1.1 3.3 0.7 6.3 0.9 2.7 1.2 2.1 2.4 3.1 4.6 5.1 0.6 1 0.2 1.2-0.3 3.7-0.1 3.1 0.3 1.4 0.6 0.9 16.1 15.2 0.3 0.7-0.3 1.1-3 4.6-1 5.2-3.2-1.4-1.4 0-1.5 0.5-5.8 4.2-15.4 7-3.2-0.9-1-0.5-0.4-0.2-0.5 0-3.2 0.4-6.2 2.6-5.4 0.9-3.3 2.5-11.1 11 0.6 2.4 2.6 2.8 1 1.4 0.5 1.1-0.2 4.2-2.1 3.3-1 1.2-1.1 1.1-1.5 0.8-1.7 0.4-1.4 0.2-2.2-0.6-1.3-0.6-5-3.9-4.3 5.4-2.2 3.3-11.5 9.4-3.5 5.8-1.4 1.3-4.9 3.7-1.9 2.8-2.3 2.2-0.7 0.4-1 0.3-2.1 0.6-1.1 0.1-1.5 0.1-1.8 1.1-4.6 4.5-2.5-3.1-4.9-11.1-2-1.6-1.8-1-4.8-4.9-2.9-4.1-3.1-5.9-0.6-2.8-0.9-2.6-2.1-2.2-4.5-3.5-0.8-1z",
   },
@@ -355,7 +356,63 @@ export default function NicaraguaSVG({
     }
   };
 
-  const activeCities = CREATIVE_CITIES.filter((c) =>
+  const [dynamicRoutes, setDynamicRoutes] = useState<CreativeRouteItem[]>([]);
+
+  useEffect(() => {
+    adminService.getRoutes()
+      .then((routes) => {
+        if (routes && Array.isArray(routes)) {
+          setDynamicRoutes(routes);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  const cities = useMemo(() => {
+    return CREATIVE_CITIES.map((city) => {
+      if (!dynamicRoutes || dynamicRoutes.length === 0) {
+        return city;
+      }
+      const cityRoutes = dynamicRoutes.filter((r) => {
+        const rMun = (r.municipality_name || '').toLowerCase().trim();
+        const cName = city.name.toLowerCase().trim();
+        const cSlug = city.slug.toLowerCase().trim();
+        const isManaguaMatch = cSlug === 'managua' && (
+          r.slug?.includes('xolotlan') ||
+          r.name?.toLowerCase().includes('xolotl') ||
+          r.municipality_id === '08316bb4-2d3c-4fed-b1ae-e78ff49ed1b3'
+        );
+        const isSjoMatch = cSlug === 'san-juan-de-oriente' && (
+          r.slug?.includes('tierra-viva') ||
+          r.name?.toLowerCase().includes('tierra viva') ||
+          r.municipality_id === 'mun-03'
+        );
+        const isLeonMatch = cSlug === 'leon' && (
+          r.slug?.includes('dariano') ||
+          r.name?.toLowerCase().includes('dariano') ||
+          r.municipality_id === 'mun-01'
+        );
+        return (
+          isManaguaMatch ||
+          isSjoMatch ||
+          isLeonMatch ||
+          rMun === cName ||
+          rMun === cSlug ||
+          rMun.includes(cName) ||
+          cName.includes(rMun) ||
+          (r.slug && r.slug.toLowerCase().includes(cSlug)) ||
+          (r.municipality_id && (r.municipality_id === city.id || r.municipality_id === city.slug))
+        );
+      });
+      return {
+        ...city,
+        hasCircuit: cityRoutes.length > 0,
+        circuitsCount: cityRoutes.length,
+      };
+    });
+  }, [dynamicRoutes]);
+
+  const activeCities = cities.filter((c) =>
     filterMode === "circuits" ? c.hasCircuit : true
   );
 
@@ -386,7 +443,7 @@ export default function NicaraguaSVG({
                   : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
               }`}
             >
-              Todas las Ciudades ({CREATIVE_CITIES.length})
+              Todas las Ciudades ({cities.length})
             </button>
             <button
               onClick={() => setFilterMode("circuits")}
@@ -397,7 +454,7 @@ export default function NicaraguaSVG({
               }`}
             >
               <Sparkles className="w-3 h-3 text-amber-400" />
-              <span>Circuitos Activos ({CREATIVE_CITIES.filter(c => c.hasCircuit).length})</span>
+              <span>Circuitos Activos ({cities.filter(c => c.hasCircuit).length})</span>
             </button>
           </div>
 

@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import NicaraguaSVG from './NicaraguaSVG';
+import NicaraguaSVG, { CREATIVE_CITIES } from './NicaraguaSVG';
 import LeonDepartamentoSVG from './LeonDepartamentoSVG';
 import ManaguaDepartamentoSVG from './ManaguaDepartamentoSVG';
 import MapaInmersivo from './MapaInmersivo';
+import { CircuitoSelectorModal, MunicipioSelection, CircuitoInfo } from './CircuitoSelectorModal';
+import { adminService, CreativeRouteItem, MunicipalityItem } from '@/services/adminService';
 import { useUI } from '@/context/UIContext';
 import { Sparkles } from 'lucide-react';
 
@@ -38,26 +40,101 @@ export default function MapaContenedor({
   // Circuito creativo específico seleccionado (ej. 'dariano', 'managua-patrimonial')
   const [circuitoSeleccionado, setCircuitoSeleccionado] = useState<string | undefined>(undefined);
 
+  // Modal para selección de circuitos en ciudades sin SVG departamental
+  const [modalCitySelection, setModalCitySelection] = useState<MunicipioSelection | null>(null);
+  const [dynamicRoutes, setDynamicRoutes] = useState<CreativeRouteItem[]>([]);
+  const [dbCities, setDbCities] = useState<MunicipalityItem[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      adminService.getRoutes(),
+      adminService.getCities(),
+    ]).then(([routes, cities]) => {
+      if (routes && routes.length > 0) setDynamicRoutes(routes);
+      if (cities && cities.length > 0) setDbCities(cities);
+    }).catch(console.error);
+  }, []);
+
   // Clic en el Mapa Nacional
   const manejarSeleccionNacional = (idOIdentificador: string) => {
     setCircuitoSeleccionado(undefined);
 
+    // 1. Departamentos con mapa interactivo propio
     if (idOIdentificador === 'NILE' || idOIdentificador === 'leon' || idOIdentificador === 'nagarote') {
       setDepartamentoActivo('NILE');
       setSeleccion(idOIdentificador === 'nagarote' ? 'nagarote' : 'leon');
       setNivelActual('departamental');
-    } else if (idOIdentificador === 'NIMN' || idOIdentificador === 'managua') {
+      return;
+    } 
+    
+    if (idOIdentificador === 'NIMN' || idOIdentificador === 'managua') {
       setDepartamentoActivo('NIMN');
       setSeleccion('managua');
       setNivelActual('departamental');
-    } else {
-      setDepartamentoActivo(idOIdentificador);
-      setSeleccion(idOIdentificador);
-      setNivelActual('inmersivo');
+      return;
     }
+
+    // 2. Otras ciudades creativas y departamentos (San Juan de Oriente, Masaya, Granada, Estelí, etc.)
+    const deptToCityMap: Record<string, string> = {
+      NIMS: 'san-juan-de-oriente',
+      NIGR: 'granada',
+      NIES: 'esteli',
+      NIMT: 'matagalpa',
+      NICO: 'juigalpa',
+      NIAS: 'bluefields',
+      NIRI: 'rivas',
+    };
+
+    const targetSlug = deptToCityMap[idOIdentificador] || idOIdentificador;
+    const cityPin = CREATIVE_CITIES.find(c => c.slug === targetSlug || c.id === targetSlug);
+    const dbCity = dbCities.find(c => c.slug === targetSlug || c.name?.toLowerCase() === targetSlug.toLowerCase());
+    const cityName = cityPin?.name || dbCity?.name || (targetSlug.charAt(0).toUpperCase() + targetSlug.slice(1).replace(/-/g, ' '));
+
+    // Filtrar rutas de esta ciudad
+    const cityRoutes = dynamicRoutes.filter(r => {
+      const rMun = (r.municipality_name || '').toLowerCase().trim();
+      const sSlug = targetSlug.toLowerCase().trim();
+      const sName = cityName.toLowerCase().trim();
+      const isSjoMatch = sSlug === 'san-juan-de-oriente' && (
+        r.slug?.includes('tierra-viva') ||
+        r.name?.toLowerCase().includes('tierra viva') ||
+        r.municipality_id === 'mun-03'
+      );
+      return (
+        isSjoMatch ||
+        rMun === sName ||
+        rMun === sSlug ||
+        (rMun && sName && (rMun.includes(sName) || sName.includes(rMun))) ||
+        (r.slug && r.slug.toLowerCase().includes(sSlug)) ||
+        (r.municipality_id && dbCity?.id && r.municipality_id === dbCity.id)
+      );
+    });
+
+    const formattedCircuits: CircuitoInfo[] = cityRoutes.map(r => ({
+      id: r.id || r.slug,
+      name: r.name,
+      subtitle: r.theme || 'Circuito Cultural & Creativo',
+      description: r.description || '',
+      image: r.cover_image || '/banners/circuitos/circuitos-banner.jpg',
+      isAvailable: r.status === 'published',
+      citySlug: targetSlug,
+      badge: r.status === 'published' ? 'Circuito Habilitado' : 'En Construcción',
+    }));
+
+    // Determinar puntos conocidos
+    const pointsCount = targetSlug === 'san-juan-de-oriente' ? 8 : (targetSlug === 'managua' ? 6 : (targetSlug === 'leon' ? 10 : 0));
+
+    setModalCitySelection({
+      id: targetSlug,
+      name: cityName,
+      slug: targetSlug,
+      isEnabled: dbCity ? dbCity.status === 'active' : true,
+      circuits: formattedCircuits,
+      pointsCount,
+    });
   };
 
-  // Clic en una ciudad creativa o circuito desde el SVG Departamental
+  // Clic en una ciudad creativa o circuito desde el selector
   const manejarSeleccionCiudad = (citySlug: string, circuitId?: string) => {
     setSeleccion(citySlug);
     setCircuitoSeleccionado(circuitId);
@@ -148,6 +225,17 @@ export default function MapaContenedor({
           />
         </div>
       )}
+
+      {/* ================= MODAL / SELECTOR DE CIRCUITOS (Nivel Nacional) ================= */}
+      <CircuitoSelectorModal
+        currentSelection={modalCitySelection}
+        onClose={() => setModalCitySelection(null)}
+        onSelectCircuit={(citySlug, circuitId) => {
+          setModalCitySelection(null);
+          manejarSeleccionCiudad(citySlug, circuitId);
+        }}
+        defaultSlug="san-juan-de-oriente"
+      />
 
     </div>
   );

@@ -217,25 +217,51 @@ export default function AuthModal() {
                 {user.email} • {user.city || 'Nicaragua'}
               </p>
 
-              <div className="grid grid-cols-2 gap-3 w-full mb-6">
-                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#007F7E]">Puntos Roots</span>
-                  <span className="text-2xl font-black text-[#0F3A2E]">{user.points} pts</span>
+              {user.role === 'admin' ? (
+                <div className="w-full mb-6 p-4 rounded-2xl bg-purple-50 border border-purple-200/80 text-center">
+                  <div className="flex items-center justify-center gap-1.5 text-purple-700 font-extrabold text-[10px] uppercase tracking-wider mb-1">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Rol del Sistema</span>
+                  </div>
+                  <span className="text-base font-black text-purple-950 block">
+                    Administrador General
+                  </span>
+                  <p className="text-[11px] text-purple-800/80 mt-1">
+                    Gestión total de delegados, departamentos, circuitos y moderación.
+                  </p>
                 </div>
-                <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#F4A43B]">Nivel de Ruta</span>
-                  <span className="text-2xl font-black text-slate-900">Nivel {user.level}</span>
+              ) : (
+                <div className="grid grid-cols-2 gap-3 w-full mb-6">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#007F7E]">Puntos Roots</span>
+                    <span className="text-2xl font-black text-[#0F3A2E]">{user.points} pts</span>
+                  </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#F4A43B]">Nivel de Ruta</span>
+                    <span className="text-2xl font-black text-slate-900">Nivel {user.level}</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <Link
-                href="/perfil"
-                onClick={closeAuthModal}
-                className="w-full py-3.5 px-4 mb-2.5 rounded-2xl bg-[#0F3A2E] hover:bg-[#0A261E] text-white font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#0F3A2E]/30"
-              >
-                <Compass className="w-4 h-4 text-[#00A8A7]" />
-                <span>Abrir Mi Pasaporte Cultural →</span>
-              </Link>
+              {user.role === 'admin' ? (
+                <Link
+                  href="/admin"
+                  onClick={closeAuthModal}
+                  className="w-full py-3.5 px-4 mb-2.5 rounded-2xl bg-gradient-to-r from-purple-800 to-indigo-700 hover:from-purple-900 hover:to-indigo-800 text-white font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-purple-900/30"
+                >
+                  <ShieldCheck className="w-4 h-4 text-purple-200" />
+                  <span>Ir al Panel de Administración →</span>
+                </Link>
+              ) : (
+                <Link
+                  href="/perfil"
+                  onClick={closeAuthModal}
+                  className="w-full py-3.5 px-4 mb-2.5 rounded-2xl bg-[#0F3A2E] hover:bg-[#0A261E] text-white font-black text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#0F3A2E]/30"
+                >
+                  <Compass className="w-4 h-4 text-[#00A8A7]" />
+                  <span>Abrir Mi Pasaporte Cultural →</span>
+                </Link>
+              )}
 
               <button
                 type="button"

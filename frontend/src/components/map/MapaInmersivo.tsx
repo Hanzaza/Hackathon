@@ -26,7 +26,16 @@ import {
   ZoomIn,
   X,
   Globe,
+  Award,
+  Upload,
+  Check,
+  PartyPopper,
+  Sparkle,
+  Construction,
 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { routeProgressService, RouteProgressData, PlaceProgress } from '@/services/routeProgressService';
+import { AchievementItem } from '@/services/adminService';
 
 export interface PointOfInterest {
   id: string;
@@ -235,10 +244,10 @@ const MUNICIPIO_COORDINATES: Record<string, { lng: number; lat: number; zoom: nu
 
 export default function MapaInmersivo({ 
   municipioId = 'leon', 
-  circuitoId = 'dariano',
-  lng = -86.8782, 
-  lat = 12.4350,
-  zoom = 16.2, 
+  circuitoId,
+  lng, 
+  lat,
+  zoom, 
   onBack 
 }: MapaInmersivoProps) {
   
@@ -256,13 +265,24 @@ export default function MapaInmersivo({
   const [mapBearing, setMapBearing] = useState<number>(-15);
   const [livePoints, setLivePoints] = useState<PointOfInterest[]>([]);
 
-  // Estados de Reseñas y Puntuación interactiva
+  const { user } = useAuth();
+  const userId = user?.id || 'anonymous_explorer';
+  const userRole = user?.role || 'user';
+
+  // Estados de Reseñas y Puntuación interactiva (Paso 1)
   const [newReviewRating, setNewReviewRating] = useState<number>(5);
   const [hoverReviewRating, setHoverReviewRating] = useState<number | null>(null);
   const [newReviewComment, setNewReviewComment] = useState<string>('');
   const [newReviewAuthor, setNewReviewAuthor] = useState<string>('');
   const [reviewSubmitted, setReviewSubmitted] = useState<boolean>(false);
   const [selectedPhotoPreview, setSelectedPhotoPreview] = useState<string | null>(null);
+
+  // Estados de Colaboración de Fotos (Paso 2) y Progreso de Ruta
+  const [newPhotoUrl, setNewPhotoUrl] = useState<string>('');
+  const [photoUploadSuccess, setPhotoUploadSuccess] = useState<boolean>(false);
+  const [showPhotoForm, setShowPhotoForm] = useState<boolean>(false);
+  const [progressRefreshTrigger, setProgressRefreshTrigger] = useState<number>(0);
+  const [unlockedAchievementModal, setUnlockedAchievementModal] = useState<AchievementItem | null>(null);
 
   // Almacenamiento local de reseñas con persistencia
   const [placeReviews, setPlaceReviews] = useState<Record<string, Array<{ id: string; name: string; rating: number; comment: string; date: string }>>>(() => {
@@ -340,10 +360,27 @@ export default function MapaInmersivo({
     const normMunicipio = (municipioId || '').toLowerCase().trim();
     const normCircuito = (circuitoId || '').toLowerCase().trim();
 
-    // 1. SI SE SELECCIONÓ UN CIRCUITO CREATIVO ESPECÍFICO (ej. 'dariano', 'sutiabena', 'managua-patrimonial')
+    // 1. Filtrar puntos en vivo que pertenezcan estrictamente al municipio actual
+    const cityMatchingLive = (normMunicipio && normMunicipio !== 'all' && normMunicipio !== 'todos')
+      ? livePoints.filter((p) => {
+          const matchCitySlug = (p.citySlug && p.citySlug.toLowerCase() === normMunicipio) || 
+                                (p.citySlug && p.citySlug.toLowerCase() === cityData.slug.toLowerCase());
+          const matchCityName = p.cityName && (
+            p.cityName.toLowerCase().includes(normMunicipio) || 
+            p.cityName.toLowerCase().includes(cityData.name.toLowerCase()) ||
+            normMunicipio.includes(p.cityName.toLowerCase())
+          );
+          const matchMunId = p.municipalityId && (
+            p.municipalityId.toLowerCase() === normMunicipio ||
+            p.municipalityId.toLowerCase() === cityData.slug.toLowerCase()
+          );
+          return matchCitySlug || matchCityName || matchMunId;
+        })
+      : livePoints;
+
+    // 2. SI SE SELECCIONÓ UN CIRCUITO CREATIVO ESPECÍFICO (ej. 'ruta-natural-circuito-creativo-xolotlan', 'dariano')
     if (normCircuito && normCircuito !== 'all' && normCircuito !== 'todos') {
-      // Filtrar puntos en vivo que pertenezcan estrictamente a esta ruta y sean paradas primarias
-      const routeMatchingLive = livePoints.filter((p) => {
+      const routeMatchingLive = cityMatchingLive.filter((p) => {
         const matchRouteId = p.routeId && p.routeId.toLowerCase() === normCircuito;
         const matchRouteSlug = p.routeSlug && p.routeSlug.toLowerCase() === normCircuito;
         const matchRouteName = p.routeName && (
@@ -359,29 +396,16 @@ export default function MapaInmersivo({
       }
     }
 
-    // 2. SI EL USUARIO QUIERE VER TODOS LOS PUNTOS DE LA CIUDAD (sin circuito específico)
-    if (normMunicipio && normMunicipio !== 'all' && normMunicipio !== 'todos') {
-      const cityMatchingLive = livePoints.filter((p) => {
-        const matchCitySlug = (p.citySlug && p.citySlug.toLowerCase() === normMunicipio) || 
-                              (p.citySlug && p.citySlug.toLowerCase() === cityData.slug.toLowerCase());
-        const matchCityName = p.cityName && (
-          p.cityName.toLowerCase().includes(normMunicipio) || 
-          p.cityName.toLowerCase().includes(cityData.name.toLowerCase()) ||
-          normMunicipio.includes(p.cityName.toLowerCase())
-        );
-        const matchMunId = p.municipalityId && (
-          p.municipalityId.toLowerCase() === normMunicipio ||
-          p.municipalityId.toLowerCase() === cityData.slug.toLowerCase()
-        );
-        return matchCitySlug || matchCityName || matchMunId;
-      });
-
-      if (cityMatchingLive.length > 0) {
-        return cityMatchingLive;
-      }
+    // 3. SI EL USUARIO QUIERE VER TODOS LOS PUNTOS DE LA CIUDAD (o clic en 'Conocer los demás puntos')
+    if (cityMatchingLive.length > 0) {
+      return cityMatchingLive;
     }
 
-    // 3. Devolver los puntos reales cargados desde la base de datos (sin ningún punto estático de ejemplo)
+    // 4. Si se especificó una ciudad concreta pero aún no tiene puntos, devolver vacío para evitar mezclar ciudades
+    if (normMunicipio && normMunicipio !== 'all' && normMunicipio !== 'todos') {
+      return [];
+    }
+
     return livePoints;
   }, [livePoints, cityData, circuitoId, municipioId]);
 
@@ -419,15 +443,55 @@ export default function MapaInmersivo({
     return list;
   }, [selectedPoint]);
 
-  // Manejar envío de nueva reseña
+  // Identificador y Nombre de la Ruta Creativa Activa
+  const activeRouteId = useMemo(() => {
+    if (selectedPoint?.routeId) return selectedPoint.routeId;
+    if (circuitoId && circuitoId !== 'todos' && circuitoId !== 'all') {
+      if (circuitoId === 'dariano') return '383a8707-898a-4ffe-9df9-04c3e3bc1184';
+      return circuitoId;
+    }
+    return rawPoints[0]?.routeId || 'circuito-activo';
+  }, [selectedPoint, circuitoId, rawPoints]);
+
+  const activeRouteName = useMemo(() => {
+    if (selectedPoint?.routeName) return selectedPoint.routeName;
+    if (rawPoints[0]?.routeName) return rawPoints[0].routeName;
+    if (circuitoId === 'dariano') return 'Circuito Creativo Rubén Darío';
+    if (circuitoId === 'sutiabena') return 'Ruta Sutiabeña de León';
+    return `${cityData?.name || 'Nicaragua'} • Circuito Creativo`;
+  }, [selectedPoint, rawPoints, circuitoId, cityData]);
+
+  // Progreso de la Ruta (evaluando los 2 requisitos por cada parada: 1. Reseña + 2. Foto)
+  const routeProgress = useMemo<RouteProgressData>(() => {
+    return routeProgressService.getRouteProgress(
+      userId,
+      activeRouteId,
+      rawPoints.map((p) => ({ id: p.id, name: p.name }))
+    );
+  }, [userId, activeRouteId, rawPoints, progressRefreshTrigger]);
+
+  const currentPlaceProgress = useMemo<PlaceProgress | null>(() => {
+    if (!selectedPoint) return null;
+    return (
+      routeProgress.places[selectedPoint.id] || {
+        placeId: selectedPoint.id,
+        hasReview: false,
+        hasPhoto: false,
+        isCompleted: false,
+      }
+    );
+  }, [selectedPoint, routeProgress]);
+
+  // Manejar envío de nueva reseña (Paso 1 del Progreso de Ruta)
   const handleAddReview = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPoint || !newReviewComment.trim()) return;
 
     const placeKey = selectedPoint.id || selectedPoint.name.toLowerCase().replace(/\s+/g, '-');
+    const authorName = newReviewAuthor.trim() || user?.name || 'Explorador Cultural';
     const newEntry = {
       id: Date.now().toString(),
-      name: newReviewAuthor.trim() || 'Explorador Cultural',
+      name: authorName,
       rating: newReviewRating,
       comment: newReviewComment.trim(),
       date: 'Justo ahora',
@@ -444,16 +508,99 @@ export default function MapaInmersivo({
       return updated;
     });
 
+    // Registrar Paso 1 en routeProgressService
+    routeProgressService
+      .submitPlaceReview({
+        userId,
+        userRole,
+        routeId: activeRouteId,
+        placeId: selectedPoint.id,
+        rating: newReviewRating,
+        comment: newReviewComment.trim(),
+        authorName,
+        allRoutePlaces: rawPoints.map((p) => ({ id: p.id, name: p.name })),
+      })
+      .then((res) => {
+        setProgressRefreshTrigger((prev) => prev + 1);
+        if (res.newlyUnlockedAchievement) {
+          setUnlockedAchievementModal(res.newlyUnlockedAchievement);
+        }
+      });
+
     setNewReviewComment('');
     setReviewSubmitted(true);
-    setTimeout(() => setReviewSubmitted(false), 3000);
+    setTimeout(() => setReviewSubmitted(false), 3500);
   };
+
+  // Manejar colaboración con fotografía (Paso 2 del Progreso de Ruta)
+  const handleCollaboratePhoto = (photoUrlToSubmit?: string) => {
+    const url = (photoUrlToSubmit || newPhotoUrl).trim();
+    if (!selectedPoint || !url) return;
+
+    routeProgressService
+      .submitPlacePhoto({
+        userId,
+        userRole,
+        routeId: activeRouteId,
+        placeId: selectedPoint.id,
+        photoUrl: url,
+        allRoutePlaces: rawPoints.map((p) => ({ id: p.id, name: p.name })),
+      })
+      .then((res) => {
+        // Añadir a la galería del punto seleccionado
+        if (selectedPoint.gallery) {
+          if (!selectedPoint.gallery.includes(url)) {
+            selectedPoint.gallery.unshift(url);
+          }
+        } else {
+          selectedPoint.gallery = [url];
+        }
+
+        setNewPhotoUrl('');
+        setShowPhotoForm(false);
+        setPhotoUploadSuccess(true);
+        setProgressRefreshTrigger((prev) => prev + 1);
+        setTimeout(() => setPhotoUploadSuccess(false), 3500);
+
+        if (res.newlyUnlockedAchievement) {
+          setUnlockedAchievementModal(res.newlyUnlockedAchievement);
+        }
+      });
+  };
+
+  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        handleCollaboratePhoto(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  useEffect(() => {
+    setSelectedPointIndex(0);
+  }, [municipioId, circuitoId]);
 
   useEffect(() => {
     if (selectedPointIndex >= filteredPoints.length) {
       setSelectedPointIndex(0);
     }
   }, [filteredPoints.length, selectedPointIndex]);
+
+  // Alinear cámara suavemente hacia los puntos de la ciudad/ruta activa
+  useEffect(() => {
+    if (!map.current || !selectedPoint) return;
+    map.current.flyTo({
+      center: [selectedPoint.lng, selectedPoint.lat],
+      zoom: zoom || cityData?.zoom || 15.5,
+      essential: true,
+      duration: 1000,
+    });
+  }, [municipioId, circuitoId, selectedPoint?.id]);
 
   const initialCenter = useMemo(() => {
     if (selectedPoint) return [selectedPoint.lng, selectedPoint.lat] as [number, number];
@@ -686,8 +833,102 @@ export default function MapaInmersivo({
   };
 
   // Título dinámico
+  const matchedRouteName = livePoints.find(p => 
+    p.routeId === circuitoId || p.routeSlug === circuitoId || (circuitoId && p.routeName && p.routeName.toLowerCase().includes(circuitoId.toLowerCase()))
+  )?.routeName;
+
   const displayRouteTitle = selectedPoint?.routeName || 
-    (circuitoId === 'dariano' ? 'La Ruta Dariana' : circuitoId === 'sutiabena' ? 'La Ruta Sutiabeña' : circuitoId === 'managua-patrimonial' ? 'Circuito Histórico y Cultural' : `${cityData.name} • Puntos de Interés`);
+    matchedRouteName ||
+    (circuitoId === 'dariano' ? 'Circuito Dariano' : `${cityData.name} • Puntos de Interés`);
+
+  // Controles de Navegación Estilo Apple Maps (Reutilizables para móvil y escritorio)
+  const renderAppleMapControls = (isMobileLayout: boolean = false) => (
+    <div className={`flex flex-col gap-1.5 sm:gap-2 items-center pointer-events-auto transition-all duration-300 ${
+      isMobileLayout ? 'scale-90 xs:scale-95' : ''
+    }`}>
+      {/* 1. Brújula / Orientar al Norte */}
+      <button
+        type="button"
+        onClick={resetNorth}
+        className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+        title="Orientar al Norte (0°)"
+      >
+        <div 
+          className="relative w-5 h-5 xs:w-6 xs:h-6 flex items-center justify-center transition-transform duration-200 ease-out"
+          style={{ transform: `rotate(${-mapBearing}deg)` }}
+        >
+          {/* Aguja Norte Roja */}
+          <div className="absolute top-0.5 w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-b-[8px] border-b-rose-600 drop-shadow-xs" />
+          {/* Aguja Sur Gris */}
+          <div className="absolute bottom-0.5 w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[8px] border-t-slate-400 drop-shadow-xs" />
+          {/* Letra N central */}
+          <span className="text-[7px] font-black text-slate-900 z-10 select-none">N</span>
+        </div>
+      </button>
+
+      {/* 2. Toggle 2D / 3D */}
+      <button
+        type="button"
+        onClick={toggle3D}
+        className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer font-black text-xs"
+        title={is3D ? "Cambiar a perspectiva 2D plana" : "Cambiar a perspectiva 3D inmersiva"}
+      >
+        <span className={is3D ? "text-purple-700 font-black text-xs" : "text-slate-700 font-bold text-xs"}>
+          {is3D ? "2D" : "3D"}
+        </span>
+      </button>
+
+      {/* 3. Satélite / Estilo de Mapa (Globo) */}
+      <div className="relative">
+        <button
+          type="button"
+          onClick={() => setShowStyleMenu(!showStyleMenu)}
+          className={`w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full backdrop-blur-2xl border shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer ${
+            showStyleMenu
+              ? 'bg-purple-600 text-white border-purple-600'
+              : 'bg-white/95 text-slate-800 border-slate-200/90'
+          }`}
+          title="Estilo de Mapa / Satélite"
+        >
+          <Globe className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-800 group-hover:text-purple-600 transition-colors" />
+        </button>
+
+        {/* Menú emergente de capas */}
+        {showStyleMenu && (
+          <div className={`absolute right-0 ${isMobileLayout ? 'top-11' : 'bottom-12'} w-36 rounded-2xl bg-white/95 backdrop-blur-2xl p-1.5 shadow-2xl border border-slate-200/90 flex flex-col gap-1 z-40 animate-fadeIn`}>
+            {MAP_STYLES.map((style, idx) => (
+              <button
+                key={style.id}
+                type="button"
+                onClick={() => {
+                  changeMapStyle(idx);
+                  setShowStyleMenu(false);
+                }}
+                className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
+                  currentStyleIdx === idx
+                    ? 'bg-purple-600 text-white shadow-xs'
+                    : 'text-slate-700 hover:bg-slate-100'
+                }`}
+              >
+                <span>{style.name}</span>
+                {currentStyleIdx === idx && <span className="text-[10px]">✓</span>}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 4. Recentrar / Brújula de Navegación */}
+      <button
+        type="button"
+        onClick={recenterMap}
+        className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+        title="Recentrar mapa"
+      >
+        <Navigation className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-purple-600 fill-purple-600/20 group-hover:scale-110 transition-transform" />
+      </button>
+    </div>
+  );
 
   return (
     <div className="relative w-full h-full rounded-none sm:rounded-[2.5rem] overflow-hidden shadow-none sm:shadow-[0_20px_50px_rgba(0,0,0,0.06)] border-0 sm:border border-slate-200/90 bg-white select-none touch-none overscroll-none">
@@ -714,169 +955,108 @@ export default function MapaInmersivo({
       {/* 2. Dynamic Island / Píldora Central de Circuito Activo */}
       <div className="absolute top-2.5 sm:top-3.5 left-1/2 -translate-x-1/2 z-20 max-w-[200px] xs:max-w-xs sm:max-w-md pointer-events-none">
         <div className="flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/90 backdrop-blur-xl border border-slate-200/90 text-slate-800 shadow-md truncate">
-          <span className="h-2 w-2 rounded-full bg-purple-600 animate-pulse shrink-0" />
+          <span className={`h-2 w-2 rounded-full ${rawPoints.length > 0 ? 'bg-purple-600 animate-pulse' : 'bg-amber-500'} shrink-0`} />
           <p className="text-[10px] sm:text-xs font-black text-slate-900 truncate">
-            {displayRouteTitle}
+            {rawPoints.length > 0 ? displayRouteTitle : `${cityData.name} • En Construcción`}
           </p>
-          <span className="text-[10px] text-purple-700 font-semibold hidden sm:inline">
-            • {filteredPoints.length} {filteredPoints.length === 1 ? 'Hito' : 'Hitos'}
-          </span>
+          {rawPoints.length > 0 ? (
+            <span className="text-[10px] text-purple-700 font-semibold hidden sm:inline">
+              • {filteredPoints.length} {filteredPoints.length === 1 ? 'Hito' : 'Hitos'}
+            </span>
+          ) : (
+            <span className="text-[10px] text-amber-600 font-bold hidden sm:inline">
+              • Próximamente
+            </span>
+          )}
         </div>
       </div>
 
-      {/* ================= FILTRO DE CATEGORÍAS FLOTANTE ================= */}
-      <div className="absolute top-13 sm:top-16 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-10 flex items-center gap-1.5 py-1 overflow-x-auto scrollbar-none pointer-events-auto">
-        <button
-          type="button"
-          onClick={() => setActiveCategory('todos')}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
-            activeCategory === 'todos'
-              ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
-              : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
-          }`}
-        >
-          🏛️ Todos ({rawPoints.length})
-        </button>
+      {/* ================= FILTRO DE CATEGORÍAS FLOTANTE (Solo si hay paradas registradas) ================= */}
+      {rawPoints.length > 0 && (
+        <div className="absolute top-13 sm:top-16 left-2.5 sm:left-3.5 right-2.5 sm:right-3.5 z-10 flex items-center gap-1.5 py-1 overflow-x-auto scrollbar-none pointer-events-auto">
+          <button
+            type="button"
+            onClick={() => setActiveCategory('todos')}
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
+              activeCategory === 'todos'
+                ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
+                : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
+            }`}
+          >
+            🏛️ Todos ({rawPoints.length})
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveCategory('patrimonio')}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
-            activeCategory === 'patrimonio'
-              ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
-              : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
-          }`}
-        >
-          ⛪ Patrimonio
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveCategory('patrimonio')}
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
+              activeCategory === 'patrimonio'
+                ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
+                : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
+            }`}
+          >
+            ⛪ Patrimonio
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveCategory('museo')}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
-            activeCategory === 'museo'
-              ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
-              : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
-          }`}
-        >
-          📜 Museos
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveCategory('museo')}
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
+              activeCategory === 'museo'
+                ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
+                : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
+            }`}
+          >
+            📜 Museos
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveCategory('artes')}
-          className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
-            activeCategory === 'artes'
-              ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
-              : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
-          }`}
-        >
-          🎭 Artes
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveCategory('artes')}
+            className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap shadow-sm backdrop-blur-md transition-all active:scale-95 cursor-pointer shrink-0 ${
+              activeCategory === 'artes'
+                ? 'bg-purple-600 text-white border border-purple-600 shadow-md'
+                : 'bg-white/90 text-slate-700 border border-slate-200/90 hover:bg-white'
+            }`}
+          >
+            🎭 Artes
+          </button>
+        </div>
+      )}
+
+      {/* ================= CONTROLES FLOTANTES MÓVIL ESTILO APPLE MAPS ================= */}
+      {/* En móviles (<sm): Anclados de forma independiente para nunca salirse de pantalla al expandir el bottom sheet */}
+      <div className="sm:hidden absolute right-2.5 xs:right-3.5 top-22 xs:top-24 z-20 pointer-events-auto">
+        {renderAppleMapControls(true)}
       </div>
 
-      {/* ================= BOTTOM SHEET FLOTANTE ESTILO MODERNO CON CONTROLES APPLE MAPS ================= */}
-      <div className="absolute inset-x-2.5 sm:inset-x-4 lg:inset-x-auto lg:right-6 bottom-2.5 sm:bottom-4 lg:max-w-md z-30 transition-all duration-300 ease-out flex flex-col items-end gap-2.5 pointer-events-none">
+      {/* ================= BOTTOM SHEET FLOTANTE ESTILO MODERNO ================= */}
+      <div className="absolute inset-x-2 xs:inset-x-3 sm:inset-x-auto sm:right-4 md:right-6 bottom-2 sm:bottom-4 sm:w-[410px] md:w-[430px] z-30 transition-all duration-300 ease-out flex flex-col items-end gap-2 sm:gap-2.5 pointer-events-none">
         
-        {/* ================= CONTROLES FLOTANTES ESTILO APPLE MAPS (Suben y bajan con el card) ================= */}
-        <div className="flex flex-col gap-2 items-center pointer-events-auto transition-all duration-300">
-          
-          {/* 1. Brújula / Orientar al Norte */}
-          <button
-            type="button"
-            onClick={resetNorth}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_8px_25px_rgba(0,0,0,0.14)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
-            title="Orientar al Norte (0°)"
-          >
-            <div 
-              className="relative w-6 h-6 flex items-center justify-center transition-transform duration-200 ease-out"
-              style={{ transform: `rotate(${-mapBearing}deg)` }}
-            >
-              {/* Aguja Norte Roja */}
-              <div className="absolute top-0.5 w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-b-[8px] border-b-rose-600 drop-shadow-xs" />
-              {/* Aguja Sur Gris */}
-              <div className="absolute bottom-0.5 w-0 h-0 border-l-[3.5px] border-l-transparent border-r-[3.5px] border-r-transparent border-t-[8px] border-t-slate-400 drop-shadow-xs" />
-              {/* Letra N central */}
-              <span className="text-[7px] font-black text-slate-900 z-10 select-none">N</span>
-            </div>
-          </button>
-
-          {/* 2. Toggle 2D / 3D */}
-          <button
-            type="button"
-            onClick={toggle3D}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_8px_25px_rgba(0,0,0,0.14)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer font-black text-xs"
-            title={is3D ? "Cambiar a perspectiva 2D plana" : "Cambiar a perspectiva 3D inmersiva"}
-          >
-            <span className={is3D ? "text-purple-700 font-black text-xs" : "text-slate-700 font-bold text-xs"}>
-              {is3D ? "2D" : "3D"}
-            </span>
-          </button>
-
-          {/* 3. Satélite / Estilo de Mapa (Globo) */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowStyleMenu(!showStyleMenu)}
-              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full backdrop-blur-2xl border shadow-[0_8px_25px_rgba(0,0,0,0.14)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer ${
-                showStyleMenu
-                  ? 'bg-purple-600 text-white border-purple-600'
-                  : 'bg-white/95 text-slate-800 border-slate-200/90'
-              }`}
-              title="Estilo de Mapa / Satélite"
-            >
-              <Globe className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-800 group-hover:text-purple-600 transition-colors" />
-            </button>
-
-            {/* Menú emergente de capas hacia arriba */}
-            {showStyleMenu && (
-              <div className="absolute right-0 bottom-12 w-36 rounded-2xl bg-white/95 backdrop-blur-2xl p-1.5 shadow-2xl border border-slate-200/90 flex flex-col gap-1 z-40 animate-fadeIn">
-                {MAP_STYLES.map((style, idx) => (
-                  <button
-                    key={style.id}
-                    type="button"
-                    onClick={() => changeMapStyle(idx)}
-                    className={`w-full text-left px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-between ${
-                      currentStyleIdx === idx
-                        ? 'bg-purple-600 text-white shadow-xs'
-                        : 'text-slate-700 hover:bg-slate-100'
-                    }`}
-                  >
-                    <span>{style.name}</span>
-                    {currentStyleIdx === idx && <span className="text-[10px]">✓</span>}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* 4. Recentrar / Brújula de Navegación */}
-          <button
-            type="button"
-            onClick={recenterMap}
-            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_8px_25px_rgba(0,0,0,0.14)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer group"
-            title="Recentrar mapa"
-          >
-            <Navigation className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-purple-600 fill-purple-600/20 group-hover:scale-110 transition-transform" />
-          </button>
-
+        {/* ================= CONTROLES FLOTANTES TABLET / ESCRITORIO (sm: en adelante) ================= */}
+        <div className="hidden sm:flex flex-col gap-2 items-center pointer-events-auto transition-all duration-300">
+          {renderAppleMapControls(false)}
         </div>
 
         {/* ================= CARD INFORMATIVO DEL LUGAR ================= */}
-        <div className="w-full max-h-[75dvh] rounded-3xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_12px_45px_rgba(0,0,0,0.12)] p-4 sm:p-5 text-slate-800 flex flex-col gap-3 pointer-events-auto overflow-hidden overscroll-contain">
+        <div className={`w-full rounded-[1.75rem] sm:rounded-3xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_12px_45px_rgba(0,0,0,0.15)] p-3.5 sm:p-4 md:p-5 text-slate-800 flex flex-col pointer-events-auto transition-all duration-300 overflow-hidden ${
+          sheetExpanded 
+            ? 'max-h-[82dvh] sm:max-h-[78dvh] md:max-h-[calc(100dvh-170px)]' 
+            : 'max-h-none'
+        }`}>
           
           {/* Grabber Bar */}
           <div 
             onClick={() => setSheetExpanded(!sheetExpanded)}
-            className="w-full flex justify-center -mt-1 -mb-0.5 cursor-pointer py-1"
-            title="Arrastrar / Alternar detalles"
+            className="w-full flex justify-center -mt-1 pb-1 cursor-pointer select-none"
+            title={sheetExpanded ? "Colapsar detalles" : "Expandir detalles y misiones"}
           >
-            <div className="w-9 h-1 bg-slate-300 rounded-full hover:bg-purple-400 transition-colors" />
+            <div className="w-10 h-1.5 bg-slate-300/80 rounded-full hover:bg-purple-400 transition-colors" />
           </div>
 
-          {/* Información del Punto Seleccionado */}
+          {/* Información del Punto Seleccionado (PINNED HEADER) */}
           {selectedPoint ? (
-            <div className="flex items-start gap-3.5 sm:gap-4">
+            <div className="flex items-start gap-3 sm:gap-3.5 pt-0.5 shrink-0">
               {/* Imagen real del sitio o Icono distinguido */}
               <div 
                 onClick={() => {
@@ -884,7 +1064,7 @@ export default function MapaInmersivo({
                     setSelectedPhotoPreview(currentPhotos[0]);
                   }
                 }}
-                className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-purple-50 shrink-0 border border-slate-200/80 flex items-center justify-center shadow-xs ${
+                className={`relative w-14 h-14 xs:w-16 xs:h-16 sm:w-18 sm:h-18 rounded-2xl overflow-hidden bg-purple-50 shrink-0 border border-slate-200/80 flex items-center justify-center shadow-xs ${
                   currentPhotos.length > 0 ? 'cursor-pointer group' : ''
                 }`}
               >
@@ -894,7 +1074,7 @@ export default function MapaInmersivo({
                       src={selectedPoint.image}
                       alt={selectedPoint.name}
                       fill
-                      sizes="(max-width: 640px) 64px, 80px"
+                      sizes="(max-width: 640px) 64px, 72px"
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -902,7 +1082,7 @@ export default function MapaInmersivo({
                     </div>
                   </>
                 ) : (
-                  <MapPin className="w-7 h-7 text-purple-600/70" />
+                  <MapPin className="w-6 h-6 text-purple-600/70" />
                 )}
                 {filteredPoints.length > 1 && (
                   <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-black/70 text-[9px] font-black text-white z-10 backdrop-blur-xs">
@@ -913,13 +1093,13 @@ export default function MapaInmersivo({
 
               {/* Textos y Etiquetas Limpias */}
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 mb-0.5">
                   <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-100 text-[10px] font-bold tracking-tight">
                     {selectedPoint.category}
                   </span>
                   
                   {selectedPoint.pointsReward && selectedPoint.pointsReward > 0 ? (
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
+                    <span className="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-50 text-amber-700 border border-amber-200">
                       +{selectedPoint.pointsReward} pts
                     </span>
                   ) : null}
@@ -932,7 +1112,7 @@ export default function MapaInmersivo({
                         setSheetExpanded(true);
                         setExpandedTab('reviews');
                       }}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer"
                       title="Ver opiniones y reseñas"
                     >
                       <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
@@ -945,7 +1125,7 @@ export default function MapaInmersivo({
                         setSheetExpanded(true);
                         setExpandedTab('reviews');
                       }}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer"
                       title="Sé el primero en calificar este lugar"
                     >
                       <Star className="w-3 h-3 text-amber-400" />
@@ -960,138 +1140,354 @@ export default function MapaInmersivo({
                   )}
                 </div>
 
-                <h3 className="text-base sm:text-lg font-black text-slate-900 truncate leading-snug">
+                <h3 className="text-sm xs:text-base sm:text-lg font-black text-slate-900 truncate leading-snug">
                   {selectedPoint.name}
                 </h3>
                 
                 {selectedPoint.desc && (
-                  <p className="text-xs text-slate-500 font-normal line-clamp-2 leading-relaxed mt-0.5">
+                  <p className={`text-xs text-slate-500 font-normal leading-relaxed mt-0.5 ${
+                    sheetExpanded ? 'line-clamp-1 xs:line-clamp-2' : 'line-clamp-2'
+                  }`}>
                     {selectedPoint.desc}
                   </p>
                 )}
               </div>
             </div>
           ) : (
-            <div className="py-4 text-center">
-              <p className="text-xs font-bold text-slate-700">
-                No hay paradas registradas para esta ubicación
-              </p>
+            <div className="py-6 px-4 text-center flex flex-col items-center gap-3">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-600 shadow-sm">
+                <Construction className="w-7 h-7 text-amber-600 animate-pulse" />
+              </div>
+              <div className="max-w-sm">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1">
+                  {cityData.name} en Construcción
+                </h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Esta ciudad creativa aún no cuenta con rutas ni puntos registrados para explorar. Actualmente se encuentra en construcción y pronto estarán disponibles.
+                </p>
+              </div>
+              {onBack && (
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="mt-1 py-2.5 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Volver al Mapa General</span>
+                </button>
+              )}
             </div>
           )}
 
-          {/* Fila de Acciones Principales */}
-          <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
-            {/* Botón 1: Enfocar en Mapa */}
-            <button
-              type="button"
-              onClick={() => focusOnPoint(selectedPointIndex)}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-[0.98] text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
-            >
-              <Compass className="w-4 h-4 shrink-0" />
-              <span>Enfocar</span>
-            </button>
-
-            {/* Botón 2: Siguiente (si hay > 1 parada) */}
-            {filteredPoints.length > 1 && (
+          {/* Fila de Acciones Principales (PINNED ROW) */}
+          {selectedPoint && (
+            <div className="flex items-center gap-1.5 xs:gap-2 pt-2.5 mt-2 border-t border-slate-100 shrink-0">
+              {/* Botón 1: Enfocar en Mapa */}
               <button
                 type="button"
-                onClick={() => {
-                  const nextIdx = (selectedPointIndex + 1) % filteredPoints.length;
-                  focusOnPoint(nextIdx);
-                }}
-                className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 active:scale-[0.98] transition-all cursor-pointer"
-                title="Siguiente parada"
+                onClick={() => focusOnPoint(selectedPointIndex)}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 py-2 xs:py-2.5 px-2 xs:px-3 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-[0.98] text-white font-bold text-xs shadow-xs transition-all cursor-pointer min-w-0"
               >
-                <Route className="w-3.5 h-3.5 text-purple-600 shrink-0" />
-                <span>Siguiente</span>
+                <Compass className="w-3.5 h-3.5 xs:w-4 xs:h-4 shrink-0" />
+                <span className="truncate">Enfocar</span>
               </button>
-            )}
 
-            {/* Botón 3: Desglosar (Fotos, Reseñas, Paradas) */}
-            <button
-              type="button"
-              onClick={() => setSheetExpanded(!sheetExpanded)}
-              className={`inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl font-bold text-xs border transition-all cursor-pointer active:scale-[0.98] ${
-                sheetExpanded 
-                  ? 'bg-purple-50 text-purple-800 border-purple-300' 
-                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200/80'
-              }`}
-              title={sheetExpanded ? 'Ocultar detalles' : 'Desglosar fotos y reseñas'}
-            >
-              {sheetExpanded ? <ChevronUp className="w-3.5 h-3.5 text-purple-700" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              <span className="hidden xs:inline">{sheetExpanded ? 'Cerrar' : 'Detalles'}</span>
-            </button>
+              {/* Botón 2: Siguiente (si hay > 1 parada) */}
+              {filteredPoints.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextIdx = (selectedPointIndex + 1) % filteredPoints.length;
+                    focusOnPoint(nextIdx);
+                  }}
+                  className="inline-flex items-center justify-center gap-1 py-2 xs:py-2.5 px-2 xs:px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-200/80 active:scale-[0.98] transition-all cursor-pointer min-w-0"
+                  title="Siguiente parada"
+                >
+                  <Route className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                  <span className="truncate">Siguiente</span>
+                </button>
+              )}
 
-            {/* Enlace a la Ciudad (Limpio y estilizado) */}
-            <Link
-              href={`/ciudades-creativas/${cityData.slug}`}
-              className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-[0.98] text-slate-800 font-bold text-xs border border-slate-200/80 transition-all cursor-pointer"
-              title={`Ver guía de ${cityData.name}`}
-            >
-              <ExternalLink className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-              <span className="hidden sm:inline">Guía de {cityData.name}</span>
-              <span className="sm:hidden">Guía</span>
-            </Link>
-          </div>
+              {/* Botón 3: Desglosar / Alternar (Fotos, Reseñas, Paradas) */}
+              <button
+                type="button"
+                onClick={() => setSheetExpanded(!sheetExpanded)}
+                className={`inline-flex items-center justify-center gap-1 py-2 xs:py-2.5 px-2 xs:px-3 rounded-xl font-bold text-xs border transition-all cursor-pointer active:scale-[0.98] shrink-0 ${
+                  sheetExpanded 
+                    ? 'bg-purple-50 text-purple-800 border-purple-300' 
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200/80'
+                }`}
+                title={sheetExpanded ? 'Ocultar detalles' : 'Desglosar fotos y reseñas'}
+              >
+                {sheetExpanded ? <ChevronUp className="w-3.5 h-3.5 text-purple-700 shrink-0" /> : <ChevronDown className="w-3.5 h-3.5 shrink-0" />}
+                <span className="hidden xs:inline">{sheetExpanded ? 'Cerrar' : 'Detalles'}</span>
+              </button>
 
-          {/* ================= CONTENIDO EXPANDIDO: FOTOS / RESEÑAS / PARADAS ================= */}
+              {/* Enlace a la Ciudad (Limpio y estilizado) */}
+              <Link
+                href={`/ciudades-creativas/${cityData.slug}`}
+                className="inline-flex items-center justify-center gap-1 py-2 xs:py-2.5 px-2 xs:px-3 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-[0.98] text-slate-800 font-bold text-xs border border-slate-200/80 transition-all cursor-pointer shrink-0"
+                title={`Ver guía de ${cityData.name}`}
+              >
+                <ExternalLink className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+                <span className="hidden sm:inline">Guía de {cityData.name}</span>
+                <span className="sm:hidden">Guía</span>
+              </Link>
+            </div>
+          )}
+
+          {/* ================= CONTENIDO EXPANDIDO (BODY SCROLLABLE ÚNICO) ================= */}
           {sheetExpanded && (
-            <div className="pt-2 border-t border-slate-100 flex flex-col gap-3 animate-fadeIn">
+            <div className="mt-2.5 pt-2.5 border-t border-slate-100 flex-1 overflow-y-auto overscroll-contain pr-1 -mr-1 space-y-2.5 sm:space-y-3 touch-pan-y custom-scrollbar animate-fadeIn">
               
+              {/* Barra de Progreso del Circuito Activo */}
+              <div className="p-2.5 xs:p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-purple-50 via-indigo-50/70 to-purple-50 border border-purple-200/80 space-y-1.5 xs:space-y-2">
+                <div className="flex items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-1.5 font-black text-purple-950 min-w-0">
+                    <Compass className="w-3.5 h-3.5 text-purple-700 shrink-0" />
+                    <span className="truncate">{activeRouteName}</span>
+                  </div>
+                  <span className="text-[10px] xs:text-[11px] font-black text-purple-800 shrink-0 whitespace-nowrap">
+                    {routeProgress.completedPlacesCount}/{routeProgress.totalPlaces} validadas ({routeProgress.progressPercent}%)
+                  </span>
+                </div>
+
+                <div className="w-full bg-purple-200/60 h-2 xs:h-2.5 rounded-full overflow-hidden p-0.5">
+                  <div
+                    className="bg-gradient-to-r from-purple-600 via-indigo-600 to-emerald-500 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${Math.max(6, routeProgress.progressPercent)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Tarjeta de Misión de Validación de Este Hito (2 Pasos Requeridos: 1. Reseña + 2. Foto) */}
+              <div className="p-2.5 xs:p-3 sm:p-3.5 rounded-2xl bg-slate-50/90 border border-slate-200/90 space-y-2">
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className="text-[10.5px] xs:text-[11px] font-black uppercase tracking-wider text-slate-800 flex items-center gap-1.5 min-w-0">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                    <span className="truncate">Misión para Validar este Hito:</span>
+                  </span>
+
+                  {currentPlaceProgress?.isCompleted ? (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-[9.5px] xs:text-[10px] font-black shrink-0">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                      <span>¡Validado!</span>
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200 text-[9.5px] xs:text-[10px] font-black shrink-0 whitespace-nowrap">
+                      {(currentPlaceProgress?.hasReview ? 1 : 0) + (currentPlaceProgress?.hasPhoto ? 1 : 0)} de 2 listos
+                    </span>
+                  )}
+                </div>
+
+                {/* Grid de los 2 Pasos */}
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 text-xs">
+                  {/* Paso 1: Reseña */}
+                  <div className={`p-2.5 rounded-xl border flex flex-col justify-between transition-all ${
+                    currentPlaceProgress?.hasReview
+                      ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                      : 'bg-white border-slate-200 text-slate-800'
+                  }`}>
+                    <div>
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="text-[10px] font-black uppercase truncate">Paso 1: Reseña</span>
+                        {currentPlaceProgress?.hasReview ? (
+                          <span className="text-emerald-700 font-bold text-[10px] flex items-center gap-0.5 shrink-0">
+                            <Check className="w-3 h-3" /> Hecho
+                          </span>
+                        ) : (
+                          <span className="text-amber-600 font-bold text-[10px] shrink-0">Pendiente</span>
+                        )}
+                      </div>
+                      <p className="text-[10.5px] xs:text-[11px] text-slate-600 line-clamp-2">
+                        {currentPlaceProgress?.hasReview
+                          ? `★ ${currentPlaceProgress.reviewRating} - Comentario registrado.`
+                          : 'Deja una calificación y un comentario sobre tu experiencia.'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setExpandedTab('reviews')}
+                      className={`mt-2 py-1.5 px-2 rounded-lg text-[10.5px] font-black transition-all cursor-pointer text-center truncate ${
+                        currentPlaceProgress?.hasReview
+                          ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900'
+                          : 'bg-purple-600 hover:bg-purple-700 text-white shadow-2xs'
+                      }`}
+                    >
+                      {currentPlaceProgress?.hasReview ? 'Ver mi reseña' : 'Escribir Reseña →'}
+                    </button>
+                  </div>
+
+                  {/* Paso 2: Foto */}
+                  <div className={`p-2.5 rounded-xl border flex flex-col justify-between transition-all ${
+                    currentPlaceProgress?.hasPhoto
+                      ? 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                      : 'bg-white border-slate-200 text-slate-800'
+                  }`}>
+                    <div>
+                      <div className="flex items-center justify-between gap-1 mb-1">
+                        <span className="text-[10px] font-black uppercase truncate">Paso 2: Foto</span>
+                        {currentPlaceProgress?.hasPhoto ? (
+                          <span className="text-emerald-700 font-bold text-[10px] flex items-center gap-0.5 shrink-0">
+                            <Check className="w-3 h-3" /> Aportada
+                          </span>
+                        ) : (
+                          <span className="text-amber-600 font-bold text-[10px] shrink-0">Pendiente</span>
+                        )}
+                      </div>
+                      <p className="text-[10.5px] xs:text-[11px] text-slate-600 line-clamp-2">
+                        {currentPlaceProgress?.hasPhoto
+                          ? 'Has colaborado con una fotografía en este sitio.'
+                          : 'Sube o enlaza una imagen real tomada en este lugar.'}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setExpandedTab('photos');
+                        setShowPhotoForm(true);
+                      }}
+                      className={`mt-2 py-1.5 px-2 rounded-lg text-[10.5px] font-black transition-all cursor-pointer text-center truncate ${
+                        currentPlaceProgress?.hasPhoto
+                          ? 'bg-emerald-100 hover:bg-emerald-200 text-emerald-900'
+                          : 'bg-purple-600 hover:bg-purple-700 text-white shadow-2xs'
+                      }`}
+                    >
+                      {currentPlaceProgress?.hasPhoto ? 'Ver foto aportada' : 'Aportar Fotografía →'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="text-[10px] text-slate-500 font-medium">
+                  {currentPlaceProgress?.isCompleted 
+                    ? '✓ Ambos requisitos cumplidos: este hito suma al 100% de la ruta.' 
+                    : 'Debes cumplir ambos requisitos para que este lugar cuente para la insignia de la ruta.'}
+                </div>
+              </div>
+
               {/* Barra de Pestañas Segmentadas */}
               <div className="flex items-center gap-1 p-1 bg-slate-100/90 rounded-2xl border border-slate-200/70">
                 <button
                   type="button"
                   onClick={() => setExpandedTab('photos')}
-                  className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`flex-1 py-1.5 px-1.5 xs:px-2 rounded-xl text-[11px] xs:text-xs font-black transition-all flex items-center justify-center gap-1 xs:gap-1.5 cursor-pointer min-w-0 ${
                     expandedTab === 'photos'
                       ? 'bg-white text-purple-900 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <ImageIcon className="w-3.5 h-3.5" />
-                  <span>Fotos {currentPhotos.length > 0 ? `(${currentPhotos.length})` : ''}</span>
+                  <ImageIcon className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">Fotos {currentPhotos.length > 0 ? `(${currentPhotos.length})` : ''}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setExpandedTab('reviews')}
-                  className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`flex-1 py-1.5 px-1.5 xs:px-2 rounded-xl text-[11px] xs:text-xs font-black transition-all flex items-center justify-center gap-1 xs:gap-1.5 cursor-pointer min-w-0 ${
                     expandedTab === 'reviews'
                       ? 'bg-white text-purple-900 shadow-xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-                  <span>Reseñas {currentReviews.length > 0 ? `(${currentReviews.length})` : ''}</span>
+                  <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                  <span className="truncate">Reseñas {currentReviews.length > 0 ? `(${currentReviews.length})` : ''}</span>
                 </button>
 
                 {filteredPoints.length > 1 && (
                   <button
                     type="button"
                     onClick={() => setExpandedTab('stops')}
-                    className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`flex-1 py-1.5 px-1.5 xs:px-2 rounded-xl text-[11px] xs:text-xs font-black transition-all flex items-center justify-center gap-1 xs:gap-1.5 cursor-pointer min-w-0 ${
                       expandedTab === 'stops'
                         ? 'bg-white text-purple-900 shadow-xs'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span>Paradas ({filteredPoints.length})</span>
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">Paradas ({filteredPoints.length})</span>
                   </button>
                 )}
               </div>
 
-              {/* CONTENIDO PESTAÑA 1: FOTOS / GALERÍA */}
+              {/* CONTENIDO PESTAÑA 1: FOTOS / GALERÍA & APORTE COLABORATIVO */}
               {expandedTab === 'photos' && (
-                <div className="space-y-2 max-h-44 sm:max-h-56 overflow-y-auto overscroll-contain touch-pan-y pr-1">
+                <div className="space-y-2.5">
+                  
+                  {/* Botón para abrir formulario de colaboración de fotos */}
+                  <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-purple-50/70 border border-purple-200 text-xs">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <Camera className="w-4 h-4 text-purple-700 shrink-0" />
+                      <span className="font-black text-purple-950 text-[10.5px] xs:text-[11px] truncate">
+                        {currentPlaceProgress?.hasPhoto ? 'Foto colaborativa registrada ✓' : 'Paso 2: Colabora con una foto'}
+                      </span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowPhotoForm(!showPhotoForm)}
+                      className="px-2.5 py-1 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-black text-[10.5px] shadow-2xs cursor-pointer shrink-0"
+                    >
+                      {showPhotoForm ? 'Cancelar' : '+ Aportar Foto'}
+                    </button>
+                  </div>
+
+                  {/* Formulario de Aporte de Foto */}
+                  {showPhotoForm && (
+                    <div className="p-3 rounded-2xl bg-white border border-purple-200 space-y-2.5 text-xs animate-fadeIn shadow-xs">
+                      <span className="text-[10px] font-black uppercase text-slate-600 block">
+                        Subir archivo o pegar enlace de foto del lugar:
+                      </span>
+
+                      <div className="flex flex-col gap-2">
+                        {/* Subir archivo */}
+                        <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-dashed border-purple-300 text-purple-800 font-bold text-xs cursor-pointer transition-colors text-center">
+                          <Upload className="w-4 h-4 text-purple-600 shrink-0" />
+                          <span className="truncate">Seleccionar imagen de tu dispositivo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoFileUpload}
+                            className="hidden"
+                          />
+                        </label>
+
+                        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-1.5 xs:gap-2">
+                          <input
+                            type="url"
+                            value={newPhotoUrl}
+                            onChange={(e) => setNewPhotoUrl(e.target.value)}
+                            placeholder="O pega aquí la URL..."
+                            className="flex-1 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-purple-600 outline-hidden min-w-0"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleCollaboratePhoto()}
+                            disabled={!newPhotoUrl.trim()}
+                            className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-black text-xs cursor-pointer shrink-0 text-center"
+                          >
+                            Enviar Foto
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {photoUploadSuccess && (
+                    <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5 animate-fadeIn">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>¡Foto colaborativa aportada con éxito! Has completado el Paso 2 de este hito.</span>
+                    </div>
+                  )}
+
                   {currentPhotos.length > 0 ? (
                     <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar snap-x snap-mandatory pt-0.5">
                       {currentPhotos.map((imgUrl, pIdx) => (
                         <div
                           key={pIdx}
                           onClick={() => setSelectedPhotoPreview(imgUrl)}
-                          className="relative shrink-0 w-36 h-24 rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs group cursor-pointer snap-start bg-purple-50"
+                          className="relative shrink-0 w-32 h-20 xs:w-36 xs:h-24 rounded-2xl overflow-hidden border border-slate-200/80 shadow-xs group cursor-pointer snap-start bg-purple-50"
                         >
                           <Image
                             src={imgUrl}
@@ -1120,18 +1516,18 @@ export default function MapaInmersivo({
 
               {/* CONTENIDO PESTAÑA 2: RESEÑAS Y CALIFICACIÓN */}
               {expandedTab === 'reviews' && (
-                <div className="space-y-3 max-h-52 sm:max-h-64 overflow-y-auto overscroll-contain touch-pan-y pr-1">
+                <div className="space-y-2.5">
                   {/* Resumen de Calificación */}
-                  <div className="flex items-center justify-between p-2.5 rounded-2xl bg-amber-50/60 border border-amber-200/80 text-xs">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between gap-2 p-2.5 rounded-2xl bg-amber-50/60 border border-amber-200/80 text-xs">
+                    <div className="flex items-center gap-2 min-w-0">
                       <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center font-black text-amber-900 shrink-0">
                         ★
                       </div>
-                      <div>
-                        <span className="font-black text-slate-900 block text-xs">
+                      <div className="min-w-0">
+                        <span className="font-black text-slate-900 block text-xs truncate">
                           {currentAverageRating ? `${currentAverageRating} de 5.0` : 'Sin calificaciones'}
                         </span>
-                        <span className="text-[10px] text-slate-500 font-medium">
+                        <span className="text-[10px] text-slate-500 font-medium truncate block">
                           {currentReviews.length > 0 
                             ? `${currentReviews.length} opiniones de viajeros` 
                             : 'Sé la primera persona en calificar'}
@@ -1139,7 +1535,7 @@ export default function MapaInmersivo({
                       </div>
                     </div>
 
-                    <div className="flex items-center text-amber-400 text-xs">
+                    <div className="flex items-center text-amber-400 text-xs shrink-0">
                       {[1, 2, 3, 4, 5].map((s) => (
                         <Star
                           key={s}
@@ -1154,10 +1550,10 @@ export default function MapaInmersivo({
                   </div>
 
                   {/* Formulario para dejar reseña */}
-                  <form onSubmit={handleAddReview} className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5 text-xs">
-                    <div className="flex items-center justify-between">
+                  <form onSubmit={handleAddReview} className="p-3 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+                    <div className="flex items-center justify-between gap-1">
                       <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                        Deja tu puntuación:
+                        Tu puntuación:
                       </span>
                       {/* Estrellas Interactivas */}
                       <div className="flex items-center gap-1">
@@ -1170,7 +1566,7 @@ export default function MapaInmersivo({
                               onMouseEnter={() => setHoverReviewRating(star)}
                               onMouseLeave={() => setHoverReviewRating(null)}
                               onClick={() => setNewReviewRating(star)}
-                              className="cursor-pointer transition-transform hover:scale-115 active:scale-90"
+                              className="cursor-pointer transition-transform hover:scale-115 active:scale-90 p-0.5"
                               title={`${star} estrellas`}
                             >
                               <Star
@@ -1194,29 +1590,30 @@ export default function MapaInmersivo({
                       className="w-full px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:border-purple-600 outline-hidden transition-all"
                     />
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col xs:flex-row gap-2">
                       <textarea
                         rows={2}
                         required
                         value={newReviewComment}
                         onChange={(e) => setNewReviewComment(e.target.value)}
-                        placeholder="Comparte tu experiencia en este lugar cultural..."
-                        className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:border-purple-600 outline-hidden transition-all resize-none"
+                        placeholder="Comparte tu experiencia en este lugar..."
+                        className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-900 text-xs focus:border-purple-600 outline-hidden transition-all resize-none min-w-0"
                       />
 
                       <button
                         type="submit"
-                        className="px-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs transition-all flex items-center justify-center cursor-pointer shrink-0 shadow-xs"
+                        className="py-2 px-3.5 rounded-xl bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs transition-all flex items-center justify-center cursor-pointer shrink-0 shadow-xs gap-1.5"
                         title="Enviar reseña"
                       >
-                        <Send className="w-4 h-4" />
+                        <Send className="w-3.5 h-3.5" />
+                        <span className="xs:hidden font-bold">Publicar</span>
                       </button>
                     </div>
 
                     {reviewSubmitted && (
                       <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5 animate-fadeIn">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>¡Gracias! Tu reseña ha sido publicada.</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>¡Reseña registrada con éxito! Has completado el Paso 1 de este hito.</span>
                       </div>
                     )}
                   </form>
@@ -1225,16 +1622,16 @@ export default function MapaInmersivo({
                   <div className="space-y-2">
                     {currentReviews.map((rev) => (
                       <div key={rev.id} className="p-2.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-1">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="flex items-center gap-2 min-w-0">
                             <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-900 font-black text-[10px] flex items-center justify-center shrink-0">
                               {rev.name.substring(0, 1).toUpperCase()}
                             </div>
-                            <span className="font-bold text-slate-900 text-xs">{rev.name}</span>
+                            <span className="font-bold text-slate-900 text-xs truncate">{rev.name}</span>
                           </div>
-                          <div className="flex items-center gap-1 text-[10px] text-amber-500 font-black">
+                          <div className="flex items-center gap-1 text-[10px] text-amber-500 font-black shrink-0">
                             <span>★ {rev.rating}.0</span>
-                            <span className="text-slate-400 font-normal">• {rev.date}</span>
+                            <span className="text-slate-400 font-normal hidden xs:inline">• {rev.date}</span>
                           </div>
                         </div>
                         <p className="text-xs text-slate-600 pl-8 leading-relaxed">
@@ -1248,7 +1645,7 @@ export default function MapaInmersivo({
 
               {/* CONTENIDO PESTAÑA 3: LISTA DE PARADAS (Solo si > 1) */}
               {expandedTab === 'stops' && filteredPoints.length > 1 && (
-                <div className="space-y-1.5 max-h-44 sm:max-h-52 overflow-y-auto overscroll-contain touch-pan-y pr-1">
+                <div className="space-y-1.5">
                   <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-0.5">
                     {selectedPoint?.routeName ? `Paradas de ${selectedPoint.routeName}` : `Hitos de ${cityData.name}`}
                   </p>
@@ -1291,9 +1688,9 @@ export default function MapaInmersivo({
 
       {/* ================= MODAL LIGHTBOX PARA FOTOS ================= */}
       {selectedPhotoPreview && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
-          <div className="relative max-w-2xl w-full rounded-3xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl flex flex-col">
-            <div className="relative h-80 sm:h-96 w-full bg-black">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+          <div className="relative max-w-2xl w-full max-h-[92dvh] rounded-3xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl flex flex-col">
+            <div className="relative h-64 xs:h-80 sm:h-96 w-full max-h-[68dvh] bg-black">
               <Image
                 src={selectedPhotoPreview}
                 alt="Vista ampliada de fotografía"
@@ -1303,18 +1700,75 @@ export default function MapaInmersivo({
               />
             </div>
 
-            <div className="p-4 bg-slate-900 flex items-center justify-between border-t border-slate-800">
-              <span className="text-xs font-bold text-white truncate">
+            <div className="p-3.5 sm:p-4 bg-slate-900 flex items-center justify-between border-t border-slate-800 shrink-0">
+              <span className="text-xs font-bold text-white truncate mr-2">
                 📸 {selectedPoint?.name}
               </span>
 
               <button
                 type="button"
                 onClick={() => setSelectedPhotoPreview(null)}
-                className="px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-1"
+                className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-all cursor-pointer flex items-center gap-1 shrink-0"
               >
                 <X className="w-4 h-4" />
                 <span>Cerrar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL CELEBRACIÓN DE LOGRO DESBLOQUEADO ================= */}
+      {unlockedAchievementModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-fadeIn">
+          <div className="relative max-w-md w-full max-h-[92dvh] overflow-y-auto custom-scrollbar rounded-3xl bg-white p-5 sm:p-8 text-center space-y-4 shadow-2xl border border-amber-300">
+            <button
+              type="button"
+              onClick={() => setUnlockedAchievementModal(null)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="w-20 h-20 mx-auto rounded-3xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center text-4xl shadow-lg">
+              {unlockedAchievementModal.icon || '🏆'}
+            </div>
+
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-black uppercase tracking-wider mb-2">
+                <PartyPopper className="w-3.5 h-3.5 text-emerald-600" />
+                <span>¡Circuito 100% Completado!</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-950">
+                ¡Logro Desbloqueado!
+              </h3>
+              <p className="text-base font-black text-purple-700 mt-1">
+                {unlockedAchievementModal.name}
+              </p>
+              <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+                ¡Felicitaciones! Has completado todos los lugares de la ruta cumpliendo los 2 requisitos evaluados: reseña con comentario y fotografía colaborativa en cada parada.
+              </p>
+            </div>
+
+            {userRole !== 'admin' && unlockedAchievementModal.points_reward > 0 && (
+              <div className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 font-black text-sm">
+                +{unlockedAchievementModal.points_reward} Puntos de Explorador Sumados 🎉
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <Link
+                href="/perfil"
+                className="flex-1 py-3 px-4 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white font-black text-xs transition-all shadow-md text-center"
+              >
+                Ver en mi Pasaporte
+              </Link>
+              <button
+                type="button"
+                onClick={() => setUnlockedAchievementModal(null)}
+                className="py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs cursor-pointer"
+              >
+                Seguir Explorando
               </button>
             </div>
           </div>

@@ -71,21 +71,26 @@ body {
 
 /* Custom Scrollbar for Webkit browsers */
 .custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
+  width: 5px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #a8a8a8;
-  border-radius: 10px;
+  background: #cbd5e1;
+  border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #888;
+  background: #94a3b8;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
 
 /* For hiding scrollbars but keeping functionality */

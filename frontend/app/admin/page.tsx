@@ -56,7 +56,7 @@ export default function AdminDashboardPage() {
 
   const loadAllData = useCallback(async () => {
     try {
-      const [
+      let [
         statsData,
         deptsData,
         requestsData,
@@ -77,6 +77,90 @@ export default function AdminDashboardPage() {
         adminService.getAchievements(),
         adminService.getReports(),
       ]);
+
+      // Si los datos vinieron vacíos (por políticas RLS en Supabase bloqueando al cliente anon/authenticated),
+      // cargar inmediatamente desde nuestro endpoint seguro de servidor /api/admin/data
+      if (deptsData.length === 0 && citiesData.length === 0) {
+        try {
+          const res = await fetch('/api/admin/data');
+          if (res.ok) {
+            const serverData = await res.json();
+            if (serverData.departments && serverData.departments.length > 0) {
+              deptsData = serverData.departments.map((d: any) => ({
+                id: d.id,
+                name: d.name,
+                slug: d.slug,
+                code: d.code,
+                description: d.description,
+                hero_image: d.hero_image,
+                is_creative_region: !!d.is_creative_region,
+                manager_id: d.manager_id,
+                manager_name: d.users ? `${d.users.name} ${d.users.lastname}` : undefined,
+                manager_email: d.users?.email,
+                status: d.status || 'active',
+                created_at: d.created_at,
+              }));
+              citiesData = serverData.cities.map((m: any) => ({
+                id: m.id,
+                department_id: m.department_id,
+                department_name: m.departments?.name || 'Nicaragua',
+                name: m.name,
+                slug: m.slug,
+                subtitle: m.subtitle,
+                description: m.description,
+                is_creative: !!m.is_creative,
+                municipality_type: m.municipality_type || 'tradicional',
+                hero_desktop: m.hero_image,
+                logo_url: m.logo_url,
+                lat: m.lat ? parseFloat(m.lat) : 12.4350,
+                lng: m.lng ? parseFloat(m.lng) : -86.8782,
+                status: m.status || 'active',
+                created_at: m.created_at,
+              }));
+              routesData = serverData.routes.map((r: any) => ({
+                id: r.id,
+                municipality_id: r.municipality_id,
+                municipality_name: r.municipalities?.name,
+                name: r.name,
+                slug: r.slug,
+                description: r.description,
+                status: r.status,
+                cover_image: r.cover_image,
+                theme: r.theme,
+                difficulty: r.difficulty,
+                estimated_duration: r.estimated_duration,
+                points_award: r.points_award,
+                badge_name: r.badge_name,
+                badge_icon: r.badge_icon,
+                route_color: r.route_color,
+                is_visible_in_map: !!r.is_visible_in_map,
+                created_at: r.created_at,
+              }));
+              eventsData = serverData.events.map((e: any) => ({
+                id: e.id,
+                title: e.title,
+                description: e.description,
+                start_date: e.start_date,
+                end_date: e.end_date,
+                location_name: e.location_name,
+                city: e.municipalities?.name || 'León',
+                department: e.departments?.name,
+                category: e.category,
+                status: e.status,
+                points_reward: e.points_reward,
+                image: e.image_url,
+              }));
+              achievementsData = serverData.achievements || [];
+              usersData = serverData.users || [];
+              requestsData = serverData.requests || [];
+              reportsData = serverData.reports || [];
+              statsData = serverData.stats || statsData;
+            }
+          }
+        } catch (apiErr) {
+          console.warn('Error en fallback /api/admin/data:', apiErr);
+        }
+      }
 
       setStats(statsData);
       setDepartments(deptsData);
@@ -215,7 +299,7 @@ export default function AdminDashboardPage() {
                 <UsersManagerTab users={users} onRefresh={loadAllData} />
               )}
               {activeTab === 'logros' && (
-                <AchievementsManagerTab achievements={achievements} onRefresh={loadAllData} />
+                <AchievementsManagerTab achievements={achievements} routes={routes} onRefresh={loadAllData} />
               )}
               {activeTab === 'reportes' && (
                 <ReportsModerationTab reports={reports} onRefresh={loadAllData} />

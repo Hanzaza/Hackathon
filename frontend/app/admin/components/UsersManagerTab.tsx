@@ -163,10 +163,16 @@ export const UsersManagerTab: React.FC<UsersManagerTabProps> = ({ users, onRefre
 
                   {/* Puntos y Nivel */}
                   <td className="py-4 px-4">
-                    <div className="space-y-0.5">
-                      <span className="font-extrabold text-amber-600">{u.points} pts</span>
-                      <p className="text-[10px] text-slate-400 font-semibold">Nivel {u.level}</p>
-                    </div>
+                    {u.role === 'admin' ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200">
+                        No Aplica (Admin)
+                      </span>
+                    ) : (
+                      <div className="space-y-0.5">
+                        <span className="font-extrabold text-amber-600">{u.points} pts</span>
+                        <p className="text-[10px] text-slate-400 font-semibold">Nivel {u.level}</p>
+                      </div>
+                    )}
                   </td>
 
                   {/* Estado */}
@@ -194,24 +200,30 @@ export const UsersManagerTab: React.FC<UsersManagerTabProps> = ({ users, onRefre
 
                   {/* Acciones */}
                   <td className="py-4 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        type="button"
-                        onClick={() => handleAddPoints(u.id, 50)}
-                        className="px-2.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold border border-purple-200 transition-all flex items-center gap-1 cursor-pointer"
-                        title="Otorgar 50 Puntos"
-                      >
-                        <Plus className="w-3 h-3" /> 50 pts
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAddPoints(u.id, -50)}
-                        className="px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                        title="Deducir 50 Puntos"
-                      >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                    </div>
+                    {u.role === 'admin' ? (
+                      <span className="text-[11px] text-slate-400 font-medium italic">
+                        Rol sin gamificación
+                      </span>
+                    ) : (
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleAddPoints(u.id, 50)}
+                          className="px-2.5 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-900 font-bold border border-purple-200 transition-all flex items-center gap-1 cursor-pointer"
+                          title="Otorgar 50 Puntos"
+                        >
+                          <Plus className="w-3 h-3" /> 50 pts
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleAddPoints(u.id, -50)}
+                          className="px-2 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                          title="Deducir 50 Puntos"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
                   </td>
 
                 </tr>

@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  Sparkles, 
   Store, 
   MapPin, 
   Award, 
@@ -78,7 +77,7 @@ export default function RegistroEmprendedorCTA() {
             {/* Left Col: Motivation & Value proposition */}
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/20 border border-teal-400/30 text-teal-300 text-xs sm:text-sm font-bold mb-4">
-                <Sparkles className="w-4 h-4 text-teal-300" />
+                <Award className="w-4 h-4 text-teal-300" />
                 <span>Convocatoria Abierta &bull; Red de Economía Creativa</span>
               </div>
 
@@ -90,14 +89,14 @@ export default function RegistroEmprendedorCTA() {
               </h2>
 
               <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-                Regístrate en la plataforma oficial de Ciudades Creativas. Obtén tu insignia de <strong>Emprendedor Verificado</strong>, publica tu ubicación en el <strong>Mapa 3D</strong> y conecta con miles de turistas y compradores nacionales e internacionales.
+                Regístrate en la plataforma oficial de Ciudades Creativas. Obtén tu insignia de <strong>Emprendedor Verificado</strong>, publica tu ubicación en el <strong>Mapa Interactivo</strong> y conecta con miles de turistas y compradores nacionales e internacionales.
               </p>
 
               {/* Benefits list */}
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                  <span>Pin interactivo en el Mapa 3D</span>
+                  <span>Pin en el Mapa Interactivo</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs sm:text-sm text-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0" />
@@ -135,7 +134,7 @@ export default function RegistroEmprendedorCTA() {
                   }}
                   className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-bold text-sm shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Award className="w-4 h-4" />
                   <span>{isAuthenticated ? 'Solicitar Acreditación' : 'Iniciar Sesión y Postular'}</span>
                 </button>
 

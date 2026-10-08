@@ -460,7 +460,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
                     Paradas del Mapa • {selectedRouteForPlaces.name}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Puntos de interés interactivos visibles en el Mapa Inmersivo 3D.
+                    Puntos de interés interactivos visibles en el Mapa Interactivo.
                   </p>
                 </div>
               </div>
@@ -796,7 +796,7 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
 
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                    URL Recorrido 360° / VR 3D
+                    URL Recorrido 360° / Tour Virtual
                   </label>
                   <input
                     type="url"

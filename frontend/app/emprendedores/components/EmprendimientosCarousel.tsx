@@ -8,16 +8,16 @@ import {
   ChevronRight, 
   Star, 
   MapPin, 
-  Sparkles, 
+  Quote, 
   MessageCircle, 
   ExternalLink, 
   Award, 
-  X,
-  Store,
-  Compass,
-  CheckCircle2,
-  Pause,
-  Play
+  X, 
+  Store, 
+  Compass, 
+  CheckCircle2, 
+  Pause, 
+  Play 
 } from 'lucide-react';
 import { FaInstagram } from 'react-icons/fa6';
 import { FEATURED_ENTREPRENEURS, FeaturedEntrepreneur } from '@/data/emprendedoresData';
@@ -82,7 +82,7 @@ export default function EmprendimientosCarousel() {
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-10 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold uppercase tracking-wider mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              <Store className="w-3.5 h-3.5 text-amber-700" />
               <span>Orgullo de Nuestras Ciudades</span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
@@ -343,7 +343,7 @@ export default function EmprendimientosCarousel() {
 
               {/* Inspiring quote */}
               <div className="p-4 rounded-2xl bg-slate-900 text-white relative">
-                <Sparkles className="w-5 h-5 text-amber-400 mb-2" />
+                <Quote className="w-5 h-5 text-amber-400 mb-2" />
                 <p className="text-sm italic text-slate-200">
                   &ldquo;{activeModalItem.quickQuote}&rdquo;
                 </p>

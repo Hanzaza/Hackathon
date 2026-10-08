@@ -76,7 +76,7 @@ export interface MapaInmersivoProps {
 const MAP_STYLES = [
   { id: 'positron', name: 'Exploración', url: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json' },
   { id: 'voyager', name: 'Relieve', url: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json' },
-  { id: 'dark', name: 'Noche 3D', url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json' },
+  { id: 'dark', name: 'Noche', url: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json' },
 ];
 
 const MUNICIPIO_COORDINATES: Record<string, { lng: number; lat: number; zoom: number; name: string; slug: string; subtitle: string }> = {
@@ -866,15 +866,15 @@ export default function MapaInmersivo({
         </div>
       </button>
 
-      {/* 2. Toggle 2D / 3D */}
+      {/* 2. Toggle Inclinación / Perspectiva */}
       <button
         type="button"
         onClick={toggle3D}
-        className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer font-black text-xs"
-        title={is3D ? "Cambiar a perspectiva 2D plana" : "Cambiar a perspectiva 3D inmersiva"}
+        className="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-[0_6px_20px_rgba(0,0,0,0.12)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer font-black text-[11px]"
+        title={is3D ? "Cambiar a vista cenital plana" : "Cambiar a vista con inclinación y perspectiva"}
       >
-        <span className={is3D ? "text-purple-700 font-black text-xs" : "text-slate-700 font-bold text-xs"}>
-          {is3D ? "2D" : "3D"}
+        <span className={is3D ? "text-purple-700 font-black text-[11px]" : "text-slate-700 font-bold text-[11px]"}>
+          {is3D ? "2D" : "Ángulo"}
         </span>
       </button>
 

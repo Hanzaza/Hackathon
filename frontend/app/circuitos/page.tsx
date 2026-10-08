@@ -330,7 +330,7 @@ export default function CircuitosPage() {
               ¿Querés explorar las ciudades en el Mapa Interactivo?
             </h3>
             <p className="text-xs sm:text-sm text-purple-200 max-w-xl mx-auto mb-6">
-              Navegá por los puntos de interés cultural, infraestructura y circuitos geolocalizados en nuestra vista inmersiva 2D/3D con MapLibre GL.
+              Navegá por los puntos de interés cultural, infraestructura y circuitos geolocalizados en nuestra vista inmersiva e interactiva con MapLibre GL.
             </p>
             <Link
               href="/ciudades-creativas"

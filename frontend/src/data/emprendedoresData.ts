@@ -359,7 +359,7 @@ export const ADVICE_PILLARS: EntrepreneurAdvicePillar[] = [
     number: '01',
     title: 'Empieza con lo que tienes a mano',
     subtitle: 'La acción vence a la parálisis por perfección',
-    iconName: 'Sparkles',
+    iconName: 'Lightbulb',
     color: 'from-amber-500 to-orange-500',
     description: 'No necesitas un local gigante ni equipos de última generación para dar el primer paso. Valida tu producto con tus primeros 10 clientes reales y reinvierte cada córdoba con disciplina.',
     actionTip: 'Pregúntate hoy: ¿Cuál es el paso más pequeño que puedo dar en las próximas 24 horas para mostrar mi producto?',

@@ -103,7 +103,7 @@ export default function Navigation() {
             </div>
 
             {/* ACCIONES (Derecha) */}
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-2.5">
               
               {/* Botón de Perfil / Login */}
               {isAuthenticated && user ? (
@@ -111,18 +111,19 @@ export default function Navigation() {
                   {user.role === 'admin' && (
                     <Link
                       href="/admin"
-                      className="px-3 py-1.5 rounded-full bg-slate-950 text-purple-300 hover:text-white font-bold text-xs hover:bg-slate-900 transition-all border border-purple-500/40 flex items-center gap-1.5 shadow-sm"
+                      className="px-3.5 py-1.5 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-black text-xs transition-all shadow-sm active:scale-95 cursor-pointer tracking-wider uppercase"
+                      title="Panel de Control de Administrador"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                      <span>Admin</span>
+                      Admin
                     </Link>
                   )}
+
                   <Link
                     href="/perfil"
-                    className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 font-bold text-xs transition-all shadow-sm cursor-pointer"
+                    className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xs transition-all shadow-xs hover:shadow-sm cursor-pointer"
                     title="Ver Mi Pasaporte Cultural y Panel de Usuario"
                   >
-                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-amber-100 border border-amber-300">
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden bg-slate-200 border border-slate-300 shrink-0">
                       <Image
                         src={user.avatar || '/icons/roots/profile-mask.png'}
                         alt={user.name}
@@ -131,14 +132,14 @@ export default function Navigation() {
                         className="object-contain p-0.5"
                       />
                     </div>
-                    <span className="truncate max-w-[100px]">{user.name}</span>
-                    {user.role === 'admin' ? (
-                      <span className="text-[10px] bg-purple-200/80 text-purple-900 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
-                        Admin
-                      </span>
-                    ) : (
-                      <span className="text-[10px] bg-purple-200/80 text-purple-800 px-1.5 py-0.5 rounded-full font-black">
-                        {user.points} pts
+                    
+                    <span className="truncate max-w-[120px] font-bold text-xs text-slate-900">
+                      {user.name}
+                    </span>
+
+                    {user.role !== 'admin' && (
+                      <span className="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200/80 px-2 py-0.5 rounded-full font-black shadow-xs">
+                        {user.points || 0} pts
                       </span>
                     )}
                   </Link>
@@ -147,7 +148,7 @@ export default function Navigation() {
                 <button
                   type="button"
                   onClick={openAuthModal}
-                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 font-bold text-xs transition-all shadow-xs cursor-pointer active:scale-95"
                 >
                   <div className="relative w-4 h-5 shrink-0">
                     <Image
@@ -268,10 +269,14 @@ export default function Navigation() {
                   />
                 </div>
                 {pathname === '/perfil' && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00A8A7] shadow-[0_0_8px_#00A8A7]" />
+                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full shadow-xs ${
+                    user?.role === 'admin' ? 'bg-rose-500 shadow-[0_0_8px_#F43F5E]' : 'bg-[#00A8A7] shadow-[0_0_8px_#00A8A7]'
+                  }`} />
                 )}
                 {isAuthenticated && pathname !== '/perfil' && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#3BA455] shadow-[0_0_6px_rgba(59,164,85,0.9)]" />
+                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${
+                    user?.role === 'admin' ? 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse' : 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)]'
+                  }`} />
                 )}
               </div>
               <span className={`text-[10px] tracking-tight mt-1 leading-none transition-colors ${

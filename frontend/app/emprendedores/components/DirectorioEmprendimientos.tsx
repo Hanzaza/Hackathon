@@ -14,8 +14,7 @@ import {
   CheckCircle2,
   Store,
   ChevronRight,
-  Compass,
-  Sparkles
+  Compass
 } from 'lucide-react';
 import { FaInstagram } from 'react-icons/fa6';
 import { FEATURED_ENTREPRENEURS, FeaturedEntrepreneur } from '@/data/emprendedoresData';

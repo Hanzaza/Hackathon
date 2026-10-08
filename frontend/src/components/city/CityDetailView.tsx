@@ -126,7 +126,7 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
               <span>Próximamente disponible:</span>
             </div>
             <p className="text-[11px] text-slate-400 pl-6">
-              • Nuevos circuitos con navegación 3D geolocalizada.
+              • Nuevos circuitos con navegación interactiva geolocalizada.
             </p>
             <p className="text-[11px] text-slate-400 pl-6">
               • Agenda de ferias, festivales y talleres vivenciales.
@@ -250,7 +250,7 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
                   className="px-5 py-2.5 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold shadow-md shadow-purple-900/20 transition-all inline-flex items-center gap-2"
                 >
                   <MapPin className="w-4 h-4" />
-                  <span>Ver {city.name} en el Mapa 3D</span>
+                  <span>Ver {city.name} en el Mapa Interactivo</span>
                 </Link>
 
                 <Link

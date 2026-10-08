@@ -800,7 +800,7 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
                     <div>
                       <h4 className="font-bold text-slate-900 text-xs">Integración con el Mapa Inmersivo</h4>
                       <p className="text-[11px] text-slate-600 mt-0.5 leading-relaxed font-normal">
-                        Las coordenadas configuradas ubicarán el punto central de la ciudad y activarán los circuitos asociados en la vista inmersiva 3D.
+                        Las coordenadas configuradas ubicarán el punto central de la ciudad y activarán los circuitos asociados en el mapa interactivo.
                       </p>
                     </div>
                   </div>

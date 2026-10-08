@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { 
   Heart, 
   Quote, 
-  Sparkles, 
+  Award,
+  Lightbulb, 
   Volume2, 
   BookOpen, 
   ArrowRight, 
@@ -133,7 +134,7 @@ export default function HistoriasInspiradorasSection() {
 
                   {/* Impact Metric Pill */}
                   <div className="mt-3 p-2.5 rounded-xl bg-teal-50/80 border border-teal-200/60 text-teal-900 text-xs font-medium flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                    <Award className="w-4 h-4 text-teal-600 flex-shrink-0" />
                     <span>{story.fullStory.impactMetric}</span>
                   </div>
                 </div>
@@ -259,7 +260,7 @@ export default function HistoriasInspiradorasSection() {
               {/* Chapter 3 */}
               <div className="space-y-2 p-5 rounded-2xl bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200">
                 <div className="flex items-center gap-2 text-teal-800 font-bold text-sm tracking-wide uppercase">
-                  <Sparkles className="w-5 h-5 text-teal-600" />
+                  <Lightbulb className="w-5 h-5 text-teal-600" />
                   <h4>Consejo de Oro para Quienes Empiezan Hoy</h4>
                 </div>
                 <p className="text-sm sm:text-base text-slate-800 font-medium leading-relaxed mt-2 italic">

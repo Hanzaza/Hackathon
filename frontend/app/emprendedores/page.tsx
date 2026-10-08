@@ -18,7 +18,7 @@ export default function EmprendedoresPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-950 text-slate-900 pb-20">
       {/* 1. Hero Section con métricas de impacto */}
       <EmprendedoresHero
         onExploreClick={() => scrollToSection('carrusel-emprendimientos')}
@@ -43,6 +43,6 @@ export default function EmprendedoresPage() {
 
       {/* 7. Llamado a la Acción: Únete a la Red Creativa */}
       <RegistroEmprendedorCTA />
-    </main>
+    </div>
   );
 }

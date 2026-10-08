@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import NicaraguaSVG from '@/components/map/NicaraguaSVG';
 import CityMobileStacking from '@/components/ui/city-mobile-stacking';
 import CiudadesCreativasHero from '@/components/ui/CiudadesCreativasHero';
+import HomeEmprendedoresBanner from '@/components/ui/HomeEmprendedoresBanner';
 
 export default function HomePage() {
   const router = useRouter();
@@ -92,6 +93,9 @@ export default function HomePage() {
           <CityCard name="Nagarote" desc="Municipio azul y limpio, cuna del quesillo y la tradición gastronómica" active={true} slug="nagarote" logoSrc="/logos/nagarote.png" />
         </div>
       </section>
+
+      {/* 5. SECCIÓN: CONEXIÓN RED DE EMPRENDEDORES & ARTESANOS */}
+      <HomeEmprendedoresBanner />
       
     </main>
   );

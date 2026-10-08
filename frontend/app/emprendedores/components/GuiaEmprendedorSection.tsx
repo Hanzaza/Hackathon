@@ -7,7 +7,6 @@ import {
   Download, 
   FileText, 
   CheckCircle2, 
-  Sparkles, 
   ExternalLink,
   ChevronRight,
   X

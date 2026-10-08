@@ -624,9 +624,21 @@ export default function UserProfileDashboard() {
               {/* Textos y Badges */}
               <div className="space-y-2 lg:space-y-3">
                 <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 lg:gap-2.5">
-                  <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/20 text-[#00A8A7] border border-[#00A8A7]/30 text-[11px] lg:text-xs font-black uppercase tracking-wider">
-                    {user.role === 'admin' ? '🛡️ Administrador' : user.role === 'entrepreneur' ? '🏪 Emprendedor Verificado' : '🧭 Explorador Cultural'}
-                  </span>
+                  {user.role === 'admin' ? (
+                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+                      🛡️ Administrador General
+                    </span>
+                  ) : user.role === 'entrepreneur' ? (
+                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                      🏪 Emprendedor Verificado
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      🧭 Explorador Cultural
+                    </span>
+                  )}
                   <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#F4A43B]/20 text-[#F4A43B] border border-[#F4A43B]/30 text-[11px] lg:text-xs font-bold">
                     Nivel {user.level || 3} • Aventurero
                   </span>

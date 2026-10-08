@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { 
-  Sparkles, 
+  Award, 
   Compass, 
   Users, 
   BookOpen, 
@@ -15,12 +15,13 @@ import {
 import { ADVICE_PILLARS, EntrepreneurAdvicePillar } from '@/data/emprendedoresData';
 
 const ICONS_MAP: Record<string, React.ReactNode> = {
-  Sparkles: <Sparkles className="w-5 h-5" />,
+  Lightbulb: <Lightbulb className="w-5 h-5" />,
   Compass: <Compass className="w-5 h-5" />,
   Users: <Users className="w-5 h-5" />,
   BookOpen: <BookOpen className="w-5 h-5" />,
   MapPin: <MapPin className="w-5 h-5" />,
   HeartHandshake: <HeartHandshake className="w-5 h-5" />,
+  Award: <Award className="w-5 h-5" />,
 };
 
 export default function ConsejosYDecalogoSection() {
@@ -62,7 +63,7 @@ export default function ConsejosYDecalogoSection() {
                     {pillar.number}
                   </span>
                   <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${pillar.color} flex items-center justify-center text-white shadow-md`}>
-                    {ICONS_MAP[pillar.iconName] || <Sparkles className="w-5 h-5" />}
+                    {ICONS_MAP[pillar.iconName] || <Award className="w-5 h-5" />}
                   </div>
                 </div>
 

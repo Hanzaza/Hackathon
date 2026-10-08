@@ -10,6 +10,11 @@ interface EmprendedoresHeroProps {
 }
 
 const EMPRENDEDORES_SHOWCASE_IMAGES = [
+  "/emprendedores/emprendedora_bolsos.png", // Emprendedora con bolsos y accesorios artesanales
+  "/emprendedores/taller_textil_capacitacion.png", // Taller de capacitación textil y confección
+  "/emprendedores/diseno_trajes_folkloricos.png", // Confección y diseño de trajes folclóricos tradicionales
+  "/emprendedores/taller_maquinas_costura.png", // Capacitación y tecnificación de artesanas textiles
+  "/emprendedores/emprendedores_textiles_feria.png", // Emprendedores en feria comercial LAFISE / Mefcca
   "/emprendedores/showcase_cuero.png", // Bolsos y carteras de cuero artesanal nica
   "/emprendedores/showcase_chocolates.png", // Bombones finos y chocolates de cacao fino
   "/emprendedores/showcase_metal.png", // Arte en metal y lámparas de diseño

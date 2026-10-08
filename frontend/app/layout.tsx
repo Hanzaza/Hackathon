@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-
-import Navigation from "../src/components/ui/Navigation";
-import SplashScreen from "../src/components/ui/SplashScreen";
-import AuthModal from "../src/components/auth/AuthModal";
-import { AuthProvider } from "../src/context/AuthContext";
-import { UIProvider } from "../src/context/UIContext";
+import AppProviders from "../src/components/providers/AppProviders";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -14,6 +9,8 @@ const montserrat = Montserrat({
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
+
+export const dynamic = 'force-dynamic';
 
 // Metadatos actualizados para The Stateless
 export const metadata: Metadata = {
@@ -48,23 +45,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logos/Logo.png" />
       </head>
       <body className={`${montserrat.className} font-sans min-h-full flex flex-col bg-white text-slate-800`}>
-        <AuthProvider>
-          <UIProvider>
-            {/* Pantalla de carga inicial estilo Splash con Logo grande centrado */}
-            <SplashScreen />
-
-            {/* Barra de navegación global */}
-            <Navigation />
-
-            {/* Modal / Card interactivo de Login y Registro */}
-            <AuthModal />
-            
-            {/* Contenido principal */}
-            <main className="flex-grow">
-              {children}
-            </main>
-          </UIProvider>
-        </AuthProvider>
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

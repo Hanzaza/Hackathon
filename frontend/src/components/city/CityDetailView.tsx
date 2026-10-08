@@ -85,6 +85,22 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
   const [cityStatus, setCityStatus] = useState<'active' | 'inactive' | 'disabled' | 'pending'>((city.status as any) || 'active');
 
   useEffect(() => {
+    // Activar pestaña según hash o query param en la URL
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      const searchParams = new URLSearchParams(window.location.search);
+      const tabParam = searchParams.get('tab');
+      if (tabParam === 'circuitos' || hash === 'circuitos') {
+        setActiveTab('circuitos');
+      } else if (tabParam === 'gastronomia' || hash === 'gastronomia') {
+        setActiveTab('gastronomia');
+      } else if (tabParam === 'agenda' || hash === 'agenda') {
+        setActiveTab('agenda');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     // Sincronizar estado en tiempo real con el panel de administración
     adminService.getCities().then((cities) => {
       const match = cities.find((c) => c.slug === city.slug || c.name.toLowerCase() === city.name.toLowerCase());
@@ -289,7 +305,7 @@ export default function CityDetailView({ city, prevCity, nextCity }: CityDetailV
       </section>
 
       {/* PESTAÑAS INTERACTIVAS */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <section id="circuitos" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 scroll-mt-24">
         <div className="flex rounded-2xl bg-white p-1.5 border border-slate-200 shadow-sm overflow-x-auto gap-1">
           <button
             type="button"

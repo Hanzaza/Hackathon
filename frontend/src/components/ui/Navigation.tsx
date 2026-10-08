@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   IoHome, 
   IoHomeOutline, 
@@ -21,35 +21,101 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { useUI } from '../../context/UIContext';
 import { User as UserIcon } from 'lucide-react';
+import MagneticDock, { DockItemData } from '@/components/ui/magnetic-dock';
 
 // Enlaces de la barra de navegación para escritorio
 const DESKTOP_NAV_ITEMS = [
   { name: 'Inicio', href: '/' },
   { name: 'Circuitos Creativos', href: '/circuitos' },
   { name: 'Agenda', href: '/agenda' },
-  { name: 'Experiencias', href: '/experiencias' },
   { name: 'Mapa', href: '/ciudades-creativas' },
   { name: 'Emprendedores', href: '/emprendedores' },
 ];
 
-// Enlaces de la barra de navegación inferior para móviles
-const MOBILE_NAV_ITEMS = [
-  { name: 'Inicio', href: '/', customIcon: '/icons/roots/cathedral.png' },
-  { name: 'Circuitos', href: '/circuitos', iconActive: IoCompass, iconInactive: IoCompassOutline },
-  { name: 'Mapa', href: '/ciudades-creativas', iconActive: IoMap, iconInactive: IoMapOutline },
-  { name: 'Agenda', href: '/agenda', iconActive: IoCalendar, iconInactive: IoCalendarOutline },
-];
-
 export default function Navigation() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, openAuthModal } = useAuth();
   const { isImmersiveMapActive } = useUI();
 
-  if (pathname === '/login' || pathname.startsWith('/admin')) return null;
+  if (pathname === '/login' || (pathname && pathname.startsWith('/admin'))) return null;
 
   // El navbar móvil se muestra en el mapa nacional / departamental para permitir navegación general,
   // y se oculta ÚNICAMENTE cuando el usuario entra al mapa 3D inmersivo de una ciudad/circuito.
   const showMobileBottomNav = !isImmersiveMapActive;
+
+  // Elementos del Dock Magnético para móvil (todas las secciones del ecosistema ROOTS)
+  const mobileDockItems: DockItemData[] = [
+    {
+      id: 'inicio',
+      label: 'Inicio',
+      icon: (
+        <div className="relative w-6 h-6 flex items-center justify-center">
+          <Image
+            src="/icons/roots/cathedral.png"
+            alt="Inicio"
+            fill
+            sizes="32px"
+            className="object-contain drop-shadow-xs"
+          />
+        </div>
+      ),
+      onClick: () => router.push('/'),
+      isActive: pathname === '/',
+    },
+    {
+      id: 'circuitos',
+      label: 'Circuitos',
+      icon: <IoCompass className="w-5.5 h-5.5 text-white drop-shadow-sm" />,
+      onClick: () => router.push('/circuitos'),
+      isActive: Boolean(pathname?.startsWith('/circuitos')),
+    },
+    {
+      id: 'mapa',
+      label: 'Mapa',
+      icon: <IoMap className="w-5.5 h-5.5 text-white drop-shadow-sm" />,
+      onClick: () => router.push('/ciudades-creativas'),
+      isActive: Boolean(pathname?.startsWith('/ciudades-creativas')),
+    },
+    {
+      id: 'agenda',
+      label: 'Agenda',
+      icon: <IoCalendar className="w-5.5 h-5.5 text-white drop-shadow-sm" />,
+      onClick: () => router.push('/agenda'),
+      isActive: Boolean(pathname?.startsWith('/agenda')),
+    },
+    {
+      id: 'emprendedores',
+      label: 'Emprendedores',
+      icon: <IoStorefront className="w-5.5 h-5.5 text-white drop-shadow-sm" />,
+      onClick: () => router.push('/emprendedores'),
+      isActive: Boolean(pathname?.startsWith('/emprendedores')),
+    },
+    {
+      id: 'perfil',
+      label: isAuthenticated ? (user?.name || 'Mi Perfil') : 'Iniciar Sesión',
+      icon: (
+        <div className="relative w-6 h-6 flex items-center justify-center">
+          <Image
+            src={user?.avatar || '/icons/roots/profile-mask.png'}
+            alt="Perfil"
+            fill
+            sizes="32px"
+            className="object-contain drop-shadow-xs"
+          />
+        </div>
+      ),
+      onClick: () => {
+        if (!isAuthenticated) {
+          openAuthModal();
+        } else {
+          router.push('/perfil');
+        }
+      },
+      isActive: pathname === '/perfil',
+      badge: user?.role === 'admin' ? 1 : undefined,
+    },
+  ];
 
   return (
     <>
@@ -85,7 +151,7 @@ export default function Navigation() {
             {/* MENÚ DE ESCRITORIO (Centro) */}
             <div className="flex items-center space-x-7">
               {DESKTOP_NAV_ITEMS.map((item) => {
-                const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+                const isActive = pathname === item.href || (item.href !== '/' && Boolean(pathname?.startsWith(item.href)));
                 return (
                   <Link
                     key={item.href}
@@ -176,118 +242,19 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* ================= 2. NAVBAR MÓVIL FLOTANTE & REDONDEADO ================= */}
+      {/* ================= 2. NAVBAR MÓVIL FLOTANTE CON MAGNETIC DOCK ================= */}
       {showMobileBottomNav && (
-        <nav className="lg:hidden fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-1.75rem)] max-w-md pointer-events-auto animate-fadeIn">
-          <div className="rounded-[2.25rem] bg-[#0A261E]/95 backdrop-blur-2xl border border-white/15 shadow-[0_18px_50px_rgba(0,0,0,0.7)] px-2 py-2 flex items-center justify-around">
-            {MOBILE_NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-              const Icon = isActive ? item.iconActive : item.iconInactive;
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all duration-200 cursor-pointer ${
-                    isActive 
-                      ? 'text-white font-black scale-105' 
-                      : 'text-white/60 hover:text-white font-medium active:scale-95'
-                  }`}
-                >
-                  <div className={`relative p-1.5 rounded-2xl transition-all duration-200 flex items-center justify-center ${
-                    isActive ? 'bg-[#00A8A7]/25 border border-[#00A8A7]/40 shadow-[0_0_16px_rgba(0,168,167,0.4)]' : ''
-                  }`}>
-                    {'customIcon' in item && item.customIcon ? (
-                      <div className="relative w-[21px] h-[23px] shrink-0">
-                        <Image
-                          src={item.customIcon}
-                          alt={item.name}
-                          fill
-                          sizes="32px"
-                          className={`object-contain transition-all duration-200 ${
-                            isActive
-                              ? 'brightness-125 drop-shadow-[0_0_10px_rgba(0,168,167,0.8)]'
-                              : 'opacity-85 hover:opacity-100'
-                          }`}
-                        />
-                      </div>
-                    ) : (
-                      Icon && (
-                        <Icon 
-                          className={`w-[21px] h-[21px] shrink-0 transition-all duration-200 ${
-                            isActive 
-                              ? 'text-white drop-shadow-[0_0_10px_rgba(0,168,167,0.8)]' 
-                              : 'text-white/70'
-                          }`} 
-                        />
-                      )
-                    )}
-                    {isActive && (
-                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00A8A7] shadow-[0_0_8px_#00A8A7]" />
-                    )}
-                  </div>
-                  <span className={`text-[10px] tracking-tight mt-1 leading-none transition-colors ${
-                    isActive ? 'text-white font-black' : 'text-white/60 font-medium'
-                  }`}>
-                    {item.name}
-                  </span>
-                </Link>
-              );
-            })}
-
-            {/* ITEM 5: PERFIL MÓVIL CON EL ÍCONO DE LA MÁSCARA PRECOLOMBINA */}
-            <Link
-              href={isAuthenticated ? "/perfil" : "#"}
-              onClick={(e) => {
-                if (!isAuthenticated) {
-                  e.preventDefault();
-                  openAuthModal();
-                }
-              }}
-              className={`flex flex-col items-center justify-center flex-1 py-1 px-1 rounded-2xl transition-all duration-200 cursor-pointer ${
-                pathname === '/perfil'
-                  ? 'text-white font-black scale-105'
-                  : 'text-white/60 hover:text-white font-medium active:scale-95'
-              }`}
-            >
-              <div className={`relative p-1.5 rounded-2xl transition-all duration-200 flex items-center justify-center ${
-                pathname === '/perfil' 
-                  ? 'bg-[#00A8A7]/25 border border-[#00A8A7]/40 shadow-[0_0_16px_rgba(0,168,167,0.4)]' 
-                  : ''
-              }`}>
-                <div className="relative w-[22px] h-[24px] shrink-0">
-                  <Image
-                    src="/icons/roots/profile-mask.png"
-                    alt="Perfil"
-                    fill
-                    sizes="32px"
-                    className={`object-contain transition-all duration-200 ${
-                      pathname === '/perfil'
-                        ? 'brightness-125 drop-shadow-[0_0_10px_rgba(0,168,167,0.8)]'
-                        : 'opacity-85 hover:opacity-100'
-                    }`}
-                  />
-                </div>
-                {pathname === '/perfil' && (
-                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full shadow-xs ${
-                    user?.role === 'admin' ? 'bg-rose-500 shadow-[0_0_8px_#F43F5E]' : 'bg-[#00A8A7] shadow-[0_0_8px_#00A8A7]'
-                  }`} />
-                )}
-                {isAuthenticated && pathname !== '/perfil' && (
-                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full ${
-                    user?.role === 'admin' ? 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.9)] animate-pulse' : 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.9)]'
-                  }`} />
-                )}
-              </div>
-              <span className={`text-[10px] tracking-tight mt-1 leading-none transition-colors ${
-                pathname === '/perfil' ? 'text-white font-black' : 'text-white/60 font-medium'
-              }`}>
-                Perfil
-              </span>
-            </Link>
-
-          </div>
-        </nav>
+        <div className="lg:hidden fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-[9999] pointer-events-auto flex items-center justify-center w-full px-3 animate-fadeIn">
+          <MagneticDock
+            items={mobileDockItems}
+            iconSize={42}
+            maxScale={1.35}
+            magneticDistance={85}
+            showLabels={true}
+            position="bottom"
+            variant="roots"
+          />
+        </div>
       )}
     </>
   );

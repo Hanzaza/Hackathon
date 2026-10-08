@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import NicaraguaSVG from '@/components/map/NicaraguaSVG';
 import CityMobileStacking from '@/components/ui/city-mobile-stacking';
+import AccordionModal, { NICARAGUA_CITIES_GALLERY } from '@/components/ui/gallery-modal-accordion';
 import CiudadesCreativasHero from '@/components/ui/CiudadesCreativasHero';
 import HomeEmprendedoresBanner from '@/components/ui/HomeEmprendedoresBanner';
 
@@ -63,9 +64,9 @@ export default function HomePage() {
         
       </section>
 
-      {/* 4. SECCIÓN: NUESTRAS CIUDADES CREATIVAS (Cuadrícula Estática) */}
-      <section className="max-w-7xl mx-auto px-6 lg:px-8 pt-24">
-        <div className="mb-10">
+      {/* 4. SECCIÓN: NUESTRAS CIUDADES CREATIVAS (Galería Acordeón Interactivo con Fotos) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20">
+        <div className="mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200/80 text-amber-900 text-[11px] sm:text-xs font-black uppercase tracking-wider mb-2.5 shadow-xs">
             <span>✨ Red Nacional de Identidad & Cultura</span>
           </div>
@@ -80,17 +81,9 @@ export default function HomePage() {
         {/* Mobile: Sticky Stacking Cards View */}
         <CityMobileStacking />
 
-        <div className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <CityCard name="Bluefields" desc="Cuna de la danza, el Maypole y la riqueza multicultural caribeña" active={true} slug="bluefields" logoSrc="/logos/bluefields.png" />
-          <CityCard name="Masaya" desc="Capital del folclore nacional, cuna de las artesanías y el arte popular" active={true} slug="masaya" logoSrc="/logos/masaya.png" />
-          <CityCard name="San Juan de Oriente" desc="Santuario milenario del diseño precolombino y la cerámica utilitaria" active={true} slug="san-juan-de-oriente" logoSrc="/logos/san-juan-de-oriente.png" />
-          <CityCard name="León" desc="Capital de la literatura, poesía dariana, arquitectura colonial y murales" active={true} slug="leon" logoSrc="/logos/leon.png" />
-          <CityCard name="Granada" desc="Joya colonial de Nicaragua, cuna del diseño, arquitectura y poesía" active={true} slug="granada" logoSrc="/logos/granada.png" />
-          <CityCard name="Estelí" desc="Diamante de las Segovias, capital del muralismo heroico y la música norteña" active={true} slug="esteli" logoSrc="/logos/esteli.png" />
-          <CityCard name="Juigalpa" desc="Corazón ganadero de Chontales, cultura arqueológica y tradición taurina" active={true} slug="juigalpa" logoSrc="/logos/juigalpa.png" />
-          <CityCard name="Managua" desc="Capital multicultural, epicentro del arte contemporáneo, lagos y volcanes" active={true} slug="managua" logoSrc="/logos/managua.png" />
-          <CityCard name="Matagalpa" desc="Perla del Septentrión, cuna del café especial y la memoria indígena" active={true} slug="matagalpa" logoSrc="/logos/matagalpa.png" />
-          <CityCard name="Nagarote" desc="Municipio azul y limpio, cuna del quesillo y la tradición gastronómica" active={true} slug="nagarote" logoSrc="/logos/nagarote.png" />
+        {/* Desktop: Interactive Gallery Modal Accordion with scenic photos */}
+        <div className="hidden sm:block">
+          <AccordionModal items={NICARAGUA_CITIES_GALLERY} />
         </div>
       </section>
 
@@ -98,53 +91,5 @@ export default function HomePage() {
       <HomeEmprendedoresBanner />
       
     </main>
-  );
-}
-
-// --- COMPONENTES AUXILIARES ---
-
-function CityLogo({ logoSrc, name }: { logoSrc?: string, name: string }) {
-  return (
-    <div className="h-24 w-full relative mb-6 flex items-center justify-center transition-transform group-hover:scale-[1.02]">
-      {logoSrc ? (
-        <div className="relative w-full h-full">
-          <Image src={logoSrc} alt={`Logo ${name}`} fill sizes="(max-width: 768px) 100vw, 200px" className="object-contain" />
-        </div>
-      ) : (
-        <div className="w-full h-full bg-slate-100 rounded-xl flex items-center justify-center">
-          <span className="text-slate-400 font-bold tracking-widest uppercase">{name} Logo</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CityCard({ name, desc, active, slug, logoSrc }: { name: string, desc: string, active: boolean, slug?: string, logoSrc?: string }) {
-  if (!active || !slug) {
-    return (
-      <div className="flex flex-col p-8 rounded-3xl border-2 bg-slate-50 border-slate-100 opacity-60 transition-all">
-        <CityLogo logoSrc={logoSrc} name={name} />
-        <h3 className="text-2xl font-bold text-slate-900 mb-1">{name}</h3>
-        <p className="text-sm text-slate-500 mb-6 flex-grow">{desc}</p>
-        <span className="text-slate-400 font-semibold text-sm">
-          Próximamente
-        </span>
-      </div>
-    );
-  }
-
-  return (
-    <Link 
-      href={`/ciudades-creativas/${slug}`} 
-      className="flex flex-col p-8 rounded-3xl border-2 bg-white border-slate-100 hover:border-teal-300 hover:shadow-xl hover:shadow-teal-900/5 cursor-pointer transition-all group"
-    >
-      <CityLogo logoSrc={logoSrc} name={name} />
-      <h3 className="text-2xl font-bold text-slate-900 mb-1">{name}</h3>
-      <p className="text-sm text-slate-500 mb-6 flex-grow">{desc}</p>
-      
-      <span className="text-[#00A8A7] font-bold text-sm group-hover:text-[#007F7E] transition-colors flex items-center gap-1">
-        Explorar ciudad <span className="group-hover:translate-x-1 transition-transform">→</span>
-      </span>
-    </Link>
   );
 }

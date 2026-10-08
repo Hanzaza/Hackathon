@@ -18,6 +18,10 @@ import {
   LogOut,
   ShieldCheck,
   ChevronRight,
+  ChevronLeft,
+  X,
+  QrCode,
+  Share2,
   ExternalLink,
   Star,
   Check,
@@ -49,7 +53,6 @@ import {
   getMunicipalitiesByDepartment,
   getDepartmentByMunicipality,
 } from '@/data/nicaraguaGeo';
-import PrecolombianPattern from '../ui/PrecolombianPattern';
 
 // Categorías culturales oficiales ROOTS
 const CULTURAL_CATEGORIES = [
@@ -296,6 +299,12 @@ export default function UserProfileDashboard() {
   const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
   const [requestSubmitted, setRequestSubmitted] = useState(false);
 
+  // Estados de Modales y Vistas Emergentes Accesibles
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showPublicProfileModal, setShowPublicProfileModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isCopiedPublicLink, setIsCopiedPublicLink] = useState(false);
+
   // Inicializar Tema (Light / Dark) y Cargar Eventos Guardados
   useEffect(() => {
     // 1. Cargar tema desde localStorage
@@ -535,10 +544,6 @@ export default function UserProfileDashboard() {
             <span>Ingresar a Mi Perfil</span>
           </button>
         </div>
-
-        <div className="absolute bottom-0 w-full pointer-events-none">
-          <PrecolombianPattern fillColor="#0A261E" strokeColor="#00A8A7" opacity={0.3} height="120px" />
-        </div>
       </main>
     );
   }
@@ -588,11 +593,11 @@ export default function UserProfileDashboard() {
   const stampedCitiesCount = PASSPORT_STAMPS.filter((s) => s.stamped).length;
 
   return (
-    <main className="min-h-screen bg-[#F5EFE6] dark:bg-[#0A1217] text-slate-800 dark:text-slate-100 font-sans pb-36 pt-4 lg:pt-24 transition-colors duration-300">
+    <main className="min-h-screen bg-[#F5EFE6] dark:bg-[#0A1217] text-slate-800 dark:text-slate-100 font-sans pb-32 pt-0 sm:pt-4 lg:pt-24 transition-colors duration-300 w-full overflow-x-hidden">
       
-      {/* ================= 1. HEADER DE PERFIL OFICIAL ROOTS ================= */}
-      <section className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-8 lg:mb-10">
-        <div className="relative rounded-[2.5rem] sm:rounded-[3rem] overflow-hidden bg-[#0F3A2E] text-white shadow-xl border border-white/10 p-6 sm:p-10 lg:p-12">
+      {/* ================= 1. HEADER DE PERFIL OFICIAL ROOTS (100% FULL WIDTH EN MÓVIL) ================= */}
+      <section className="w-full max-w-7xl mx-auto px-0 sm:px-4 lg:px-8 mt-0 sm:mt-2 mb-4 sm:mb-8 lg:mb-10">
+        <div className="relative w-full rounded-none sm:rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden bg-[#0F3A2E] text-white shadow-xl border-b sm:border border-white/10 p-4 sm:p-8 lg:p-12">
           
           {/* Halo de luz turquesa ambiental */}
           <div 
@@ -600,14 +605,14 @@ export default function UserProfileDashboard() {
             className="pointer-events-none absolute -top-24 right-0 w-96 h-96 bg-[#00A8A7]/20 blur-[100px] rounded-full" 
           />
 
-          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-6 lg:gap-10">
+          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start justify-between gap-5 lg:gap-10">
             
             {/* Información del Usuario */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-7 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 text-center sm:text-left w-full md:w-auto">
               
               {/* Avatar con anillo oficial ROOTS */}
               <div className="relative shrink-0">
-                <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-4 border-[#00A8A7] shadow-xl bg-slate-900">
+                <div className="relative w-22 h-22 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full overflow-hidden border-4 border-[#00A8A7] shadow-xl bg-slate-900 mx-auto">
                   <Image
                     src={user.avatar || '/icons/roots/profile-mask.png'}
                     alt={user.name}
@@ -616,47 +621,49 @@ export default function UserProfileDashboard() {
                     className="object-contain p-2"
                   />
                 </div>
-                <span className="absolute bottom-1 right-1 w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-[#3BA455] border-2 border-white flex items-center justify-center text-white text-[11px] lg:text-xs shadow-sm" title="Usuario Verificado">
+                <span className="absolute bottom-0 right-0 sm:bottom-1 sm:right-1 w-6 h-6 lg:w-7 lg:h-7 rounded-full bg-[#3BA455] border-2 border-white flex items-center justify-center text-white text-[11px] lg:text-xs shadow-sm font-bold" title="Usuario Verificado">
                   ✓
                 </span>
               </div>
 
               {/* Textos y Badges */}
-              <div className="space-y-2 lg:space-y-3">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 lg:gap-2.5">
+              <div className="space-y-1.5 sm:space-y-2 lg:space-y-3 w-full">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
                   {user.role === 'admin' ? (
-                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
                       🛡️ Administrador General
                     </span>
                   ) : user.role === 'entrepreneur' ? (
-                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
                       🏪 Emprendedor Verificado
                     </span>
                   ) : (
-                    <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px] lg:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] sm:text-xs font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       🧭 Explorador Cultural
                     </span>
                   )}
-                  <span className="px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#F4A43B]/20 text-[#F4A43B] border border-[#F4A43B]/30 text-[11px] lg:text-xs font-bold">
+                  <span className="px-2.5 py-1 rounded-full bg-[#F4A43B]/20 text-[#F4A43B] border border-[#F4A43B]/30 text-[10px] sm:text-xs font-bold">
                     Nivel {user.level || 3} • Aventurero
                   </span>
                 </div>
 
-                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white capitalize">
                   {user.name} {user.lastname}
                 </h1>
 
-                <p className="text-xs sm:text-sm lg:text-base text-slate-300 flex items-center justify-center sm:justify-start gap-1.5 font-medium">
-                  <MapPin className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-[#00A8A7]" />
-                  <span>{user.city || 'León'}, Nicaragua</span>
-                  <span className="text-white/40">•</span>
-                  <span>{user.email}</span>
+                <p className="text-xs sm:text-sm lg:text-base text-slate-300 flex items-center justify-center sm:justify-start gap-1.5 font-medium flex-wrap">
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-[#00A8A7]" />
+                    <span>{user.city || 'León'}, Nicaragua</span>
+                  </span>
+                  <span className="text-white/40 hidden sm:inline">•</span>
+                  <span className="text-slate-300/80 truncate max-w-[260px] sm:max-w-none">{user.email}</span>
                 </p>
 
                 {user.bio && (
-                  <p className="text-xs sm:text-sm text-slate-200/90 max-w-xl leading-relaxed pt-1">
+                  <p className="text-xs sm:text-sm text-slate-200/90 max-w-xl leading-relaxed pt-0.5">
                     "{user.bio}"
                   </p>
                 )}
@@ -664,55 +671,43 @@ export default function UserProfileDashboard() {
 
             </div>
 
-            {/* Puntos y Acciones Rápidas */}
-            <div className="flex flex-row md:flex-col items-center md:items-end gap-3 lg:gap-4 w-full md:w-auto justify-center shrink-0">
+            {/* Puntos y Acciones Rápidas (100% Responsive sin desbordes) */}
+            <div className="flex flex-col items-stretch sm:items-end gap-2.5 w-full md:w-auto mt-2 sm:mt-0 shrink-0">
               
-              {!isAdmin ? (
+              {!isAdmin && (
                 /* Tarjeta de Puntos ROOTS (Solo para exploradores) */
-                <div className="px-5 py-3 sm:px-6 sm:py-3.5 lg:px-8 lg:py-4.5 rounded-2xl lg:rounded-3xl bg-white/10 border border-white/15 backdrop-blur-md text-center md:text-right shadow-sm">
-                  <span className="text-[10px] lg:text-xs font-extrabold uppercase tracking-widest text-[#00A8A7] block">
+                <div className="w-full sm:w-auto px-4 py-2.5 sm:px-6 sm:py-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md flex sm:block items-center justify-between text-left sm:text-right shadow-sm">
+                  <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-widest text-[#00A8A7] block">
                     Puntos Acumulados
                   </span>
-                  <div className="flex items-center justify-center md:justify-end gap-2 mt-0.5">
-                    <Sparkles className="w-5 h-5 lg:w-6 lg:h-6 text-[#F4D44D]" />
-                    <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">{user.points || 0}</span>
-                    <span className="text-xs lg:text-sm text-slate-300 font-bold">pts</span>
+                  <div className="flex items-center justify-end gap-1.5 mt-0.5">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#F4D44D]" />
+                    <span className="text-xl sm:text-3xl font-black text-white">{user.points || 0}</span>
+                    <span className="text-xs text-slate-300 font-bold">pts</span>
                   </div>
-                </div>
-              ) : (
-                /* Tarjeta Ejecutiva para Administrador (Sin gamificación) */
-                <div className="px-5 py-3 sm:px-6 sm:py-3.5 lg:px-7 lg:py-4 rounded-2xl lg:rounded-3xl bg-white/10 border border-emerald-400/30 backdrop-blur-md text-center md:text-right shadow-sm">
-                  <span className="text-[10px] lg:text-xs font-extrabold uppercase tracking-widest text-emerald-400 block">
-                    Rol del Sistema
-                  </span>
-                  <div className="flex items-center justify-center md:justify-end gap-2 mt-0.5">
-                    <ShieldCheck className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-400" />
-                    <span className="text-xl sm:text-2xl font-black text-white">Administrador</span>
-                  </div>
-                  <span className="text-[10px] text-slate-300/80 block mt-0.5 font-medium">Exento de gamificación</span>
                 </div>
               )}
 
-              {/* Botones de Acción */}
-              <div className="flex items-center gap-2">
+              {/* Botones de Acción (Grid en móvil de 2 columnas al 100% de ancho) */}
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
                 {isAdmin && (
                   <Link
                     href="/admin"
-                    className="px-4 py-2.5 lg:px-5 lg:py-3 rounded-xl lg:rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs lg:text-sm transition-all flex items-center gap-1.5 shadow-sm"
+                    className="py-2.5 px-3 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 shadow-sm text-center"
                   >
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>Panel Admin →</span>
+                    <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                    <span className="truncate">Panel Admin →</span>
                   </Link>
                 )}
 
                 {/* Botón Cerrar Sesión */}
                 <button
                   type="button"
-                  onClick={logout}
-                  className="px-4 py-2.5 lg:px-5 lg:py-3 rounded-xl lg:rounded-2xl bg-white/5 hover:bg-rose-600/30 text-white/80 hover:text-white border border-white/10 text-xs lg:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+                  onClick={() => setShowLogoutConfirm(true)}
+                  className={`py-2.5 px-3 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-rose-600/30 text-rose-300 hover:text-white border border-white/15 text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs text-center ${!isAdmin ? 'col-span-2' : ''}`}
                 >
-                  <LogOut className="w-3.5 h-3.5 lg:w-4 lg:h-4" />
-                  <span>Cerrar Sesión</span>
+                  <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400 shrink-0" />
+                  <span className="truncate">Cerrar Sesión</span>
                 </button>
               </div>
 
@@ -720,194 +715,307 @@ export default function UserProfileDashboard() {
 
           </div>
 
-          {/* Estadísticas Resumidas */}
+          {/* Estadísticas Resumidas (Grid 2x2 en móvil / 4 columnas en desktop) */}
           {!isAdmin ? (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mt-8 lg:mt-10 pt-6 lg:pt-8 border-t border-white/10 text-center">
-              <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#00A8A7]">{stampedCitiesCount}/10</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Sellos de Ciudades</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3.5 lg:gap-6 mt-6 sm:mt-8 lg:mt-10 pt-4 sm:pt-6 lg:pt-8 border-t border-white/10 text-center">
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 border border-white/5 shadow-xs">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#00A8A7]">{stampedCitiesCount}/10</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Sellos de Ciudades</span>
               </div>
-              <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4A43B]">{unlockedAchievementsCount}/{displayAchievements.length}</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Medallas Desbloqueadas</span>
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 border border-white/5 shadow-xs">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#F4A43B]">{unlockedAchievementsCount}/{displayAchievements.length}</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Medallas</span>
               </div>
-              <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#3BA455]">{savedEvents.length}</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Eventos Guardados</span>
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 border border-white/5 shadow-xs">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#3BA455]">{savedEvents.length}</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Eventos Guardados</span>
               </div>
-              <div className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4D44D]">{completedRoutesCount} de {routesProgressList.length > 0 ? routesProgressList.length : 3}</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Rutas Completadas</span>
+              <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 border border-white/5 shadow-xs">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#F4D44D]">{completedRoutesCount} de {routesProgressList.length > 0 ? routesProgressList.length : 3}</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Rutas Completadas</span>
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mt-8 lg:mt-10 pt-6 lg:pt-8 border-t border-white/10 text-center">
-              <Link href="/admin?tab=locations" className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#00A8A7] group-hover:scale-105 inline-block transition-transform">17</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Departamentos y Regiones</span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3.5 lg:gap-6 mt-6 sm:mt-8 lg:mt-10 pt-4 sm:pt-6 lg:pt-8 border-t border-white/10 text-center">
+              <Link href="/admin?tab=locations" className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#00A8A7] group-hover:scale-105 inline-block transition-transform">17</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Departamentos</span>
               </Link>
-              <Link href="/admin?tab=locations" className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4A43B] group-hover:scale-105 inline-block transition-transform">10</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Ciudades Creativas</span>
+              <Link href="/admin?tab=locations" className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#F4A43B] group-hover:scale-105 inline-block transition-transform">10</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Ciudades Creativas</span>
               </Link>
-              <Link href="/admin?tab=routes" className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#3BA455] group-hover:scale-105 inline-block transition-transform">3</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Rutas Oficiales</span>
+              <Link href="/admin?tab=routes" className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#3BA455] group-hover:scale-105 inline-block transition-transform">3</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Rutas Oficiales</span>
               </Link>
-              <Link href="/admin?tab=events" className="p-3.5 sm:p-4 lg:p-5 rounded-2xl lg:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
-                <span className="text-xl sm:text-2xl lg:text-3xl font-black text-[#F4D44D] group-hover:scale-105 inline-block transition-transform">7</span>
-                <span className="text-[10px] sm:text-xs lg:text-sm font-bold text-slate-300 block uppercase tracking-wider mt-1">Eventos en Agenda</span>
+              <Link href="/admin?tab=events" className="p-2.5 sm:p-4 rounded-xl sm:rounded-3xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 shadow-xs group">
+                <span className="text-lg sm:text-2xl lg:text-3xl font-black text-[#F4D44D] group-hover:scale-105 inline-block transition-transform">7</span>
+                <span className="text-[10px] sm:text-xs font-bold text-slate-300 block uppercase tracking-wider mt-0.5">Eventos en Agenda</span>
               </Link>
             </div>
           )}
-
-          {/* Patrón inferior decorativo */}
-          <div className="absolute bottom-0 inset-x-0 pointer-events-none opacity-25">
-            <PrecolombianPattern variant="diamonds" className="w-full h-8 text-[#00A8A7]" />
-          </div>
 
         </div>
       </section>
 
       {/* ================= 2. PESTAÑAS DE NAVEGACIÓN DEL PERFIL ================= */}
-      <section className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8 mb-8 lg:mb-10">
-        <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3.5 overflow-x-auto pb-2 scrollbar-hide">
-          
+      <section className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 mb-6 sm:mb-8 lg:mb-10">
+        
+        {/* Vista Desktop: Tabs horizontales */}
+        <div className="hidden lg:flex items-center gap-2.5 lg:gap-3.5 overflow-x-auto pb-2 scrollbar-hide">
           {isAdmin ? (
-            /* Pestañas para Administrador (Sin dinámicas de gamificación) */
             <>
               <button
                 type="button"
                 onClick={() => setActiveTab('admin_overview')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'admin_overview'
                     ? 'bg-emerald-600 text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <ShieldCheck className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-emerald-400" />
+                <ShieldCheck className="w-4.5 h-4.5 text-emerald-400" />
                 <span>Gestión del Sistema</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('saved_events')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'saved_events'
                     ? 'bg-emerald-600 text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Bookmark className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#00A8A7]" />
+                <Bookmark className="w-4.5 h-4.5 text-[#00A8A7]" />
                 <span>Eventos Guardados ({savedEvents.length})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('settings')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'settings'
                     ? 'bg-emerald-600 text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Settings className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-slate-400" />
-                <span>Ajustes & Tema</span>
+                <Settings className="w-4.5 h-4.5 text-slate-400" />
+                <span>Ajustes & Menú</span>
               </button>
             </>
           ) : (
-            /* Pestañas para Usuario Explorador / Turista */
             <>
               <button
                 type="button"
                 onClick={() => setActiveTab('overview')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'overview'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Compass className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#00A8A7]" />
+                <Compass className="w-4.5 h-4.5 text-[#00A8A7]" />
                 <span>Pasaporte Cultural</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('achievements')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'achievements'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Award className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#F4A43B]" />
+                <Award className="w-4.5 h-4.5 text-[#F4A43B]" />
                 <span>Logros & Medallas ({unlockedAchievementsCount})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('saved_events')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'saved_events'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Bookmark className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#00A8A7]" />
+                <Bookmark className="w-4.5 h-4.5 text-[#00A8A7]" />
                 <span>Eventos Guardados ({savedEvents.length})</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('circuits')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'circuits'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Layers className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#3BA455]" />
+                <Layers className="w-4.5 h-4.5 text-[#3BA455]" />
                 <span>Mis Circuitos</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('entrepreneur')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'entrepreneur'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Store className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-[#F4D44D]" />
+                <Store className="w-4.5 h-4.5 text-[#F4D44D]" />
                 <span>Emprendimiento</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('settings')}
-                className={`flex items-center gap-2 lg:gap-2.5 px-5 py-3 lg:px-6 lg:py-3.5 rounded-2xl text-xs sm:text-sm lg:text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-black whitespace-nowrap transition-all cursor-pointer ${
                   activeTab === 'settings'
                     ? 'bg-[#0F3A2E] text-white shadow-md'
                     : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-white/10'
                 }`}
               >
-                <Settings className="w-4 h-4 lg:w-4.5 lg:h-4.5 text-slate-400" />
-                <span>Ajustes & Tema</span>
+                <Settings className="w-4.5 h-4.5 text-slate-400" />
+                <span>Ajustes & Menú</span>
               </button>
             </>
           )}
-
         </div>
+
+        {/* Vista Móvil: Segmented Grid al 100% de Ancho (Sin desbordes ni scroll cortado) */}
+        <div className="lg:hidden w-full">
+          {isAdmin ? (
+            <div className="grid grid-cols-3 gap-1.5 w-full p-1.5 rounded-2xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setActiveTab('admin_overview')}
+                className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'admin_overview'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4" />
+                <span className="truncate text-[11px]">Gestión</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('saved_events')}
+                className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'saved_events'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <Bookmark className="w-4 h-4" />
+                <span className="truncate text-[11px]">Eventos</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('settings')}
+                className={`py-2.5 px-2 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'settings'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                <span className="truncate text-[11px]">Ajustes</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 gap-1.5 w-full p-1.5 rounded-2xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 shadow-xs">
+              <button
+                type="button"
+                onClick={() => setActiveTab('overview')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'overview'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Compass className="w-4 h-4 text-[#00A8A7]" />
+                <span className="truncate text-[10px]">Pasaporte</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('achievements')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'achievements'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Award className="w-4 h-4 text-[#F4A43B]" />
+                <span className="truncate text-[10px]">Logros</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('circuits')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'circuits'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Layers className="w-4 h-4 text-[#3BA455]" />
+                <span className="truncate text-[10px]">Circuitos</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('saved_events')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'saved_events'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Bookmark className="w-4 h-4 text-[#00A8A7]" />
+                <span className="truncate text-[10px]">Eventos</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('entrepreneur')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'entrepreneur'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Store className="w-4 h-4 text-[#F4D44D]" />
+                <span className="truncate text-[10px]">Negocio</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('settings')}
+                className={`py-2 px-1.5 rounded-xl text-xs font-black transition-all flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                  activeTab === 'settings'
+                    ? 'bg-[#0F3A2E] text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Settings className="w-4 h-4 text-slate-400" />
+                <span className="truncate text-[10px]">Ajustes</span>
+              </button>
+            </div>
+          )}
+        </div>
+
       </section>
 
       {/* ================= 3. CONTENIDO PRINCIPAL SEGÚN PESTAÑA ================= */}
-      <div className="w-[min(94vw,1400px)] mx-auto px-4 sm:px-6 lg:px-8">
-        
+      <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8">
+
         {/* ================= TAB ADMIN: GESTIÓN DEL SISTEMA (SOLO ADMINISTRADOR) ================= */}
         {activeTab === 'admin_overview' && isAdmin && (
-          <div className="space-y-8 lg:space-y-10 animate-fadeIn">
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm">
+          <div className="space-y-6 sm:space-y-8 lg:space-y-10 animate-fadeIn">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl sm:rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-4 sm:p-8 lg:p-12 shadow-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 lg:mb-10">
                 <div>
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
@@ -1796,245 +1904,582 @@ export default function UserProfileDashboard() {
           </div>
         )}
 
-        {/* ================= TAB 6: AJUSTES & MODO CLARO / OSCURO ================= */}
+        {/* ================= TAB 6: AJUSTES & MENÚ GENERAL (LAYOUT MÓVIL ACCESIBLE & RESPONSIVE) ================= */}
         {activeTab === 'settings' && (
-          <div className="space-y-6 lg:space-y-8 animate-fadeIn">
+          <div className="space-y-6 lg:space-y-8 animate-fadeIn max-w-4xl mx-auto">
             
-            <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] lg:rounded-[3rem] border border-slate-200/80 dark:border-white/10 p-6 sm:p-10 lg:p-12 shadow-sm space-y-8 lg:space-y-10">
-              
-              {/* Encabezado */}
+            {/* Header / Sub-título */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 lg:px-3.5 lg:py-1.5 rounded-full bg-[#00A8A7]/15 text-[#007F7E] dark:text-[#00A8A7] text-[11px] lg:text-xs font-black uppercase tracking-wider mb-2">
                   <Settings className="w-3.5 h-3.5" />
-                  <span>Personalización del Pasaporte</span>
+                  <span>Configuración & Preferencias</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white">
-                  Ajustes y Preferencias de Cuenta
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+                  Ajustes de la Cuenta
                 </h2>
-                <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-1">
-                  Configurá el aspecto visual, información personal e intereses culturales.
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                  Gestioná tu información personal, tema visual, notificaciones y credencial oficial.
                 </p>
               </div>
 
-              {/* 1. SELECTOR DE MODO CLARO / OSCURO (LIGHT / DARK MODE) */}
-              <div className="p-6 lg:p-8 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 space-y-5">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">Tema Visual de la Aplicación</h3>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">Elegí la apariencia visual para explorar la plataforma.</p>
-                  </div>
-                  <span className="text-xs sm:text-sm font-bold text-[#007F7E] dark:text-[#00A8A7] uppercase tracking-wider">
-                    {themeMode === 'light' ? 'Modo Claro' : themeMode === 'dark' ? 'Modo Oscuro' : 'Automático'}
-                  </span>
-                </div>
+              <button
+                type="button"
+                onClick={() => setShowPublicProfileModal(true)}
+                className="self-start sm:self-auto px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-[#00A8A7] dark:hover:text-[#00A8A7] transition-all flex items-center gap-2 shadow-xs cursor-pointer"
+              >
+                <ExternalLink className="w-4 h-4 text-[#00A8A7]" />
+                <span>Credencial Pública</span>
+              </button>
+            </div>
 
-                <div className="grid grid-cols-3 gap-3.5 lg:gap-5">
-                  
-                  {/* Opción Claro */}
-                  <button
-                    type="button"
-                    onClick={() => handleThemeChange('light')}
-                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
-                      themeMode === 'light'
-                        ? 'bg-white border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
-                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
-                      <Sun className="w-5 h-5 lg:w-6 lg:h-6" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Modo Claro</span>
-                    <span className="text-[10px] sm:text-xs text-slate-500">Luminoso & Nítido</span>
-                  </button>
+            {/* SECCIÓN 1: PERFIL & CREDENCIAL */}
+            <div className="space-y-2.5">
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1 block">
+                PERFIL & CREDENCIAL
+              </span>
 
-                  {/* Opción Oscuro */}
-                  <button
-                    type="button"
-                    onClick={() => handleThemeChange('dark')}
-                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
-                      themeMode === 'dark'
-                        ? 'bg-slate-900 border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
-                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#0F3A2E] text-[#00A8A7] flex items-center justify-center">
-                      <Moon className="w-5 h-5 lg:w-6 lg:h-6" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Modo Oscuro</span>
-                    <span className="text-[10px] sm:text-xs text-slate-500">Inmersivo & Elegante</span>
-                  </button>
-
-                  {/* Opción Sistema */}
-                  <button
-                    type="button"
-                    onClick={() => handleThemeChange('system')}
-                    className={`p-4 sm:p-5 lg:p-6 rounded-2xl lg:rounded-3xl border text-center transition-all flex flex-col items-center gap-2.5 cursor-pointer ${
-                      themeMode === 'system'
-                        ? 'bg-white dark:bg-slate-900 border-[#00A8A7] shadow-md ring-2 ring-[#00A8A7]'
-                        : 'bg-white/60 dark:bg-slate-800 border-slate-200 dark:border-white/5 opacity-70 hover:opacity-100'
-                    }`}
-                  >
-                    <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center">
-                      <Laptop className="w-5 h-5 lg:w-6 lg:h-6" />
-                    </div>
-                    <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">Sistema</span>
-                    <span className="text-[10px] sm:text-xs text-slate-500">Sincronizado</span>
-                  </button>
-
-                </div>
-              </div>
-
-              {/* 2. FORMULARIO DE DATOS DEL PERFIL */}
-              <form onSubmit={handleSaveProfile} className="space-y-6 lg:space-y-8">
-                
-                {profileSuccessMsg && (
-                  <div className="p-4 rounded-2xl bg-[#3BA455]/15 border border-[#3BA455]/30 text-[#3BA455] text-xs sm:text-sm font-bold flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>¡Tus cambios de perfil se guardaron correctamente!</span>
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <div>
-                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      Nombre
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formName}
-                      onChange={(e) => setFormName(e.target.value)}
-                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      Apellido
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formLastname}
-                      onChange={(e) => setFormLastname(e.target.value)}
-                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <div>
-                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      Departamento
-                    </label>
-                    <select
-                      value={formDepartment}
-                      onChange={(e) => {
-                        const newDept = e.target.value;
-                        setFormDepartment(newDept);
-                        const muns = getMunicipalitiesByDepartment(newDept);
-                        setFormCity(muns[0] || 'León');
-                      }}
-                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
-                    >
-                      {NICARAGUA_GEO_DATA.map((d) => (
-                        <option key={d.id} value={d.name}>{d.name}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                      Municipio
-                    </label>
-                    <select
-                      value={formCity}
-                      onChange={(e) => setFormCity(e.target.value)}
-                      className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
-                    >
-                      {getMunicipalitiesByDepartment(formDepartment).map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Biografía / Qué te apasiona de la cultura nicaragüense
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={formBio}
-                    onChange={(e) => setFormBio(e.target.value)}
-                    placeholder="Contanos qué tradiciones, ciudades o artesanías te inspiran..."
-                    className="w-full px-4 py-3 lg:px-5 lg:py-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
-                  />
-                </div>
-
-                {/* 3. PREFERENCIAS CULTURALES */}
-                <div>
-                  <label className="block text-xs lg:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2.5">
-                    Tus Categorías Culturales Favoritas
-                  </label>
-                  <div className="flex flex-wrap gap-2.5">
-                    {CULTURAL_CATEGORIES.map((cat) => {
-                      const isSelected = formFavCategories.includes(cat);
-                      return (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => {
-                            if (isSelected) {
-                              setFormFavCategories(formFavCategories.filter((c) => c !== cat));
-                            } else {
-                              setFormFavCategories([...formFavCategories, cat]);
-                            }
-                          }}
-                          className={`px-4 py-2 rounded-full text-xs lg:text-sm font-bold transition-all cursor-pointer ${
-                            isSelected
-                              ? 'bg-[#0F3A2E] text-white border border-[#00A8A7]'
-                              : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/5 hover:border-slate-300'
-                          }`}
-                        >
-                          {isSelected && '✓ '}
-                          {cat}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* 4. NOTIFICACIONES */}
-                <div className="p-5 lg:p-6 rounded-2xl lg:rounded-3xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-white/10 flex items-center justify-between">
-                  <div>
-                    <h4 className="text-xs sm:text-sm lg:text-base font-bold text-slate-900 dark:text-white">Notificaciones de Nuevos Eventos y Rutas</h4>
-                    <p className="text-[11px] sm:text-xs lg:text-sm text-slate-500 mt-0.5">Recibí alertas sobre ferias, festividades y circuitos habilitados en tus ciudades favoritas.</p>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={formNotifications}
-                    onChange={(e) => setFormNotifications(e.target.checked)}
-                    className="w-5 h-5 lg:w-6 lg:h-6 accent-[#00A8A7] rounded cursor-pointer"
-                  />
-                </div>
-
+              <div className="space-y-2.5 sm:space-y-3">
+                {/* 1.1 Editar Información Personal */}
                 <button
-                  type="submit"
-                  disabled={isSavingProfile}
-                  className="py-3.5 px-8 lg:py-4 lg:px-10 rounded-2xl bg-[#0F3A2E] hover:bg-[#0A261E] text-white font-black text-xs sm:text-sm lg:text-base shadow-lg transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                  type="button"
+                  onClick={() => setShowEditProfileModal(true)}
+                  className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 hover:border-[#00A8A7]/50 dark:hover:border-[#00A8A7]/40 transition-all flex items-center justify-between gap-3 text-left group shadow-xs hover:shadow-md cursor-pointer active:scale-[0.99]"
                 >
-                  <span>{isSavingProfile ? 'Guardando...' : 'Guardar Todos los Cambios'}</span>
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#00A8A7]/15 text-[#007F7E] dark:text-[#00A8A7] border border-[#00A8A7]/30 flex items-center justify-center shrink-0">
+                      <Edit3 className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-[#00A8A7] dark:group-hover:text-[#00A8A7] transition-colors truncate">
+                        Editar Información Personal
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Nombre, departamento, ciudad, biografía y categorías favoritas
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-200 group-hover:translate-x-0.5 transition-all shrink-0" />
                 </button>
 
-              </form>
+                {/* 1.2 Ver Perfil Público / Pasaporte Digital */}
+                <button
+                  type="button"
+                  onClick={() => setShowPublicProfileModal(true)}
+                  className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 hover:border-indigo-500/50 dark:hover:border-indigo-500/40 transition-all flex items-center justify-between gap-3 text-left group shadow-xs hover:shadow-md cursor-pointer active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                      <QrCode className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors truncate">
+                        Credencial Pública & QR
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Tu credencial de pasaporte oficial como lo ven otros exploradores
+                      </p>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-5 h-5 text-slate-400 group-hover:text-indigo-400 transition-colors shrink-0" />
+                </button>
 
+                {/* 1.3 Panel Admin si corresponde */}
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 hover:border-emerald-500/50 dark:hover:border-emerald-500/40 transition-all flex items-center justify-between gap-3 text-left group shadow-xs hover:shadow-md cursor-pointer active:scale-[0.99]"
+                  >
+                    <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <LayoutDashboard className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors truncate">
+                          Panel de Administración
+                        </h4>
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                          Control central de circuitos, lugares, eventos y reportes
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-200 group-hover:translate-x-0.5 transition-all shrink-0" />
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            {/* SECCIÓN 2: PREFERENCIAS & INTERFAZ */}
+            <div className="space-y-2.5">
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1 block">
+                PREFERENCIAS & INTERFAZ
+              </span>
+
+              <div className="space-y-2.5 sm:space-y-3">
+                {/* 2.1 Tema Visual (Con Selector Rápido Integrado) */}
+                <div className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left shadow-xs">
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30 flex items-center justify-center shrink-0">
+                      {themeMode === 'dark' ? <Moon className="w-5 h-5 sm:w-6 sm:h-6" /> : <Sun className="w-5 h-5 sm:w-6 sm:h-6" />}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
+                        Tema Visual
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Elegí la apariencia ({themeMode === 'light' ? 'Modo Claro' : themeMode === 'dark' ? 'Modo Oscuro' : 'Sincronizado'})
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Pills de selección de tema */}
+                  <div className="flex items-center gap-1 p-1 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5 shrink-0 self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('light')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        themeMode === 'light'
+                          ? 'bg-white text-slate-950 shadow-xs ring-1 ring-slate-200'
+                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                      }`}
+                      title="Modo Claro"
+                    >
+                      <Sun className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Claro</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('dark')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        themeMode === 'dark'
+                          ? 'bg-[#00A8A7] text-slate-950 font-black shadow-xs'
+                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                      }`}
+                      title="Modo Oscuro"
+                    >
+                      <Moon className="w-3.5 h-3.5 text-slate-950 dark:text-white" />
+                      <span>Oscuro</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('system')}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                        themeMode === 'system'
+                          ? 'bg-slate-700 text-white font-black shadow-xs'
+                          : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                      }`}
+                      title="Sincronizado con el Sistema"
+                    >
+                      <Laptop className="w-3.5 h-3.5" />
+                      <span>Auto</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2.2 Notificaciones de Agenda */}
+                <div className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 transition-all flex items-center justify-between gap-3 text-left shadow-xs">
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                      <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white truncate">
+                        Notificaciones de Agenda
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Alertas de festividades y nuevas rutas en tus ciudades
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Switch Toggle */}
+                  <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={formNotifications}
+                      onChange={(e) => {
+                        const val = e.target.checked;
+                        setFormNotifications(val);
+                        updateProfile({ notifications_enabled: val });
+                      }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00A8A7]"></div>
+                  </label>
+                </div>
+
+                {/* 2.3 Directorio de Emprendedores */}
+                <Link
+                  href="/emprendedores"
+                  className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-slate-200/90 dark:border-slate-800 hover:border-cyan-500/50 dark:hover:border-cyan-500/40 transition-all flex items-center justify-between gap-3 text-left group shadow-xs hover:shadow-md cursor-pointer active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                      <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors truncate">
+                        Directorio de Emprendedores
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Conectate con la red nacional de artesanos, artistas y talleres
+                      </p>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-5 h-5 text-slate-400 group-hover:text-cyan-400 transition-colors shrink-0" />
+                </Link>
+              </div>
+            </div>
+
+            {/* SECCIÓN 3: CUENTA & SESIÓN */}
+            <div className="space-y-2.5">
+              <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-400 dark:text-slate-500 px-1 block">
+                CUENTA & SESIÓN
+              </span>
+
+              <div className="space-y-2.5 sm:space-y-3">
+                {/* 3.1 Cerrar Sesión */}
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutConfirm(true)}
+                  className="w-full p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c141f] border border-rose-200 dark:border-rose-950/60 hover:border-rose-500/60 dark:hover:border-rose-500/50 transition-all flex items-center justify-between gap-3 text-left group shadow-xs hover:shadow-md cursor-pointer active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
+                      <LogOut className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm sm:text-base font-black text-rose-600 dark:text-rose-400 group-hover:text-rose-700 dark:group-hover:text-rose-300 transition-colors truncate">
+                        Cerrar Sesión
+                      </h4>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 truncate">
+                        Salir de tu cuenta en este dispositivo
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-rose-500 group-hover:translate-x-0.5 transition-transform shrink-0" />
+                </button>
+              </div>
             </div>
 
           </div>
         )}
 
       </div>
+
+      {/* ================= MODAL 1: EDITAR INFORMACIÓN PERSONAL ================= */}
+      {showEditProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  <User className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                    Editar Información Personal
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Actualizá los datos públicos y preferencias de tu pasaporte
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowEditProfileModal(false)}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={async (e) => {
+              await handleSaveProfile(e);
+              setTimeout(() => setShowEditProfileModal(false), 800);
+            }} className="space-y-5">
+              
+              {profileSuccessMsg && (
+                <div className="p-3.5 rounded-2xl bg-[#3BA455]/15 border border-[#3BA455]/30 text-[#3BA455] text-xs sm:text-sm font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>¡Tus cambios de perfil se guardaron correctamente!</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Apellido
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formLastname}
+                    onChange={(e) => setFormLastname(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Departamento
+                  </label>
+                  <select
+                    value={formDepartment}
+                    onChange={(e) => {
+                      const newDept = e.target.value;
+                      setFormDepartment(newDept);
+                      const muns = getMunicipalitiesByDepartment(newDept);
+                      setFormCity(muns[0] || 'León');
+                    }}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                  >
+                    {NICARAGUA_GEO_DATA.map((d) => (
+                      <option key={d.id} value={d.name}>{d.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Municipio
+                  </label>
+                  <select
+                    value={formCity}
+                    onChange={(e) => setFormCity(e.target.value)}
+                    className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                  >
+                    {getMunicipalitiesByDepartment(formDepartment).map((m) => (
+                      <option key={m} value={m}>{m}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Biografía / Qué te apasiona de la cultura nicaragüense
+                </label>
+                <textarea
+                  rows={2}
+                  value={formBio}
+                  onChange={(e) => setFormBio(e.target.value)}
+                  placeholder="Contanos qué tradiciones, ciudades o artesanías te inspiran..."
+                  className="w-full px-4 py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-[#00A8A7]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
+                  Tus Categorías Culturales Favoritas
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {CULTURAL_CATEGORIES.map((cat) => {
+                    const isSelected = formFavCategories.includes(cat);
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => {
+                          if (isSelected) {
+                            setFormFavCategories(formFavCategories.filter((c) => c !== cat));
+                          } else {
+                            setFormFavCategories([...formFavCategories, cat]);
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#0F3A2E] text-white border border-[#00A8A7]'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/5 hover:border-slate-300'
+                        }`}
+                      >
+                        {isSelected && '✓ '}
+                        {cat}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setShowEditProfileModal(false)}
+                  className="px-5 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-bold hover:bg-slate-200 transition-all cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSavingProfile}
+                  className="px-6 py-3 rounded-xl bg-[#00A8A7] hover:bg-[#008F8E] text-slate-950 font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                >
+                  <span>{isSavingProfile ? 'Guardando...' : 'Guardar Cambios'}</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL 2: VISTA DE PERFIL PÚBLICO / PASAPORTE VIRTUAL ================= */}
+      {showPublicProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-md bg-[#0F3A2E] text-white rounded-[2.5rem] border border-white/20 shadow-2xl overflow-hidden p-6 sm:p-8 space-y-6 text-center">
+            
+            {/* Botón cerrar */}
+            <button
+              type="button"
+              onClick={() => setShowPublicProfileModal(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white/80 hover:text-white hover:bg-white/20 transition-all cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Badge superior */}
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#00A8A7]/20 border border-[#00A8A7]/40 text-[#00A8A7] text-[11px] font-black uppercase tracking-wider mx-auto">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Pasaporte Digital Oficial ROOTS</span>
+            </div>
+
+            {/* Avatar & Anillo de Honor */}
+            <div className="relative w-28 h-28 mx-auto">
+              <div className="w-full h-full rounded-full overflow-hidden border-4 border-[#F4A43B] bg-slate-950 shadow-xl relative">
+                <Image
+                  src={user.avatar || '/icons/roots/profile-mask.png'}
+                  alt={user.name}
+                  fill
+                  sizes="112px"
+                  className="object-contain p-2"
+                />
+              </div>
+              <span className="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-[#3BA455] border-2 border-white flex items-center justify-center text-white text-xs shadow-sm font-bold" title="Verificado">
+                ✓
+              </span>
+            </div>
+
+            {/* Información del Explorador */}
+            <div className="space-y-1">
+              <h3 className="text-2xl font-black text-white">
+                {user.name} {user.lastname}
+              </h3>
+              <p className="text-xs text-slate-300 flex items-center justify-center gap-1.5 font-medium">
+                <MapPin className="w-3.5 h-3.5 text-[#00A8A7]" />
+                <span>{user.city || 'León'}, Nicaragua</span>
+              </p>
+              {user.bio && (
+                <p className="text-xs text-slate-200/90 italic pt-2 max-w-xs mx-auto">
+                  "{user.bio}"
+                </p>
+              )}
+            </div>
+
+            {/* Grid de Estadísticas Públicas */}
+            <div className="grid grid-cols-3 gap-2.5 p-3.5 rounded-2xl bg-white/10 border border-white/10">
+              <div>
+                <span className="text-lg font-black text-[#F4D44D]">{user.points || 0}</span>
+                <span className="block text-[10px] text-slate-300 uppercase font-bold">Puntos</span>
+              </div>
+              <div className="border-x border-white/10">
+                <span className="text-lg font-black text-[#00A8A7]">{stampedCitiesCount}/10</span>
+                <span className="block text-[10px] text-slate-300 uppercase font-bold">Sellos</span>
+              </div>
+              <div>
+                <span className="text-lg font-black text-[#F4A43B]">{unlockedAchievementsCount}</span>
+                <span className="block text-[10px] text-slate-300 uppercase font-bold">Medallas</span>
+              </div>
+            </div>
+
+            {/* Muestra de Sellos */}
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-300 block">
+                Últimos Sellos de Ciudades
+              </span>
+              <div className="flex items-center justify-center gap-2">
+                {PASSPORT_STAMPS.filter(s => s.stamped).slice(0, 4).map((s) => (
+                  <div key={s.slug} className="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center text-lg" title={s.name}>
+                    {s.icon}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Botón de Compartir */}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  navigator.clipboard?.writeText?.(window.location.href);
+                  setIsCopiedPublicLink(true);
+                  setTimeout(() => setIsCopiedPublicLink(false), 3000);
+                }
+              }}
+              className="w-full py-3.5 rounded-2xl bg-[#00A8A7] hover:bg-[#008F8E] text-slate-950 font-black text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>{isCopiedPublicLink ? '¡Enlace de Pasaporte Copiado!' : 'Compartir Pasaporte Cultural'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ================= MODAL 3: CONFIRMAR CERRAR SESIÓN ================= */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-sm bg-white dark:bg-[#0c141f] rounded-[2.5rem] border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 text-center space-y-5">
+            
+            <div className="w-16 h-16 rounded-3xl bg-rose-500/15 text-rose-500 border border-rose-500/30 flex items-center justify-center mx-auto">
+              <LogOut className="w-8 h-8" />
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                ¿Deseas cerrar sesión?
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                Podrás volver a ingresar en cualquier momento con tu cuenta para continuar acumulando sellos, medallas y puntos.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs sm:text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-all cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  logout();
+                }}
+                className="py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </main>
   );

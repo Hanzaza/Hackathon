@@ -17,7 +17,6 @@ import {
   RotateCcw,
   BadgeCheck,
   TrendingUp,
-  Building2,
   ChevronRight,
   FileText,
   Award
@@ -47,11 +46,6 @@ export default function HomeEmprendedoresBanner() {
       
       {/* 1. ENCABEZADO DE SECCIÓN INSTITUCIONAL & PROFESIONAL */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 sm:mb-8 text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm font-bold uppercase tracking-wider mb-3">
-          <Building2 className="w-4 h-4 text-amber-700" />
-          <span>Red Nacional de Economía Creativa</span>
-        </div>
-        
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-950 leading-tight tracking-tight max-w-4xl mx-auto">
           ¿Sos emprendedor y deseás saber todo lo que necesitás para{' '}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00A8A7] via-teal-700 to-[#0F3A2E]">
@@ -410,23 +404,130 @@ export default function HomeEmprendedoresBanner() {
                       </Link>
                     </div>
 
-                    {/* PASO 4 */}
-                    <div className="p-5 rounded-2xl bg-[#0A261E] border border-white/10 flex flex-col justify-between hover:border-sky-400/60 transition-all">
-                      <div>
-                        <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center font-bold text-xs mb-3">
-                          04
+                    {/* PASO 4: TARJETA VISUAL DE HISTORIAS & MENTORÍA (DAR IMPULSO & RED COLECTIVA) */}
+                    <div className="relative p-5 rounded-3xl bg-gradient-to-b from-[#3A2204] via-[#261502] to-[#150A01] border-[3px] border-amber-400/60 hover:border-amber-300 flex flex-col justify-between transition-all group/mentoria shadow-xl hover:shadow-amber-500/25 overflow-hidden">
+                      
+                      {/* Marco / Ilustración del Impulso & Mentoría */}
+                      <div className="rounded-2xl bg-[#231402] border border-amber-400/30 p-2.5 relative mb-3 overflow-hidden shadow-inner">
+                        
+                        {/* Ilustración Vectorial Inspirada en "Dar Impulso / Acompañamiento" */}
+                        <div className="relative w-full h-28 rounded-xl overflow-hidden bg-gradient-to-b from-[#3A2204] to-[#150A01] flex items-center justify-center">
+                          <svg 
+                            viewBox="0 0 240 140" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="w-full h-full object-contain transition-transform duration-500 group-hover/mentoria:scale-105"
+                          >
+                            <defs>
+                              {/* Gradiente de la Rampa / Flecha Ascendente de Impulso */}
+                              <linearGradient id="rampImpulseGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.45" />
+                                <stop offset="55%" stopColor="#FBBF24" stopOpacity="0.8" />
+                                <stop offset="100%" stopColor="#FDE047" stopOpacity="0.95" />
+                              </linearGradient>
+
+                              {/* Brillo de los Nodos de Conexión y Mentoría */}
+                              <radialGradient id="glowPulseNode" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stopColor="#F472B6" stopOpacity="0.9" />
+                                <stop offset="45%" stopColor="#FB7185" stopOpacity="0.4" />
+                                <stop offset="100%" stopColor="#FDA4AF" stopOpacity="0" />
+                              </radialGradient>
+                            </defs>
+
+                            {/* 1. Flecha Curva Ascendente de Crecimiento & Impulso */}
+                            <path 
+                              d="M10 135 C50 120 100 110 160 95 C195 85 215 65 225 45 L220 50 L235 25 L210 32 L215 37 C205 55 185 75 150 85 C95 100 50 110 10 125 Z" 
+                              fill="url(#rampImpulseGrad)" 
+                            />
+                            
+                            {/* Línea guía de trayectoria punteada luminosa */}
+                            <path 
+                              d="M15 130 C70 115 130 102 225 35" 
+                              stroke="#FDE047" 
+                              strokeWidth="1.5" 
+                              strokeDasharray="4 4" 
+                              strokeOpacity="0.75"
+                              fill="none" 
+                            />
+
+                            {/* Hilos / Filamentos de conexión en red de mentoría */}
+                            <path d="M55 110 C85 85 105 75 125 55" stroke="#FB7185" strokeWidth="0.8" strokeOpacity="0.45" fill="none" />
+                            <path d="M125 55 C145 75 160 85 185 92" stroke="#FB7185" strokeWidth="0.8" strokeOpacity="0.45" fill="none" />
+                            <path d="M125 55 C120 85 110 100 95 112" stroke="#FB7185" strokeWidth="0.8" strokeOpacity="0.45" fill="none" />
+                            <path d="M125 55 C140 70 150 78 152 100" stroke="#FB7185" strokeWidth="0.8" strokeOpacity="0.45" fill="none" />
+
+                            {/* FIGURA 1 (IZQUIERDA - Emprendedor que sube y recibe el impulso) */}
+                            {/* Cabeza */}
+                            <circle cx="92" cy="35" r="11" fill="#60A5FA" />
+                            {/* Cuerpo y extremidades en avance */}
+                            <path 
+                              d="M87 47 C80 49 72 58 68 70 C66 74 70 76 73 73 C76 65 80 58 85 55 L83 75 L71 105 C69 110 73 113 77 110 L91 80 L96 76 L94 100 L95 112 C95 117 101 117 102 112 L103 82 C103 72 98 62 93 54 L108 55 C113 55 118 53 124 55 C126 56 127 54 125 52 C118 47 110 47 100 48 Z" 
+                              fill="#60A5FA" 
+                            />
+
+                            {/* FIGURA 2 (DERECHA - Mentor que extiende la mano y da el impulso) */}
+                            {/* Cabeza */}
+                            <circle cx="152" cy="22" r="11" fill="#38BDF8" />
+                            {/* Cuerpo y extremidades dando impulso */}
+                            <path 
+                              d="M148 34 C140 37 132 44 124 53 C122 55 125 57 127 56 C134 49 141 43 147 41 L146 58 L152 75 L150 95 C149 100 155 102 157 98 L160 76 L168 68 L180 88 C183 93 189 91 187 86 L175 66 C173 60 167 52 161 45 L170 42 C176 40 180 48 184 55 C186 58 190 56 188 53 C184 45 178 34 168 35 Z" 
+                              fill="#38BDF8" 
+                            />
+
+                            {/* Nodos de Conexión & Puntos de Impulso */}
+                            {/* 1. Nodo central: Apretón de Manos / Impulso de Mentoría */}
+                            <circle cx="125" cy="54" r="16" fill="url(#glowPulseNode)" />
+                            <circle cx="125" cy="54" r="5" fill="#FDA4AF" />
+                            <circle cx="125" cy="54" r="2.5" fill="white" />
+
+                            {/* 2. Nodos en puntos de apoyo y avance */}
+                            <circle cx="55" cy="110" r="9" fill="url(#glowPulseNode)" />
+                            <circle cx="55" cy="110" r="3" fill="#FDA4AF" />
+
+                            <circle cx="95" cy="112" r="9" fill="url(#glowPulseNode)" />
+                            <circle cx="95" cy="112" r="3" fill="#FDA4AF" />
+
+                            <circle cx="152" cy="98" r="9" fill="url(#glowPulseNode)" />
+                            <circle cx="152" cy="98" r="3" fill="#FDA4AF" />
+
+                            <circle cx="185" cy="88" r="9" fill="url(#glowPulseNode)" />
+                            <circle cx="185" cy="88" r="3" fill="#FDA4AF" />
+
+                            {/* Partículas de inspiración y destellos */}
+                            <circle cx="40" cy="80" r="1.5" fill="#F472B6" opacity="0.6" />
+                            <circle cx="70" cy="30" r="1.5" fill="#38BDF8" opacity="0.6" />
+                            <circle cx="180" cy="20" r="1.5" fill="#FCD34D" opacity="0.7" />
+                            <circle cx="210" cy="70" r="1.5" fill="#FBBF24" opacity="0.8" />
+                            <circle cx="140" cy="125" r="1.5" fill="#F472B6" opacity="0.5" />
+                          </svg>
                         </div>
-                        <h4 className="text-base font-bold text-white mb-2">Historias & Mentoría</h4>
-                        <p className="text-xs text-slate-300 leading-relaxed">
+
+                        {/* Cabecera de la Tarjeta: Número + Insignia */}
+                        <div className="flex items-center gap-2 mt-2.5 mb-1.5">
+                          <div className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center font-black text-xs border border-amber-400/50">
+                            04
+                          </div>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-400/20 border border-amber-400/50 text-amber-200 font-black text-[10px] tracking-wider uppercase">
+                            <Users className="w-3 h-3 text-amber-400" />
+                            Mentoría & Red
+                          </span>
+                        </div>
+
+                        <h4 className="text-base font-bold text-white mb-1">
+                          Historias & Mentoría
+                        </h4>
+                        
+                        <p className="text-xs text-amber-100/85 leading-relaxed">
                           Conocé las experiencias de artesanos y productores consolidados sobre canales de comercialización y ferias.
                         </p>
                       </div>
+
                       <Link 
                         href="/emprendedores#historias-inspiradoras"
-                        className="mt-4 pt-3 border-t border-white/10 text-xs font-semibold text-sky-300 hover:text-sky-200 flex items-center justify-between"
+                        className="pt-2 text-xs font-bold text-amber-300 hover:text-amber-200 flex items-center justify-between group-hover/mentoria:translate-x-0.5 transition-all"
                       >
                         <span>Leer testimonios</span>
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-4 h-4 text-amber-300" />
                       </Link>
                     </div>
 

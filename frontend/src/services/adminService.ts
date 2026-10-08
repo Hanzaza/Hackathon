@@ -337,6 +337,41 @@ export const adminService = {
     return [];
   },
 
+  async createDepartment(data: {
+    name: string;
+    code?: string;
+    description?: string;
+    is_creative_region?: boolean;
+    manager_id?: string | null;
+  }): Promise<DepartmentItem | null> {
+    try {
+      if (supabase) {
+        const { data: created, error } = await supabase
+          .from('departments')
+          .insert({
+            name: data.name,
+            code: data.code || data.name.substring(0, 2).toUpperCase(),
+            description: data.description || '',
+            is_creative_region: !!data.is_creative_region,
+            manager_id: data.manager_id || null,
+            status: 'active',
+          })
+          .select()
+          .single();
+
+        if (created && !error) {
+          if (data.manager_id) {
+            await this.assignDepartmentManager(created.id, data.manager_id);
+          }
+          return created as DepartmentItem;
+        }
+      }
+    } catch (err) {
+      console.error('Error creating department in Supabase:', err);
+    }
+    return null;
+  },
+
   async updateDepartment(id: string, updates: Partial<DepartmentItem>): Promise<boolean> {
     try {
       if (supabase) {

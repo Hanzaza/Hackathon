@@ -10,16 +10,6 @@ interface PageProps {
   }>;
 }
 
-export async function generateStaticParams() {
-  const filePath = path.join(process.cwd(), 'public', 'data', 'city-content.json');
-  const fileContents = await fs.readFile(filePath, 'utf8');
-  const allCities = JSON.parse(fileContents);
-  
-  return Object.keys(allCities).map(slug => ({
-    slug,
-  }));
-}
-
 export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const filePath = path.join(process.cwd(), 'public', 'data', 'city-content.json');

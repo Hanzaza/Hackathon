@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
   Map,
   Sparkles,
@@ -18,6 +18,9 @@ import {
   Sliders,
   Loader2,
   Layers,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { DepartmentItem, AdminUserItem, MunicipalityItem, adminService } from '@/services/adminService';
 import { NICARAGUA_GEO_DATA, NicaraguaDepartment } from '@/data/nicaraguaGeo';
@@ -35,8 +38,12 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
   cities = [],
   onRefresh,
 }) => {
-  // Modal de configuración general del departamento
+  // Referencia para el contenedor de scroll horizontal
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Modal de configuración / creación de departamento
   const [editingDept, setEditingDept] = useState<DepartmentItem | null>(null);
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [activeModalTab, setActiveModalTab] = useState<'general' | 'municipalities'>('general');
   const [formData, setFormData] = useState({
     name: '',
@@ -56,6 +63,17 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
   const potentialManagers = users.filter(
     (u) => u.role === 'department_manager' || u.role === 'admin' || u.role === 'user'
   );
+
+  // Helper para mover a los lados
+  const handleScroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 370;
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   // Helper para obtener municipios oficiales según NICARAGUA_GEO_DATA
   const getGeoDepartment = (deptName: string): NicaraguaDepartment | undefined => {
@@ -78,7 +96,6 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
         (!deptId || !c.department_id || c.department_id === deptId)
     );
     if (!city) {
-      // Si no existe aún en la tabla municipalities, por defecto está inactivo hasta que el admin lo habilite
       return false;
     }
     return city.status === 'active';
@@ -97,7 +114,21 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
     };
   };
 
+  const openCreateModal = () => {
+    setIsCreatingNew(true);
+    setEditingDept(null);
+    setActiveModalTab('general');
+    setFormData({
+      name: '',
+      code: '',
+      description: '',
+      is_creative_region: false,
+      manager_id: '',
+    });
+  };
+
   const openEditModal = (dept: DepartmentItem, initialTab: 'general' | 'municipalities' = 'general') => {
+    setIsCreatingNew(false);
     setEditingDept(dept);
     setActiveModalTab(initialTab);
     setFormData({
@@ -112,12 +143,6 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
   const openMunicipalitiesModal = (dept: DepartmentItem) => {
     setSelectedDeptForMunicipalities(dept);
     setMunSearch('');
-  };
-
-  const handleToggleCreative = async (dept: DepartmentItem) => {
-    const updated = !dept.is_creative_region;
-    await adminService.updateDepartment(dept.id, { is_creative_region: updated });
-    onRefresh();
   };
 
   const handleToggleMunicipality = async (dept: DepartmentItem, munName: string, currentlyEnabled: boolean) => {
@@ -145,25 +170,36 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingDept) return;
-
     setSaving(true);
     try {
-      await adminService.updateDepartment(editingDept.id, {
-        code: formData.code,
-        description: formData.description,
-        is_creative_region: formData.is_creative_region,
-        manager_id: formData.manager_id || undefined,
-      });
+      if (isCreatingNew) {
+        if (!formData.name.trim()) return;
+        await adminService.createDepartment({
+          name: formData.name.trim(),
+          code: formData.code.trim() || formData.name.trim().substring(0, 2).toUpperCase(),
+          description: formData.description.trim(),
+          is_creative_region: formData.is_creative_region,
+          manager_id: formData.manager_id || null,
+        });
+        setIsCreatingNew(false);
+      } else if (editingDept) {
+        await adminService.updateDepartment(editingDept.id, {
+          name: formData.name.trim() || editingDept.name,
+          code: formData.code.trim(),
+          description: formData.description.trim(),
+          is_creative_region: formData.is_creative_region,
+          manager_id: formData.manager_id || undefined,
+        });
 
-      if (formData.manager_id !== editingDept.manager_id) {
-        await adminService.assignDepartmentManager(
-          editingDept.id,
-          formData.manager_id || null
-        );
+        if (formData.manager_id !== editingDept.manager_id) {
+          await adminService.assignDepartmentManager(
+            editingDept.id,
+            formData.manager_id || null
+          );
+        }
+        setEditingDept(null);
       }
 
-      setEditingDept(null);
       onRefresh();
     } finally {
       setSaving(false);
@@ -182,7 +218,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Header Principal */}
+      {/* Header Principal con Controles de Desplazamiento */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-xs">
         <div>
           <h2 className="text-xl font-black text-slate-950 flex items-center gap-2">
@@ -190,155 +226,221 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
             Departamentos y Encargados Territoriales
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Gestiona los 15 departamentos y 2 regiones autónomas, asigna delegados y habilita los municipios activos para recorridos y creación de rutas.
+            Desliza a los lados para explorar las regiones, asignar delegados y configurar municipios.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 self-start sm:self-auto">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold">
             <Building2 className="w-4 h-4 text-purple-700" />
-            <span>{departments.filter((d) => d.is_creative_region).length} de {departments.length} Regiones Creativas</span>
+            <span>{departments.filter((d) => d.is_creative_region).length} de {departments.length} Creativas</span>
           </div>
+
+          {/* Botones de Desplazamiento Lateral */}
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 border border-slate-200">
+            <button
+              type="button"
+              onClick={() => handleScroll('left')}
+              className="w-8 h-8 rounded-xl bg-white hover:bg-purple-50 text-slate-700 hover:text-purple-700 flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-95"
+              title="Mover a la izquierda"
+              aria-label="Mover a la izquierda"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleScroll('right')}
+              className="w-8 h-8 rounded-xl bg-white hover:bg-purple-50 text-slate-700 hover:text-purple-700 flex items-center justify-center transition-all shadow-xs cursor-pointer active:scale-95"
+              title="Mover a la derecha"
+              aria-label="Mover a la derecha"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Botón Acción Rápida: Agregar */}
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="px-4 py-2 rounded-2xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-black transition-all flex items-center gap-1.5 shadow-sm shadow-purple-600/30 cursor-pointer active:scale-95"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Nuevo Territorio</span>
+          </button>
         </div>
       </div>
 
-      {/* Grid de Departamentos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-        {departments.map((dept) => {
-          const stats = getDepartmentMunicipalityStats(dept);
-          const hasEnabledMunicipalities = stats.enabled > 0;
+      {/* Carrusel Deslizable Horizontalmente (Swipe & Scroll a los lados) */}
+      <div className="relative">
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-5 pb-6 pt-1 px-1 scroll-smooth scrollbar-thin"
+          style={{ scrollbarGutter: 'stable' }}
+        >
+          {departments.map((dept) => {
+            const stats = getDepartmentMunicipalityStats(dept);
+            const hasEnabledMunicipalities = stats.enabled > 0;
 
-          return (
-            <div
-              key={dept.id}
-              className={`rounded-3xl border p-5 flex flex-col justify-between transition-all duration-300 shadow-xs hover:shadow-md ${
-                dept.is_creative_region
-                  ? 'bg-white border-purple-300 ring-1 ring-purple-100'
-                  : 'bg-white border-slate-200 opacity-95'
-              }`}
-            >
-              <div className="space-y-3.5">
-                {/* Header de tarjeta */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm ${
-                        dept.is_creative_region
-                          ? 'bg-purple-100 text-purple-900 border border-purple-200'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200'
-                      }`}
-                    >
-                      {dept.code || dept.name.substring(0, 2).toUpperCase()}
+            return (
+              <div
+                key={dept.id}
+                className={`w-[85vw] sm:w-[360px] md:w-[380px] shrink-0 snap-start rounded-3xl border p-5 flex flex-col justify-between transition-all duration-300 ${
+                  dept.is_creative_region
+                    ? 'bg-gradient-to-br from-purple-50/80 via-white to-purple-50/30 border-purple-300 ring-2 ring-purple-400/20 shadow-xs hover:shadow-md'
+                    : 'bg-white border-slate-200/90 shadow-xs hover:shadow-md opacity-95'
+                }`}
+              >
+                <div className="space-y-3.5">
+                  {/* Header de tarjeta */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm ${
+                          dept.is_creative_region
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
+                        }`}
+                      >
+                        {dept.code || dept.name.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <h3 className="text-base font-black text-slate-900">{dept.name}</h3>
+                        <span className="text-[10px] text-slate-500 font-medium">
+                          Nicaragua • {dept.code || 'Territorio'}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-base font-black text-slate-900">{dept.name}</h3>
-                      <span className="text-[10px] text-slate-500 font-medium">
-                        Nicaragua • {dept.code || 'Territorio'}
+
+                    {/* Badge informativo de tipo de región (sin botón confuso) */}
+                    {dept.is_creative_region ? (
+                      <span
+                        className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-300 flex items-center gap-1 shadow-xs"
+                        title="Región Creativa Oficial"
+                      >
+                        <Sparkles className="w-3 h-3 text-purple-600" />
+                        <span>Creativo</span>
                       </span>
-                    </div>
+                    ) : (
+                      <span
+                        className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                        title="Territorio Tradicional"
+                      >
+                        <Building2 className="w-3 h-3 text-slate-400" />
+                        <span>Tradicional</span>
+                      </span>
+                    )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleToggleCreative(dept)}
-                    className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider transition-all cursor-pointer flex items-center gap-1 ${
-                      dept.is_creative_region
-                        ? 'bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-emerald-200'
-                        : 'bg-slate-100 text-slate-600 border border-slate-300 hover:bg-slate-200'
-                    }`}
-                    title="Alternar estado de región creativa"
-                  >
-                    <Sparkles className="w-3 h-3" />
-                    <span>{dept.is_creative_region ? 'Creativo' : 'Tradicional'}</span>
-                  </button>
+                  {/* Descripción */}
+                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed min-h-[32px]">
+                    {dept.description || 'Sin descripción territorial detallada.'}
+                  </p>
+
+                  {/* Banner de Municipios Habilitados */}
+                  <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 ${
+                        hasEnabledMunicipalities ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        <MapPin className="w-3 h-3" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                          Municipios
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 truncate block">
+                          {stats.enabled} de {stats.total} Habilitados
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => openMunicipalitiesModal(dept)}
+                      className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
+                        hasEnabledMunicipalities
+                          ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+                          : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
+                      }`}
+                      title="Gestionar municipios de este departamento"
+                    >
+                      <Sliders className="w-3 h-3" />
+                      <span>Gestionar</span>
+                    </button>
+                  </div>
+
+                  {/* Encargado Departamental Asignado */}
+                  <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <div
+                        className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 ${
+                          dept.manager_id ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'
+                        }`}
+                      >
+                        <UserCheck className="w-3 h-3" />
+                      </div>
+                      <div className="overflow-hidden">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                          Encargado
+                        </span>
+                        <span className="text-xs font-bold text-slate-900 truncate block">
+                          {dept.manager_name || 'Sin asignar'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {dept.manager_id && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold border border-purple-200 shrink-0">
+                        Activo
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Descripción */}
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                  {dept.description || 'Sin descripción territorial detallada.'}
-                </p>
+                {/* Footer / Acciones */}
+                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500 font-medium">
+                    Estado: <strong className="text-emerald-700 capitalize font-bold">{dept.status}</strong>
+                  </span>
 
-                {/* Banner de Municipios Habilitados */}
-                <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 ${
-                      hasEnabledMunicipalities ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                    }`}>
-                      <MapPin className="w-3 h-3" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
-                        Municipios
-                      </span>
-                      <span className="text-xs font-bold text-slate-900 truncate block">
-                        {stats.enabled} de {stats.total} Habilitados
-                      </span>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => openMunicipalitiesModal(dept)}
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
-                      hasEnabledMunicipalities
-                        ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
-                        : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-200'
-                    }`}
-                    title="Gestionar municipios de este departamento"
-                  >
-                    <Sliders className="w-3 h-3" />
-                    <span>Gestionar</span>
-                  </button>
-                </div>
-
-                {/* Encargado Departamental Asignado */}
-                <div className="p-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2 overflow-hidden">
-                    <div
-                      className={`w-6 h-6 rounded-xl flex items-center justify-center shrink-0 ${
-                        dept.manager_id ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'
-                      }`}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openEditModal(dept, 'general')}
+                      className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-900 border border-slate-200 hover:border-purple-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
                     >
-                      <UserCheck className="w-3 h-3" />
-                    </div>
-                    <div className="overflow-hidden">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                        Encargado
-                      </span>
-                      <span className="text-xs font-bold text-slate-900 truncate block">
-                        {dept.manager_name || 'Sin asignar'}
-                      </span>
-                    </div>
+                      <Edit2 className="w-3.5 h-3.5" />
+                      <span>Configurar</span>
+                    </button>
                   </div>
-
-                  {dept.manager_id && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 font-bold border border-purple-200 shrink-0">
-                      Activo
-                    </span>
-                  )}
                 </div>
               </div>
+            );
+          })}
 
-              {/* Footer / Acciones */}
-              <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Estado: <strong className="text-emerald-700 capitalize font-bold">{dept.status}</strong>
-                </span>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => openEditModal(dept, 'general')}
-                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-900 border border-slate-200 hover:border-purple-300 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    <span>Configurar</span>
-                  </button>
-                </div>
-              </div>
+          {/* Tarjeta Final: Botón "+" para Agregar Nuevo Departamento o Región */}
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="w-[85vw] sm:w-[320px] md:w-[340px] shrink-0 snap-start rounded-3xl border-2 border-dashed border-purple-300 hover:border-purple-600 bg-purple-50/40 hover:bg-purple-50 transition-all duration-300 p-8 flex flex-col items-center justify-center text-center gap-4 group cursor-pointer shadow-xs hover:shadow-md min-h-[360px]"
+          >
+            <div className="w-16 h-16 rounded-3xl bg-purple-100 group-hover:bg-purple-600 text-purple-700 group-hover:text-white transition-all flex items-center justify-center shadow-xs">
+              <Plus className="w-8 h-8 transition-transform group-hover:scale-110" />
             </div>
-          );
-        })}
+            <div>
+              <h3 className="text-base font-black text-slate-900 group-hover:text-purple-950 transition-colors">
+                Agregar Nuevo Territorio
+              </h3>
+              <p className="text-xs text-slate-500 mt-1.5 max-w-[240px] leading-relaxed">
+                Habilita una nueva región o departamento, define su código y asigna su delegado.
+              </p>
+            </div>
+            <span className="px-4 py-2 rounded-2xl bg-purple-700 group-hover:bg-purple-800 text-white text-xs font-black shadow-sm transition-all flex items-center gap-1.5 mt-2">
+              <Plus className="w-4 h-4" />
+              <span>Añadir Tarjeta</span>
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* ================= MODAL EXCLUSIVO: GESTIÓN DE MUNICIPIOS HABILITADOS ================= */}
@@ -527,29 +629,34 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
         </div>
       )}
 
-      {/* ================= MODAL DE EDICIÓN / CONFIGURACIÓN DE DEPARTAMENTO ================= */}
-      {editingDept && (
+      {/* ================= MODAL DE EDICIÓN / CREACIÓN DE DEPARTAMENTO ================= */}
+      {(editingDept || isCreatingNew) && (
         <div className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 animate-scaleUp">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-900 flex items-center justify-center font-bold">
-                  <Map className="w-5 h-5" />
+                  {isCreatingNew ? <Plus className="w-5 h-5" /> : <Map className="w-5 h-5" />}
                 </div>
                 <div>
                   <h3 className="text-lg font-black text-slate-950">
-                    Configurar: {editingDept.name}
+                    {isCreatingNew ? 'Nuevo Territorio / Departamento' : `Configurar: ${editingDept?.name}`}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Configuración territorial, delegado y región creativa
+                    {isCreatingNew
+                      ? 'Registra una nueva región o departamento en la red nacional'
+                      : 'Configuración territorial, delegado y región creativa'}
                   </p>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={() => setEditingDept(null)}
+                onClick={() => {
+                  setEditingDept(null);
+                  setIsCreatingNew(false);
+                }}
                 className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center cursor-pointer transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -558,6 +665,22 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
 
             {/* Form */}
             <form onSubmit={handleSave} className="space-y-4">
+              {isCreatingNew && (
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
+                    Nombre del Departamento o Región *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Ej: Carazo, Madriz, RACCN..."
+                    className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-purple-600 focus:bg-white outline-hidden transition-all font-bold"
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">
                   Código Territorial
@@ -566,7 +689,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                   type="text"
                   value={formData.code}
                   onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                  placeholder="Ej: LE, MY, GR, MN"
+                  placeholder="Ej: LE, MY, GR, MN, BO"
                   className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-purple-600 focus:bg-white outline-hidden transition-all"
                 />
               </div>
@@ -579,7 +702,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                   rows={3}
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe la riqueza histórica, artesanal o literaria del departamento..."
+                  placeholder="Describe la riqueza histórica, artesanal o literaria del territorio..."
                   className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-purple-600 focus:bg-white outline-hidden transition-all resize-none"
                 />
               </div>
@@ -601,28 +724,86 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                   ))}
                 </select>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  El usuario asignado podrá gestionar los circuitos y eventos correspondientes a este departamento.
+                  El usuario asignado podrá gestionar los circuitos y eventos correspondientes a este territorio.
                 </p>
               </div>
 
-              <div className="flex items-center gap-3 p-4 rounded-2xl bg-purple-50/60 border border-purple-200">
-                <input
-                  type="checkbox"
-                  id="is_creative_region"
-                  checked={formData.is_creative_region}
-                  onChange={(e) => setFormData({ ...formData, is_creative_region: e.target.checked })}
-                  className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 border-slate-300"
-                />
-                <label htmlFor="is_creative_region" className="text-xs font-bold text-slate-800 cursor-pointer">
-                  Declarar como Región Creativa Activa en el Mapa
+              {/* Selector Visual de Tipo de Región (Creativo vs Tradicional) */}
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-2">
+                  Tipo de Territorio & Vocación
                 </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Opción 1: Región Creativa */}
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, is_creative_region: true })}
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2.5 ${
+                      formData.is_creative_region
+                        ? 'bg-purple-50 border-purple-400 ring-2 ring-purple-400/30 shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                        <Sparkles className="w-4 h-4" />
+                      </div>
+                      {formData.is_creative_region && (
+                        <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                          ✓
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900 flex items-center gap-1">
+                        <span>🎨 Región Creativa</span>
+                      </h4>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                        La tarjeta lucirá en color creativo, con circuitos y sellos en el mapa.
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Opción 2: Región Tradicional */}
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, is_creative_region: false })}
+                    className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2.5 ${
+                      !formData.is_creative_region
+                        ? 'bg-slate-100 border-slate-400 ring-2 ring-slate-400/30 shadow-xs'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-600'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="w-8 h-8 rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center font-bold">
+                        <Building2 className="w-4 h-4" />
+                      </div>
+                      {!formData.is_creative_region && (
+                        <span className="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                          ✓
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900 flex items-center gap-1">
+                        <span>🏛️ Tradicional / Base</span>
+                      </h4>
+                      <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">
+                        La tarjeta lucirá en tono neutral estándar con gestión de municipios.
+                      </p>
+                    </div>
+                  </button>
+                </div>
               </div>
 
               {/* Botones de Acción */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => setEditingDept(null)}
+                  onClick={() => {
+                    setEditingDept(null);
+                    setIsCreatingNew(false);
+                  }}
                   className="px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer"
                 >
                   Cancelar
@@ -637,7 +818,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                   ) : (
                     <>
                       <Check className="w-4 h-4" />
-                      <span>Guardar Cambios</span>
+                      <span>{isCreatingNew ? 'Crear Territorio' : 'Guardar Cambios'}</span>
                     </>
                   )}
                 </button>

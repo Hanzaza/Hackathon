@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { AdminEventItem, adminService } from '@/services/adminService';
+import { ImageUploadField } from '@/components/ui/ImageUploadField';
 
 interface EventsManagerTabProps {
   events: AdminEventItem[];
@@ -259,6 +260,15 @@ export const EventsManagerTab: React.FC<EventsManagerTabProps> = ({ events, onRe
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white resize-none"
                 />
               </div>
+
+              <ImageUploadField
+                label="Fotografía del Evento"
+                value={formData.image}
+                onChange={(url) => setFormData({ ...formData, image: url })}
+                folder="events"
+                aspectRatio="banner"
+                helperText="Afiche o imagen promocional del evento (máx. 20MB)"
+              />
 
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button

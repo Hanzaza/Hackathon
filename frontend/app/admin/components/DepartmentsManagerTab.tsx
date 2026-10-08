@@ -226,18 +226,19 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
             Departamentos y Encargados Territoriales
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Desliza a los lados para explorar las regiones, asignar delegados y configurar municipios.
+            <span className="md:hidden">Desliza a los lados para explorar las regiones, asignar delegados y configurar municipios.</span>
+            <span className="hidden md:inline">Gestiona los 15 departamentos y 2 regiones autónomas, asigna delegados y habilita municipios activos.</span>
           </p>
         </div>
 
         <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold">
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs font-bold">
             <Building2 className="w-4 h-4 text-purple-700" />
             <span>{departments.filter((d) => d.is_creative_region).length} de {departments.length} Creativas</span>
           </div>
 
-          {/* Botones de Desplazamiento Lateral */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 border border-slate-200">
+          {/* Botones de Desplazamiento Lateral: solo en móvil */}
+          <div className="flex md:hidden items-center gap-1.5 p-1 rounded-2xl bg-slate-100 border border-slate-200">
             <button
               type="button"
               onClick={() => handleScroll('left')}
@@ -270,12 +271,11 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
         </div>
       </div>
 
-      {/* Carrusel Deslizable Horizontalmente (Swipe & Scroll a los lados) */}
+      {/* Visualización de Territorios: Deslizable en móvil y Grid completo en escritorio */}
       <div className="relative">
         <div
           ref={scrollContainerRef}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-5 pb-6 pt-1 px-1 scroll-smooth scrollbar-thin"
-          style={{ scrollbarGutter: 'stable' }}
+          className="flex md:grid overflow-x-auto md:overflow-visible snap-x md:snap-none md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 pb-6 md:pb-0 pt-1 px-1 scroll-smooth scrollbar-thin md:scrollbar-none"
         >
           {departments.map((dept) => {
             const stats = getDepartmentMunicipalityStats(dept);
@@ -284,7 +284,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
             return (
               <div
                 key={dept.id}
-                className={`w-[85vw] sm:w-[360px] md:w-[380px] shrink-0 snap-start rounded-3xl border p-5 flex flex-col justify-between transition-all duration-300 ${
+                className={`w-[85vw] sm:w-[360px] md:w-full shrink-0 md:shrink snap-start md:snap-align-none rounded-3xl border p-5 flex flex-col justify-between transition-all duration-300 ${
                   dept.is_creative_region
                     ? 'bg-gradient-to-br from-purple-50/80 via-white to-purple-50/30 border-purple-300 ring-2 ring-purple-400/20 shadow-xs hover:shadow-md'
                     : 'bg-white border-slate-200/90 shadow-xs hover:shadow-md opacity-95'
@@ -293,9 +293,9 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                 <div className="space-y-3.5">
                   {/* Header de tarjeta */}
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-2.5 min-w-0">
                       <div
-                        className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-sm ${
+                        className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shrink-0 ${
                           dept.is_creative_region
                             ? 'bg-purple-600 text-white shadow-xs'
                             : 'bg-slate-100 text-slate-700 border border-slate-200'
@@ -303,8 +303,8 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                       >
                         {dept.code || dept.name.substring(0, 2).toUpperCase()}
                       </div>
-                      <div>
-                        <h3 className="text-base font-black text-slate-900">{dept.name}</h3>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-black text-slate-900 truncate" title={dept.name}>{dept.name}</h3>
                         <span className="text-[10px] text-slate-500 font-medium">
                           Nicaragua • {dept.code || 'Territorio'}
                         </span>
@@ -314,7 +314,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                     {/* Badge informativo de tipo de región (sin botón confuso) */}
                     {dept.is_creative_region ? (
                       <span
-                        className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-300 flex items-center gap-1 shadow-xs"
+                        className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-300 flex items-center gap-1 shadow-xs shrink-0"
                         title="Región Creativa Oficial"
                       >
                         <Sparkles className="w-3 h-3 text-purple-600" />
@@ -322,7 +322,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                       </span>
                     ) : (
                       <span
-                        className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
+                        className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1 shrink-0"
                         title="Territorio Tradicional"
                       >
                         <Building2 className="w-3 h-3 text-slate-400" />
@@ -422,10 +422,10 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
           <button
             type="button"
             onClick={openCreateModal}
-            className="w-[85vw] sm:w-[320px] md:w-[340px] shrink-0 snap-start rounded-3xl border-2 border-dashed border-purple-300 hover:border-purple-600 bg-purple-50/40 hover:bg-purple-50 transition-all duration-300 p-8 flex flex-col items-center justify-center text-center gap-4 group cursor-pointer shadow-xs hover:shadow-md min-h-[360px]"
+            className="w-[85vw] sm:w-[320px] md:w-full shrink-0 md:shrink snap-start md:snap-align-none rounded-3xl border-2 border-dashed border-purple-300 hover:border-purple-600 bg-purple-50/40 hover:bg-purple-50 transition-all duration-300 p-6 sm:p-8 flex flex-col items-center justify-center text-center gap-4 group cursor-pointer shadow-xs hover:shadow-md min-h-[300px] md:min-h-0"
           >
-            <div className="w-16 h-16 rounded-3xl bg-purple-100 group-hover:bg-purple-600 text-purple-700 group-hover:text-white transition-all flex items-center justify-center shadow-xs">
-              <Plus className="w-8 h-8 transition-transform group-hover:scale-110" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-3xl bg-purple-100 group-hover:bg-purple-600 text-purple-700 group-hover:text-white transition-all flex items-center justify-center shadow-xs">
+              <Plus className="w-7 h-7 sm:w-8 sm:h-8 transition-transform group-hover:scale-110" />
             </div>
             <div>
               <h3 className="text-base font-black text-slate-900 group-hover:text-purple-950 transition-colors">

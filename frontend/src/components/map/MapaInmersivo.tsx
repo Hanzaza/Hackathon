@@ -32,6 +32,7 @@ import {
   PartyPopper,
   Sparkle,
   Construction,
+  Loader2,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { routeProgressService, RouteProgressData, PlaceProgress } from '@/services/routeProgressService';
@@ -279,6 +280,7 @@ export default function MapaInmersivo({
 
   // Estados de Colaboración de Fotos (Paso 2) y Progreso de Ruta
   const [newPhotoUrl, setNewPhotoUrl] = useState<string>('');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState<boolean>(false);
   const [photoUploadSuccess, setPhotoUploadSuccess] = useState<boolean>(false);
   const [showPhotoForm, setShowPhotoForm] = useState<boolean>(false);
   const [progressRefreshTrigger, setProgressRefreshTrigger] = useState<number>(0);
@@ -568,17 +570,34 @@ export default function MapaInmersivo({
       });
   };
 
-  const handlePhotoFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        handleCollaboratePhoto(reader.result);
+    setIsUploadingPhoto(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'collaborative_photos');
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.url) {
+        handleCollaboratePhoto(data.url);
+      } else {
+        alert(data.error || 'Error al subir la fotografía a Supabase');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Error al subir foto:', err);
+      alert('Error de conexión al subir la imagen');
+    } finally {
+      setIsUploadingPhoto(false);
+      e.target.value = '';
+    }
   };
 
   useEffect(() => {
@@ -1435,41 +1454,37 @@ export default function MapaInmersivo({
 
                   {/* Formulario de Aporte de Foto */}
                   {showPhotoForm && (
-                    <div className="p-3 rounded-2xl bg-white border border-purple-200 space-y-2.5 text-xs animate-fadeIn shadow-xs">
+                    <div className="p-3 rounded-2xl bg-white border border-purple-200 space-y-2 text-xs animate-fadeIn shadow-xs">
                       <span className="text-[10px] font-black uppercase text-slate-600 block">
-                        Subir archivo o pegar enlace de foto del lugar:
+                        Subir foto del lugar a Supabase Storage:
                       </span>
 
                       <div className="flex flex-col gap-2">
-                        {/* Subir archivo */}
-                        <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-dashed border-purple-300 text-purple-800 font-bold text-xs cursor-pointer transition-colors text-center">
-                          <Upload className="w-4 h-4 text-purple-600 shrink-0" />
-                          <span className="truncate">Seleccionar imagen de tu dispositivo</span>
+                        {/* Subir archivo directamente */}
+                        <label className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border border-dashed text-xs font-bold transition-all text-center ${
+                          isUploadingPhoto
+                            ? 'bg-purple-100 border-purple-400 text-purple-900 cursor-wait'
+                            : 'bg-purple-50 hover:bg-purple-100 border-purple-300 text-purple-800 cursor-pointer'
+                        }`}>
+                          {isUploadingPhoto ? (
+                            <>
+                              <Loader2 className="w-4 h-4 text-purple-700 animate-spin shrink-0" />
+                              <span className="truncate">Subiendo a Supabase Storage...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-4 h-4 text-purple-600 shrink-0" />
+                              <span className="truncate">Seleccionar imagen de tu dispositivo</span>
+                            </>
+                          )}
                           <input
                             type="file"
                             accept="image/*"
+                            disabled={isUploadingPhoto}
                             onChange={handlePhotoFileUpload}
                             className="hidden"
                           />
                         </label>
-
-                        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-1.5 xs:gap-2">
-                          <input
-                            type="url"
-                            value={newPhotoUrl}
-                            onChange={(e) => setNewPhotoUrl(e.target.value)}
-                            placeholder="O pega aquí la URL..."
-                            className="flex-1 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:border-purple-600 outline-hidden min-w-0"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleCollaboratePhoto()}
-                            disabled={!newPhotoUrl.trim()}
-                            className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-black text-xs cursor-pointer shrink-0 text-center"
-                          >
-                            Enviar Foto
-                          </button>
-                        </div>
                       </div>
                     </div>
                   )}

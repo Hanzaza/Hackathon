@@ -27,6 +27,7 @@ import {
 import { MunicipalityItem, adminService } from '@/services/adminService';
 import { NICARAGUA_GEO_DATA } from '@/data/nicaraguaGeo';
 import { MapLocationPicker } from '@/components/map/MapLocationPicker';
+import { ImageUploadField } from '@/components/ui/ImageUploadField';
 
 interface CitiesManagerTabProps {
   cities: MunicipalityItem[];
@@ -683,57 +684,32 @@ export const CitiesManagerTab: React.FC<CitiesManagerTabProps> = ({ cities, onRe
               {/* TAB 2: MULTIMEDIA E IMÁGENES */}
               {modalTab === 'media' && (
                 <div className="space-y-4 animate-fadeIn">
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                      URL del Logotipo / Escudo Oficial
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="url"
-                        value={formLogoUrl}
-                        onChange={(e) => setFormLogoUrl(e.target.value)}
-                        placeholder="https://images.unsplash.com/..."
-                        className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                      />
-                      {formLogoUrl && (
-                        <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
-                          <Image src={formLogoUrl} alt="Logo" width={40} height={40} className="w-full h-full object-cover" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <ImageUploadField
+                    label="Logotipo / Escudo Oficial"
+                    value={formLogoUrl}
+                    onChange={(url) => setFormLogoUrl(url)}
+                    folder="cities/logos"
+                    aspectRatio="square"
+                    helperText="Escudo o emblema municipal (PNG transparente o JPG)"
+                  />
 
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                      URL de Imagen Hero para Escritorio (Desktop 16:9)
-                    </label>
-                    <input
-                      type="url"
-                      value={formHeroDesktop}
-                      onChange={(e) => setFormHeroDesktop(e.target.value)}
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                    />
-                    {formHeroDesktop && (
-                      <div className="relative h-28 w-full rounded-xl overflow-hidden mt-2 border border-slate-200">
-                        <Image src={formHeroDesktop} alt="Desktop Hero Preview" fill sizes="500px" className="object-cover" />
-                        <span className="absolute bottom-1 right-2 text-[9px] font-bold bg-black/70 px-2 py-0.5 rounded text-white">Vista Escritorio</span>
-                      </div>
-                    )}
-                  </div>
+                  <ImageUploadField
+                    label="Imagen Hero para Escritorio (Desktop 16:9)"
+                    value={formHeroDesktop}
+                    onChange={(url) => setFormHeroDesktop(url)}
+                    folder="cities/heroes"
+                    aspectRatio="video"
+                    helperText="Fotografía panorámica en alta resolución (16:9)"
+                  />
 
-                  <div>
-                    <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                      URL de Imagen de Portada para Móvil (Mobile Vertical / Compacto)
-                    </label>
-                    <input
-                      type="url"
-                      value={formHeroMobile}
-                      onChange={(e) => setFormHeroMobile(e.target.value)}
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                    />
-                  </div>
+                  <ImageUploadField
+                    label="Imagen de Portada para Móvil (Vertical / Compacto)"
+                    value={formHeroMobile}
+                    onChange={(url) => setFormHeroMobile(url)}
+                    folder="cities/mobile"
+                    aspectRatio="banner"
+                    helperText="Fotografía vertical optimizada para teléfonos"
+                  />
                 </div>
               )}
 

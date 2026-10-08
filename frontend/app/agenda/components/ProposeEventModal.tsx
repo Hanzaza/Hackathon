@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { adminService } from '@/services/adminService';
 import { useAuth } from '@/context/AuthContext';
+import { ImageUploadField } from '@/components/ui/ImageUploadField';
 
 interface ProposeEventModalProps {
   isOpen: boolean;
@@ -206,18 +207,14 @@ export const ProposeEventModal: React.FC<ProposeEventModalProps> = ({
             />
           </div>
 
-          <div>
-            <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-              URL de la Fotografía de Portada
-            </label>
-            <input
-              type="url"
-              value={formData.image}
-              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-              placeholder="https://images.unsplash.com/..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-            />
-          </div>
+          <ImageUploadField
+            label="Fotografía de Portada del Evento"
+            value={formData.image}
+            onChange={(url) => setFormData({ ...formData, image: url })}
+            folder="events"
+            aspectRatio="banner"
+            helperText="Banner o afiche oficial del evento cultural (máx. 20MB)"
+          />
 
           {/* Footer */}
           <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">

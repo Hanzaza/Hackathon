@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { CreativeRouteItem, RoutePlaceItem, MunicipalityItem, adminService } from '@/services/adminService';
 import { MapLocationPicker } from '@/components/map/MapLocationPicker';
+import { ImageUploadField } from '@/components/ui/ImageUploadField';
 
 interface RoutesManagerTabProps {
   routes: CreativeRouteItem[];
@@ -766,18 +767,14 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
                 />
               </div>
 
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                  URL de Imagen del Lugar
-                </label>
-                <input
-                  type="url"
-                  value={placeForm.image}
-                  onChange={(e) => setPlaceForm({ ...placeForm, image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                />
-              </div>
+              <ImageUploadField
+                label="Fotografía del Punto o Parada"
+                value={placeForm.image}
+                onChange={(url) => setPlaceForm({ ...placeForm, image: url })}
+                folder="routes/places"
+                aspectRatio="video"
+                helperText="Fotografía real de este hito o atractivo cultural"
+              />
 
               {/* Enlaces Multimedia Inmersivos */}
               <div className="grid grid-cols-2 gap-3">
@@ -1062,18 +1059,14 @@ export const RoutesManagerTab: React.FC<RoutesManagerTabProps> = ({ routes, citi
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">
-                  URL de Imagen de Portada
-                </label>
-                <input
-                  type="url"
-                  value={formData.cover_image}
-                  onChange={(e) => setFormData({ ...formData, cover_image: e.target.value })}
-                  placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:border-purple-600 focus:bg-white"
-                />
-              </div>
+              <ImageUploadField
+                label="Fotografía de Portada del Circuito"
+                value={formData.cover_image}
+                onChange={(url) => setFormData({ ...formData, cover_image: url })}
+                folder="routes/covers"
+                aspectRatio="banner"
+                helperText="Banner promocional para el circuito creativo"
+              />
 
               <div className="flex items-center gap-2 p-3 rounded-2xl bg-purple-50/60 border border-purple-200">
                 <input

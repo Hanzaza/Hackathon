@@ -385,6 +385,41 @@ ROOTS fue concebido como una **Progressive Web App** nativa:
 
 ---
 
+## ☁️ Arquitectura de Despliegue en Producción (Azure)
+
+La plataforma está desplegada y operando en vivo en **Microsoft Azure (Región Mexico Central)**, cumpliendo con los estándares de rendimiento, resiliencia y seguridad del Hackathon:
+
+### 🌐 Acceso Oficial en Vivo
+- **URL Segura (HTTPS):** [https://roots-nicaragua.mexicocentral.cloudapp.azure.com](https://roots-nicaragua.mexicocentral.cloudapp.azure.com)
+- **API Healthcheck:** [https://roots-nicaragua.mexicocentral.cloudapp.azure.com/health](https://roots-nicaragua.mexicocentral.cloudapp.azure.com/health)
+- **IP Pública Estática:** `158.23.21.55`
+
+```mermaid
+graph LR
+    User([🌍 Usuario / Navegador]) -->|HTTPS :443 con Certificado SSL| Nginx[Proxy Inverso Nginx]
+    User -.->|HTTP :80| Nginx
+    Nginx -.->|Redirección 301 Forzada| Nginx
+    
+    subgraph "Red Interna Aislada (roots_internal_net)"
+        Nginx -->|/api/* & /health| Backend[roots_backend :4000]
+        Nginx -->|/* (Rutas Web)| Frontend[roots_frontend :3000]
+        Backend -->|Persistencia Interna| DB[(roots_db :5432 - Sin puertos públicos)]
+        Backend -->|Storage & Auth| Supabase[(Supabase Cloud)]
+    end
+```
+
+### 📋 Cumplimiento de Entregables del Sprint
+
+| # | Entregable | Implementación Técnica | Estado |
+|---|---|---|:---:|
+| **1** | **Rendimiento Y Acceso** | Servidor Ubuntu 24.04 LTS en Azure con **4 GB de SWAP** configurada para cero caídas por memoria. Despliegue en contenedores optimizados multi-stage con Next.js standalone y compresión en Nginx. | **✅ Cumplido** |
+| **2** | **Seguridad (HTTPS)** | Certificado SSL/TLS oficial emitido por **Let's Encrypt** con renovación automática. Nginx configurado con **HSTS**, cifrado TLSv1.3 y redirección obligatoria de HTTP a HTTPS. | **✅ Cumplido** |
+| **3** | **Flujo Automático** | Manejo de errores amigable sin intervención técnica. Pantallas personalizadas e inmersivas para **404 (No encontrado)** y **50X (Error de servidor / timeout)** sin exposición de código ni trazas técnicas. | **✅ Cumplido** |
+| **4** | **Integraciones Complejas** | Autenticación robusta con **Tokens JWT**, base de datos relacional PostgreSQL aislada, capas GeoJSON con MongoDB Atlas y sincronización con Supabase Auth/Storage. | **✅ Cumplido** |
+| **5** | **Código Vinculado a GitHub** | Sincronización continua de la rama `main` en Azure. Orquestación reproducible mediante `docker-compose.yml`, `azure-setup.sh` y variables de entorno protegidas (`.env` con permisos `chmod 600`). | **✅ Cumplido** |
+
+---
+
 ## 👥 Equipo de Desarrollo
 
 <div align="center">

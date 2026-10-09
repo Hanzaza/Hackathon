@@ -11,6 +11,7 @@
 *.env.*
 !.env.example
 !*.env.example
+!.env.production.example
 !supabase-env.example
 
 # Private keys, certificates and token files

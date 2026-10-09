@@ -1,0 +1,112 @@
+# ==============================================================================
+# MASTER DOCKER COMPOSE ORCHESTRATION (AZURE DEPLOYMENT)
+# Cumple Entregables 2, 3, 4 y 5:
+# - Entorno estrictamente aislado (Red interna 'roots_internal_net')
+# - Base de datos PostgreSQL en contenedor aislado (sin puertos expuestos al host)
+# - Proxy Inverso Nginx en puerto 80 (única puerta de entrada al exterior)
+# - Código interno (backend: 4000, frontend: 3000, db: 5432) nunca expuesto a internet
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. Base de Datos Aislada (Entregable 4)
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgres:15-alpine
+    container_name: roots_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-roots_db}
+      POSTGRES_USER: ${POSTGRES_USER:-roots_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-roots_secure_db_password_2026}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - roots_internal_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-roots_user} -d ${POSTGRES_DB:-roots_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # NOTA: NO se usa 'ports' aquí para que la base de datos sea estrictamente privada
+
+  # ----------------------------------------------------------------------------
+  # 2. Backend REST API (Node.js + Express) (Entregables 4 y 5)
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: roots_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-roots_user}:${POSTGRES_PASSWORD:-roots_secure_db_password_2026}@db:5432/${POSTGRES_DB:-roots_db}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - roots_internal_net
+    expose:
+      - "4000"
+    # NOTA: Puerto 4000 NO mapeado al host. Solo accesible por Nginx dentro de la red privada
+
+  # ----------------------------------------------------------------------------
+  # 3. Frontend Web (Next.js) (Entregables 4 y 5)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api}
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+    container_name: roots_frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    networks:
+      - roots_internal_net
+    expose:
+      - "3000"
+    # NOTA: Puerto 3000 NO mapeado al host. Solo accesible por Nginx dentro de la red privada
+
+  # ----------------------------------------------------------------------------
+  # 4. Proxy Inverso Nginx (Entregable 3)
+  # Único punto de contacto con el tráfico de internet
+  # ----------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: roots_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - roots_internal_net
+
+# ------------------------------------------------------------------------------
+# Red y Volúmenes estrictamente aislados
+# ------------------------------------------------------------------------------
+networks:
+  roots_internal_net:
+    driver: bridge
+    name: roots_internal_net
+
+volumes:
+  postgres_data:
+    name: roots_postgres_data

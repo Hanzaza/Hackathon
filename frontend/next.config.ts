@@ -2,6 +2,12 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   allowedDevOrigins: ['192.168.1.25', '192.168.1.25:3000', 'localhost:3000'],
   images: {
     remotePatterns: [

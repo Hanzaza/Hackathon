@@ -23,6 +23,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { NICARAGUA_GEO_DATA, getMunicipalitiesByDepartment } from '@/data/nicaraguaGeo';
 import PrecolombianPattern from '../ui/PrecolombianPattern';
+import TwoFactorVerifyForm from './TwoFactorVerifyForm';
 
 export default function AuthModal() {
   const {
@@ -30,6 +31,7 @@ export default function AuthModal() {
     isAuthenticated,
     isAuthModalOpen,
     closeAuthModal,
+    pending2FA,
     login,
     register,
     verifyOtp,
@@ -37,7 +39,7 @@ export default function AuthModal() {
     logout,
   } = useAuth();
 
-  const [viewState, setViewState] = useState<'login' | 'register' | 'otp' | 'forgot'>('login');
+  const [viewState, setViewState] = useState<'login' | 'register' | 'otp' | 'forgot' | '2fa'>('login');
   
   // Estados formulario Login
   const [loginEmail, setLoginEmail] = useState('');
@@ -71,9 +73,17 @@ export default function AuthModal() {
     return () => clearTimeout(timer);
   }, [resendCooldown]);
 
+  // Si hay una verificación 2FA pendiente al abrir el modal, activar vista 2FA
+  useEffect(() => {
+    if (pending2FA) {
+      setViewState('2fa');
+      setLoginEmail(pending2FA.email);
+    }
+  }, [pending2FA]);
+
   if (!isAuthModalOpen) return null;
 
-  // 1. Manejo de Inicio de Sesión
+  // 1. Manejo de Inicio de Sesión + Verificación de Dos Pasos
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -81,11 +91,16 @@ export default function AuthModal() {
     setSubmitting(true);
 
     try {
-      await login({
+      const result = await login({
         email: loginEmail,
         password: loginPassword,
       });
-      setSuccessMessage('¡Bienvenido de vuelta a ROOTS!');
+
+      if (result?.requires2FA) {
+        setViewState('2fa');
+      } else {
+        setSuccessMessage('¡Bienvenido de vuelta a ROOTS!');
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Error al iniciar sesión';
       setErrorMessage(message);
@@ -271,6 +286,25 @@ export default function AuthModal() {
                 <LogOut className="w-4 h-4" />
                 <span>Cerrar Sesión</span>
               </button>
+            </div>
+          ) : viewState === '2fa' ? (
+            /* ================= ESTADO: VERIFICACIÓN DE DOS PASOS (2FA) ================= */
+            <div className="flex flex-col items-center my-auto py-2 w-full max-w-sm mx-auto">
+              <TwoFactorVerifyForm
+                email={loginEmail}
+                isModal={true}
+                onSuccess={() => {
+                  setSuccessMessage('¡Bienvenido de vuelta a ROOTS!');
+                  setTimeout(() => {
+                    closeAuthModal();
+                    setViewState('login');
+                  }, 800);
+                }}
+                onCancel={() => {
+                  setViewState('login');
+                  setErrorMessage(null);
+                }}
+              />
             </div>
           ) : viewState === 'otp' ? (
             /* ================= ESTADO 2: ESPERANDO CONFIRMACIÓN ================= */

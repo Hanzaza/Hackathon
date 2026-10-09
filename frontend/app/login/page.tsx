@@ -13,14 +13,24 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import PrecolombianPattern from '@/components/ui/PrecolombianPattern';
+import TwoFactorVerifyForm from '@/components/auth/TwoFactorVerifyForm';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, pending2FA } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
+
+  // Si ya hay un proceso 2FA pendiente al cargar, activar vista 2FA
+  React.useEffect(() => {
+    if (pending2FA) {
+      setStep('2fa');
+      setEmail(pending2FA.email);
+    }
+  }, [pending2FA]);
 
   // Si ya está autenticado, redirigir al inicio o perfil
   React.useEffect(() => {
@@ -35,8 +45,12 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
-      await login({ email, password });
-      router.push('/');
+      const result = await login({ email, password });
+      if (result?.requires2FA) {
+        setStep('2fa');
+      } else {
+        router.push('/');
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error al iniciar sesión';
       setErrorMessage(msg);
@@ -88,83 +102,98 @@ export default function LoginPage() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
 
-        {/* Contenido Central: Logo, ROOTS y Formulario */}
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 sm:px-8 pt-14 pb-4 w-full max-w-sm mx-auto">
+        {/* Contenido Central: Logo, ROOTS y Formulario o 2FA */}
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 sm:px-8 pt-10 pb-4 w-full max-w-sm mx-auto">
           
-          {/* Logo Circular ROOTS - Nuevo Logo Oficial */}
-          <div className="relative w-36 h-36 sm:w-40 sm:h-40 mb-2 drop-shadow-[0_20px_45px_rgba(0,0,0,0.8)]">
-            <Image
-              src="/logos/roots-emblem-white.png"
-              alt="ROOTS Logo Oficial"
-              fill
-              priority
-              sizes="160px"
-              className="object-contain"
+          {step === '2fa' ? (
+            <TwoFactorVerifyForm
+              email={email}
+              onSuccess={() => {
+                router.push('/perfil');
+              }}
+              onCancel={() => {
+                setStep('credentials');
+                setErrorMessage(null);
+              }}
             />
-          </div>
+          ) : (
+            <>
+              {/* Logo Circular ROOTS - Nuevo Logo Oficial */}
+              <div className="relative w-36 h-36 sm:w-40 sm:h-40 mb-2 drop-shadow-[0_20px_45px_rgba(0,0,0,0.8)]">
+                <Image
+                  src="/logos/roots-emblem-white.png"
+                  alt="ROOTS Logo Oficial"
+                  fill
+                  priority
+                  sizes="160px"
+                  className="object-contain"
+                />
+              </div>
 
-          {/* Título de Marca: ROOTS */}
-          <h1 className="text-4xl sm:text-5xl font-black tracking-[0.2em] uppercase text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.8)] mb-8 select-none">
-            ROOTS
-          </h1>
+              {/* Título de Marca: ROOTS */}
+              <h1 className="text-4xl sm:text-5xl font-black tracking-[0.2em] uppercase text-white drop-shadow-[0_4px_18px_rgba(0,0,0,0.8)] mb-8 select-none">
+                ROOTS
+              </h1>
 
-          {errorMessage && (
-            <div className="w-full p-3 mb-3 rounded-2xl bg-rose-900/80 backdrop-blur-md border border-rose-500/40 text-white text-xs font-semibold leading-relaxed flex items-start gap-2 shadow-lg">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-300" />
-              <span>{errorMessage}</span>
-            </div>
+              {errorMessage && (
+                <div className="w-full p-3 mb-3 rounded-2xl bg-rose-900/80 backdrop-blur-md border border-rose-500/40 text-white text-xs font-semibold leading-relaxed flex items-start gap-2 shadow-lg">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-300" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {/* Formulario de Credenciales */}
+              <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3.5">
+                
+                {/* Input: Correo electrónico */}
+                <div className="relative flex items-center bg-white rounded-2xl sm:rounded-3xl shadow-[0_8px_25px_rgba(0,0,0,0.25)] overflow-hidden transition-all focus-within:ring-2 focus-within:ring-[#00A8A7]">
+                  <div className="pl-4 pr-2 text-slate-500 flex items-center justify-center">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Correo electrónico"
+                    className="w-full py-3.5 pr-4 bg-transparent text-sm font-semibold text-slate-900 placeholder-slate-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Input: Contraseña */}
+                <div className="relative flex items-center bg-white rounded-2xl sm:rounded-3xl shadow-[0_8px_25px_rgba(0,0,0,0.25)] overflow-hidden transition-all focus-within:ring-2 focus-within:ring-[#00A8A7]">
+                  <div className="pl-4 pr-2 text-slate-500 flex items-center justify-center">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Contraseña"
+                    className="w-full py-3.5 pr-4 bg-transparent text-sm font-semibold text-slate-900 placeholder-slate-500 focus:outline-none"
+                  />
+                </div>
+
+                {/* Botón: Iniciar sesión (#0F3A2E Verde Oscuro oficial de ROOTS) */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full mt-1 py-3.5 px-6 rounded-2xl sm:rounded-3xl bg-[#0F3A2E] hover:bg-[#0A261E] active:scale-[0.98] text-white font-black text-sm shadow-[0_10px_30px_rgba(15,58,46,0.6)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 border border-white/10"
+                >
+                  <span>{submitting ? 'Iniciando sesión...' : 'Iniciar sesión'}</span>
+                </button>
+
+                {/* Enlace: ¿Olvidaste tu contraseña? */}
+                <div className="flex flex-col items-center gap-2 mt-2">
+                  <span className="text-xs sm:text-sm font-semibold text-white hover:text-amber-200 transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] cursor-pointer">
+                    ¿Olvidaste tu contraseña?
+                  </span>
+                </div>
+
+              </form>
+            </>
           )}
-
-          {/* Formulario */}
-          <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3.5">
-            
-            {/* Input: Correo electrónico */}
-            <div className="relative flex items-center bg-white rounded-2xl sm:rounded-3xl shadow-[0_8px_25px_rgba(0,0,0,0.25)] overflow-hidden transition-all focus-within:ring-2 focus-within:ring-[#00A8A7]">
-              <div className="pl-4 pr-2 text-slate-500 flex items-center justify-center">
-                <Mail className="w-5 h-5" />
-              </div>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Correo electrónico"
-                className="w-full py-3.5 pr-4 bg-transparent text-sm font-semibold text-slate-900 placeholder-slate-500 focus:outline-none"
-              />
-            </div>
-
-            {/* Input: Contraseña */}
-            <div className="relative flex items-center bg-white rounded-2xl sm:rounded-3xl shadow-[0_8px_25px_rgba(0,0,0,0.25)] overflow-hidden transition-all focus-within:ring-2 focus-within:ring-[#00A8A7]">
-              <div className="pl-4 pr-2 text-slate-500 flex items-center justify-center">
-                <Lock className="w-5 h-5" />
-              </div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Contraseña"
-                className="w-full py-3.5 pr-4 bg-transparent text-sm font-semibold text-slate-900 placeholder-slate-500 focus:outline-none"
-              />
-            </div>
-
-            {/* Botón: Iniciar sesión (#0F3A2E Verde Oscuro oficial de ROOTS) */}
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full mt-1 py-3.5 px-6 rounded-2xl sm:rounded-3xl bg-[#0F3A2E] hover:bg-[#0A261E] active:scale-[0.98] text-white font-black text-sm shadow-[0_10px_30px_rgba(15,58,46,0.6)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 border border-white/10"
-            >
-              <span>{submitting ? 'Iniciando sesión...' : 'Iniciar sesión'}</span>
-            </button>
-
-            {/* Enlace: ¿Olvidaste tu contraseña? */}
-            <div className="flex flex-col items-center gap-2 mt-2">
-              <span className="text-xs sm:text-sm font-semibold text-white hover:text-amber-200 transition-colors drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] cursor-pointer">
-                ¿Olvidaste tu contraseña?
-              </span>
-            </div>
-
-          </form>
 
         </div>
 

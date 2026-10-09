@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { DepartmentItem, AdminUserItem, MunicipalityItem, adminService } from '@/services/adminService';
 import { NICARAGUA_GEO_DATA, NicaraguaDepartment } from '@/data/nicaraguaGeo';
+import ImageUploadField from '@/components/ui/ImageUploadField';
 
 interface DepartmentsManagerTabProps {
   departments: DepartmentItem[];
@@ -49,6 +50,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
     name: '',
     code: '',
     description: '',
+    hero_image: '',
     is_creative_region: false,
     manager_id: '',
   });
@@ -122,6 +124,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
       name: '',
       code: '',
       description: '',
+      hero_image: '',
       is_creative_region: false,
       manager_id: '',
     });
@@ -135,6 +138,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
       name: dept.name,
       code: dept.code || '',
       description: dept.description || '',
+      hero_image: dept.hero_image || '',
       is_creative_region: dept.is_creative_region,
       manager_id: dept.manager_id || '',
     });
@@ -178,6 +182,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
           name: formData.name.trim(),
           code: formData.code.trim() || formData.name.trim().substring(0, 2).toUpperCase(),
           description: formData.description.trim(),
+          hero_image: formData.hero_image.trim() || undefined,
           is_creative_region: formData.is_creative_region,
           manager_id: formData.manager_id || null,
         });
@@ -187,6 +192,7 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
           name: formData.name.trim() || editingDept.name,
           code: formData.code.trim(),
           description: formData.description.trim(),
+          hero_image: formData.hero_image.trim() || undefined,
           is_creative_region: formData.is_creative_region,
           manager_id: formData.manager_id || undefined,
         });
@@ -706,6 +712,15 @@ export const DepartmentsManagerTab: React.FC<DepartmentsManagerTabProps> = ({
                   className="w-full px-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-purple-600 focus:bg-white outline-hidden transition-all resize-none"
                 />
               </div>
+
+              <ImageUploadField
+                label="Fotografía / Portada del Departamento"
+                value={formData.hero_image}
+                onChange={(url) => setFormData((prev) => ({ ...prev, hero_image: url }))}
+                folder="departments"
+                aspectRatio="video"
+                helperText="Imagen de cabecera que representa la cultura, naturaleza o paisajes del departamento."
+              />
 
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-600 block mb-1.5">

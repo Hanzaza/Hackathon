@@ -4,6 +4,11 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { supabase } from '../lib/supabase';
 import { UserProfile, LoginPayload, RegisterPayload } from '../services/apiClient';
 
+export interface Pending2FAInfo {
+  email: string;
+  expiresAt: number;
+}
+
 interface AuthContextType {
   user: UserProfile | null;
   token: string | null;
@@ -12,7 +17,11 @@ interface AuthContextType {
   isAuthModalOpen: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
-  login: (payload: LoginPayload) => Promise<void>;
+  pending2FA: Pending2FAInfo | null;
+  login: (payload: LoginPayload) => Promise<{ requires2FA: boolean; email: string }>;
+  verify2FACode: (code: string) => Promise<boolean>;
+  resend2FACode: () => Promise<void>;
+  cancel2FA: () => Promise<void>;
   register: (payload: RegisterPayload) => Promise<{ needsVerification: boolean }>;
   verifyOtp: (email: string, token: string, type?: 'signup' | 'email' | 'recovery') => Promise<void>;
   resendOtp: (email: string, type?: 'signup' | 'email_change') => Promise<void>;
@@ -26,6 +35,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [pending2FA, setPending2FA] = useState<Pending2FAInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -169,7 +179,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
-          await syncUserProfile(session.user, session.access_token);
+          const isVerified = typeof window !== 'undefined' && (
+            sessionStorage.getItem(`roots_2fa_verified_${session.user.id}`) === 'true' ||
+            localStorage.getItem(`roots_2fa_verified_${session.user.id}`) === 'true'
+          );
+
+          if (isVerified) {
+            await syncUserProfile(session.user, session.access_token);
+          } else {
+            // Verificar si hay una verificación 2FA pendiente no expirada
+            const storedPending = typeof window !== 'undefined' ? sessionStorage.getItem('roots_pending_2fa') : null;
+            if (storedPending) {
+              try {
+                const parsed = JSON.parse(storedPending);
+                if (parsed.email && parsed.expiresAt > Date.now()) {
+                  setPending2FA({
+                    email: parsed.email,
+                    expiresAt: parsed.expiresAt,
+                  });
+                } else {
+                  sessionStorage.removeItem('roots_pending_2fa');
+                  await supabase.auth.signOut();
+                }
+              } catch {
+                sessionStorage.removeItem('roots_pending_2fa');
+                await supabase.auth.signOut();
+              }
+            } else {
+              await supabase.auth.signOut();
+            }
+            setUser(null);
+            setToken(null);
+          }
         } else {
           setUser(null);
           setToken(null);
@@ -183,11 +224,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     void initSession();
 
-    // 2. Suscribirse a cambios de estado de autenticación (Login, Logout, Token refresh)
+    // 2. Suscribirse a cambios de estado de autenticación (Login, Logout, Token refresh, Magic Link)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
-          await syncUserProfile(session.user, session.access_token);
+          const isVerified = typeof window !== 'undefined' && (
+            sessionStorage.getItem(`roots_2fa_verified_${session.user.id}`) === 'true' ||
+            localStorage.getItem(`roots_2fa_verified_${session.user.id}`) === 'true'
+          );
+
+          // Si el usuario viene de hacer clic en el Magic Link del correo o completó verifyOtp
+          if (event === 'SIGNED_IN' || isVerified) {
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem(`roots_2fa_verified_${session.user.id}`, 'true');
+              localStorage.setItem(`roots_2fa_verified_${session.user.id}`, 'true');
+              sessionStorage.removeItem('roots_pending_2fa');
+            }
+            setPending2FA(null);
+            await syncUserProfile(session.user, session.access_token);
+          } else {
+            setUser(null);
+            setToken(null);
+          }
         } else {
           setUser(null);
           setToken(null);
@@ -201,12 +259,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [syncUserProfile]);
 
-  // Login nativo con Supabase Auth
-  const login = async (payload: LoginPayload) => {
+  // Login nativo con Supabase Auth + Verificación de Dos Pasos (2FA vía Correo Electrónico)
+  const login = async (payload: LoginPayload): Promise<{ requires2FA: boolean; email: string }> => {
     setIsLoading(true);
     try {
+      const email = payload.email.trim().toLowerCase();
+
+      // PASO 1: Validar contraseña en Supabase Auth
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: payload.email.trim().toLowerCase(),
+        email,
         password: payload.password,
       });
 
@@ -218,13 +279,134 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         );
       }
 
-      if (data.session?.user) {
-        await syncUserProfile(data.session.user, data.session.access_token);
-        closeAuthModal();
+      if (!data.session?.user) {
+        throw new Error('No se pudo iniciar la sesión. Por favor verifica tus credenciales.');
       }
+
+      // Cerrar sesión preliminar de contraseña para exigir el segundo factor
+      await supabase.auth.signOut();
+
+      // PASO 2: Supabase genera el código en sus servidores y lo envía al correo real del usuario
+      const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/perfil` : undefined;
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: redirectUrl,
+        },
+      });
+
+      if (otpError && !otpError.message.includes('rate limit')) {
+        throw new Error(otpError.message);
+      }
+
+      const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutos de validez
+      const pendingInfo: Pending2FAInfo = {
+        email,
+        expiresAt,
+      };
+
+      setPending2FA(pendingInfo);
+
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('roots_pending_2fa', JSON.stringify({
+          email,
+          expiresAt,
+        }));
+      }
+
+      return { requires2FA: true, email };
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Validar código de verificación de 2 pasos recibido en el correo con Supabase Auth
+  const verify2FACode = async (inputCode: string): Promise<boolean> => {
+    if (!pending2FA) {
+      throw new Error('No hay ninguna verificación de dos pasos pendiente.');
+    }
+
+    if (Date.now() > pending2FA.expiresAt) {
+      throw new Error('El código de verificación ha expirado. Por favor solicita uno nuevo a tu correo.');
+    }
+
+    setIsLoading(true);
+    try {
+      // Supabase Auth valida criptográficamente el token recibido en el correo
+      const { data, error } = await supabase.auth.verifyOtp({
+        email: pending2FA.email,
+        token: inputCode.trim(),
+        type: 'email',
+      });
+
+      if (error) {
+        throw new Error(
+          error.message.includes('expired') || error.message.includes('invalid')
+            ? 'El código recibido en tu correo es incorrecto o ha expirado. Por favor verifica tu bandeja o solicita uno nuevo.'
+            : error.message
+        );
+      }
+
+      if (data.session?.user) {
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem(`roots_2fa_verified_${data.session.user.id}`, 'true');
+          localStorage.setItem(`roots_2fa_verified_${data.session.user.id}`, 'true');
+          sessionStorage.removeItem('roots_pending_2fa');
+        }
+
+        await syncUserProfile(data.session.user, data.session.access_token);
+        setPending2FA(null);
+        closeAuthModal();
+        return true;
+      }
+
+      throw new Error('No se pudo establecer la sesión con el código proporcionado.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reenviar un nuevo código al correo vía Supabase Auth
+  const resend2FACode = async (): Promise<void> => {
+    if (!pending2FA) {
+      throw new Error('No hay verificación de dos pasos activa.');
+    }
+
+    const redirectUrl = typeof window !== 'undefined' ? `${window.location.origin}/perfil` : undefined;
+    const { error } = await supabase.auth.signInWithOtp({
+      email: pending2FA.email,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: redirectUrl,
+      },
+    });
+
+    if (error) {
+      if (error.message.includes('rate limit')) {
+        throw new Error('Por seguridad, debes esperar un momento antes de solicitar otro código a tu correo.');
+      }
+      throw new Error(error.message);
+    }
+
+    const updated: Pending2FAInfo = {
+      email: pending2FA.email,
+      expiresAt: Date.now() + 5 * 60 * 1000,
+    };
+    setPending2FA(updated);
+  };
+
+  // Cancelar la verificación de dos pasos y volver al login
+  const cancel2FA = async (): Promise<void> => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('roots_pending_2fa');
+    }
+    setPending2FA(null);
+    setUser(null);
+    setToken(null);
+    try {
+      await supabase.auth.signOut();
+    } catch {}
   };
 
   // Registro nativo con Supabase Auth
@@ -362,13 +544,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Logout nativo con Supabase Auth
   const logout = async () => {
+    setIsLoading(true);
     try {
-      await supabase.auth.signOut();
-    } catch {
-      // Ignorar
-    } finally {
+      if (typeof window !== 'undefined') {
+        if (user?.id) {
+          sessionStorage.removeItem(`roots_2fa_verified_${user.id}`);
+          localStorage.removeItem(`roots_2fa_verified_${user.id}`);
+        }
+        sessionStorage.removeItem('roots_pending_2fa');
+      }
+      setPending2FA(null);
       setUser(null);
       setToken(null);
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('Error en logout:', err);
+    } finally {
+      setIsLoading(false);
       closeAuthModal();
     }
   };
@@ -383,7 +575,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthModalOpen,
         openAuthModal,
         closeAuthModal,
+        pending2FA,
         login,
+        verify2FACode,
+        resend2FACode,
+        cancel2FA,
         register,
         verifyOtp,
         resendOtp,

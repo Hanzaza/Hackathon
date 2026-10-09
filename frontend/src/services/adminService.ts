@@ -341,6 +341,7 @@ export const adminService = {
     name: string;
     code?: string;
     description?: string;
+    hero_image?: string;
     is_creative_region?: boolean;
     manager_id?: string | null;
   }): Promise<DepartmentItem | null> {
@@ -352,6 +353,7 @@ export const adminService = {
             name: data.name,
             code: data.code || data.name.substring(0, 2).toUpperCase(),
             description: data.description || '',
+            hero_image: data.hero_image || null,
             is_creative_region: !!data.is_creative_region,
             manager_id: data.manager_id || null,
             status: 'active',
@@ -375,16 +377,21 @@ export const adminService = {
   async updateDepartment(id: string, updates: Partial<DepartmentItem>): Promise<boolean> {
     try {
       if (supabase) {
+        const payload: any = {
+          name: updates.name,
+          code: updates.code,
+          description: updates.description,
+          is_creative_region: updates.is_creative_region,
+          manager_id: updates.manager_id || null,
+          status: updates.status,
+        };
+        if (updates.hero_image !== undefined) {
+          payload.hero_image = updates.hero_image;
+        }
+
         const { error } = await supabase
           .from('departments')
-          .update({
-            name: updates.name,
-            code: updates.code,
-            description: updates.description,
-            is_creative_region: updates.is_creative_region,
-            manager_id: updates.manager_id || null,
-            status: updates.status,
-          })
+          .update(payload)
           .eq('id', id);
         return !error;
       }

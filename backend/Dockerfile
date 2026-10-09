@@ -10,7 +10,7 @@ WORKDIR /app
 
 # Instalar dependencias necesarias para compilar
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # Copiar código fuente y compilar TypeScript a JavaScript
 COPY tsconfig.json ./
@@ -27,7 +27,7 @@ ENV PORT=4000
 
 # Instalar únicamente dependencias de producción
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm install --omit=dev && npm cache clean --force
 
 # Copiar los archivos compilados desde la etapa anterior
 COPY --from=builder /app/dist ./dist
